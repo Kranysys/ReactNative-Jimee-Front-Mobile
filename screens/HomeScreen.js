@@ -128,7 +128,7 @@ export default class HomeScreen extends React.Component {
     });
   }
   getInstaAccounts() {
-    var command = "instaAccounts";
+    var command = "instaAccounts?userId="+1; // Behindspiks
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -137,13 +137,13 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+bearerToken,
       }
     }).then((response) => response.json()).then((responseJson) => {
-      //console.log("Response: "+responseJson[0].instauser_id);
       var count = Object.keys(responseJson).length;
+      //console.log(JSON.stringify(responseJson));
       if(!count){
         console.log("NO INSTA ACCOUNT");
       }
       for(var i=0;i<count;i++) {
-        if(responseJson[i].instauser_id>0){
+        if(responseJson[i].instauser_id){
           console.log("ADD INSTA ACCOUNT "+responseJson[i].user+" id "+responseJson[i].instauser_id);
           //this.addMoreLog(responseJson[i].user+" : "+responseJson[i].type);
         }
@@ -193,8 +193,10 @@ export default class HomeScreen extends React.Component {
             />
           </View>
 
-          <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-            
+          <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+            <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75}}>
+          </View>
+
           </View>
 
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20}}>
