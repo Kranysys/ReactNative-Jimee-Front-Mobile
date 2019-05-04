@@ -192,7 +192,7 @@ addTag(type){
                 <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                 <View style={{position: 'relative'}}>
                   <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>{ this.commenttagscontent[item.index2] } </Text>
-                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => {  } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
+                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => {this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]);  } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
                 </View>
               </Animated.View>
               );
