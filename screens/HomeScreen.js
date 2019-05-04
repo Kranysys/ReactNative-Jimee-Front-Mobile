@@ -27,6 +27,8 @@ export default class HomeScreen extends React.Component {
 
     this.getLogs();
     this.getInstaAccounts();
+
+    this.showOverlay = 0;
   }
   request() {
     var command = "info";
@@ -153,6 +155,11 @@ export default class HomeScreen extends React.Component {
       //Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
     });
   }
+  showInstaAccount() {
+    console.log("show insta account")
+    this.showOverlay = !this.showOverlay;
+    this.forceUpdate();
+  }
   static navigationOptions = {
     header: null,
   };
@@ -181,9 +188,13 @@ export default class HomeScreen extends React.Component {
             );
         }
     });
+    let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
     return (
       <ScrollView>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
+          { this.showOverlay==1 &&
+            <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}></View>
+          }
           <View style={styles.welcomeContainer}>
             <Image
               source={
@@ -193,11 +204,13 @@ export default class HomeScreen extends React.Component {
             />
           </View>
 
-          <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-            <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75}}>
-          </View>
-
-          </View>
+          <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {this.showInstaAccount()}}>
+            <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+              <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
+                { accountIcon }
+              </View>
+            </View>
+          </TouchableOpacity>
 
           <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20}}>
             <Text style={styles.getStartedText}>Abonnées</Text>
