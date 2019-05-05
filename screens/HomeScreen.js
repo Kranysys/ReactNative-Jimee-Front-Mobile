@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Animated } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Animated, TextInput } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
@@ -29,6 +29,7 @@ export default class HomeScreen extends React.Component {
     this.getInstaAccounts();
 
     this.showOverlay = 0;
+    this.InstaAccountcount = 0;
   }
   request() {
     var command = "info";
@@ -139,7 +140,7 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+bearerToken,
       }
     }).then((response) => response.json()).then((responseJson) => {
-      var count = Object.keys(responseJson).length;
+      this.InstaAccountcount = Object.keys(responseJson).length;
       //console.log(JSON.stringify(responseJson));
       if(!count){
         console.log("NO INSTA ACCOUNT");
@@ -193,7 +194,30 @@ export default class HomeScreen extends React.Component {
       <ScrollView>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
           { this.showOverlay==1 &&
-            <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}></View>
+            <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
+              { this.InstaAccountcount==0 &&
+                <View style={{backgroundColor: '#fff', borderRadius: 10, position: 'absolute', top: 250, right: 50, left: 50, zIndex: 4}}>
+                  <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
+                  <TextInput
+                      style={ styles.textBox }
+                      placeholder="Login du compte"
+                      onChangeText={(text) => this.setState({text})}
+                      ref={this.logInput}
+                  />
+                  <TextInput
+                    style={ styles.textBox }
+                    placeholder="Mot de passe"
+                    underlineColorAndroid = "transparent"
+                    secureTextEntry = { this.state.hidePassword }
+                    onChangeText={(text) => this.setState({text})}
+                    ref={this.passInput}
+                  />
+                  <View style={{position: 'relative', alignSelf: 'stretch',}}>
+                    <Button onPress={ () => {this.login();}} title="AJOUTER CE COMPTE"/>
+                  </View>
+                </View>
+              }
+            </View>
           }
           <View style={styles.welcomeContainer}>
             <Image
@@ -204,7 +228,7 @@ export default class HomeScreen extends React.Component {
             />
           </View>
 
-          <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {this.showInstaAccount()}}>
+          <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {this.showInstaAccount()}} style={{zIndex: 3}}>
             <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
               <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
                 { accountIcon }
@@ -212,18 +236,18 @@ export default class HomeScreen extends React.Component {
             </View>
           </TouchableOpacity>
 
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20}}>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20,zIndex:1}}>
             <Text style={styles.getStartedText}>Abonnées</Text>
             <Text style={styles.getStartedText}>Publications</Text>
             <Text style={styles.getStartedText}>Abonnements</Text>
           </View>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20}}>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20,zIndex:1}}>
             <Text style={styles.instaNumbers}>{this.accountFollowers}</Text>
             <Text style={styles.instaNumbers}>{this.accountPosts}</Text>
             <Text style={styles.instaNumbers}>{this.accountFollowing}</Text>
           </View>
 
-          <View style={styles.tabBarInfoContainer}>
+          <View style={{zIndex: 1,}}>
             <CheckBox center title='Likes' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.likesChecked} onPress={ () => {this.likesChecked=!this.likesChecked;this.forceUpdate();}}/>
             <CheckBox center title='Commentaires' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.commentsChecked} onPress={ () => {this.commentsChecked=!this.commentsChecked;this.forceUpdate();}}/>
             <CheckBox center title='Follow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.followChecked} onPress={ () => {this.followChecked=!this.followChecked;this.forceUpdate();}}/>
@@ -238,7 +262,7 @@ export default class HomeScreen extends React.Component {
             </TouchableOpacity>
           </View>
           <Text>Historique des actions</Text>
-          <View style={styles.tabBarInfoContainer}>
+          <View style={{zIndex: 1,}}>
             {rows}
           </View>
         </View>
@@ -248,9 +272,22 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  textBox: {
+	  marginBottom: 6,
+    fontSize: 18,
+    alignSelf: 'stretch',
+    height: 30,
+    margin: 5,
+    borderWidth: 1,
+    paddingVertical: 0,
+    borderColor: 'grey',
+    borderRadius: 5,
+    backgroundColor: '#fff'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    zIndex: 1,
   },
   developmentModeText: {
     marginBottom: 20,
@@ -310,6 +347,7 @@ const styles = StyleSheet.create({
     //flexDirection: 'row', 
     backgroundColor: '#fbfbfb',
     paddingVertical: 2,
+    zIndex: 1,
   },
   tabBarInfoText: {
     fontSize: 17,
