@@ -4,11 +4,15 @@ import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
-import { api, bearerToken } from '../api';
+import { api, bearerToken, userID, setUserID } from '../api';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
     super(props);
+
+    // Obtension de l'ID de l'utilisateur + nettoyage token
+    this.getID();
+
     this.likesChecked = false;
     this.commentsChecked = false;
     this.followChecked = false;
@@ -32,11 +36,9 @@ export default class HomeScreen extends React.Component {
     this.InstaAccountcount = 0;
     this.logInput = React.createRef();
     this.passInput = React.createRef();
-
-    this.userID = 1; // ID CHANGE AU LOGGIN TODO
   }
-  request() {
-    var command = "info";
+  getID() {
+    var command = "users?token="+bearerToken;
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
@@ -44,17 +46,34 @@ export default class HomeScreen extends React.Component {
 			'Content-Type': 'application/json',
       },
 		}).then((response) => response.json()).then((responseJson) => {
+      console.log("profile ID: "+responseJson.user_id);
+      if(responseJson.user_id) api.setUserID(responseJson.user_id);
+        else console.log("ERR!! No UserID found for token!!");
+    }).catch((error) =>{
+      console.log("ERROR LOGS : "+error);
+    });
+  }
+  request() {
+    var command = "info?userID="+userID;
+    console.log("request -> GET "+api+command);
+    fetch(api+command,  {
+		  method: 'GET',
+		  headers: {
+			'Content-Type': 'application/json',
+      },
+		}).then((response) => response.json()).then((responseJson) => {
+      // A CHANGER ENLEVER [0] / API A CHANGER
       console.log("fl "+responseJson[0].followers+" / "+responseJson[0].followings);
       if(responseJson[0].followers>0) this.accountFollowers = responseJson[0].followers; else this.accountFollowers = "-";
       if(responseJson[0].posts>0) this.accountPosts = responseJson[0].posts; else this.accountPosts = "-";
       if(responseJson[0].followings>0) this.accountFollowing = responseJson[0].followings; else this.accountFollowing = "-";
       this.forceUpdate();
     }).catch((error) =>{
-        Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles\n-Vérifiez que votre TPBox fonctionne");
+      console.log("ERROR LOGS : "+error);
       });
 
     
-    command = "configUserInsta";
+    command = "configUserInsta?userID="+userID;
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -62,6 +81,7 @@ export default class HomeScreen extends React.Component {
       'Content-Type': 'application/json',
       },
     }).then((response) => response.json()).then((responseJson) => {
+      // A CHANGER ENLEVER [0] / API A CHANGER
       console.log("fl "+responseJson.followers);
       if(responseJson[0].follows>0) this.followChecked = true; else this.followChecked = true;
       if(responseJson[0].unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
@@ -69,7 +89,7 @@ export default class HomeScreen extends React.Component {
       if(responseJson[0].likes>0) this.likesChecked = true; else this.likesChecked = false;
       this.forceUpdate();
     }).catch((error) =>{
-      Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles\n-Vérifiez que votre TPBox fonctionne");
+      console.log("ERROR LOGS : "+error);
     });
   }
   updateCheck() {
@@ -88,11 +108,11 @@ export default class HomeScreen extends React.Component {
       })
     }).then((response) => response.json()).then((responseJson) => {
     }).catch((error) =>{
-      Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles\n-Vérifiez que votre TPBox fonctionne");
+      console.log("ERROR LOGS : "+error);
     });
   }
   getLogs() {
-    var command = "userlogs";
+    var command = "userlogs?instaUserID="+instaUserID;
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -100,6 +120,7 @@ export default class HomeScreen extends React.Component {
       'Content-Type': 'application/json',
       }
     }).then((response) => response.json()).then((responseJson) => {
+      // API A CHANGER avec instaUserID
       console.log("Response: "+responseJson[0].id);
       for(var i=0;i<10;i++) {
         
@@ -110,7 +131,6 @@ export default class HomeScreen extends React.Component {
       }
     }).catch((error) =>{
       console.log("ERROR LOGS : "+error);
-      //Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
     });
   }
   addMoreLog(contenu) {
@@ -135,7 +155,7 @@ export default class HomeScreen extends React.Component {
     });
   }
   getInstaAccounts() {
-    var command = "instaAccounts?userId="+this.userID; // Behindspiks
+    var command = "instaAccounts?userId="+userID;
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -153,10 +173,10 @@ export default class HomeScreen extends React.Component {
         if(responseJson[i].instauser_id) {
           console.log("ADD INSTA ACCOUNT ["+responseJson[i].user+"] id ["+responseJson[i].instauser_id+"]");
           if(i==0) { // TAKE FIRST ACCOUNT (ICON SELECT)
-              this.accoun
+              
               this.forceUpdate();
           }
-          // ...
+          // ... 
         }
       }
     }).catch((error) =>{
@@ -179,7 +199,7 @@ export default class HomeScreen extends React.Component {
       body: JSON.stringify({
         instauser: this.logInput.current._lastNativeText,
         instapass: this.passInput.current._lastNativeText,
-        userid: this.userID,
+        userid: userID,
       })
     }).then((response) => response.json()).then((responseJson) => {
     }).catch((error) =>{

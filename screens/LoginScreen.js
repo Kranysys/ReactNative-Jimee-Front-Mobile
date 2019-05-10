@@ -4,7 +4,7 @@ import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
-import { api, bearerToken, setValue } from '../api';
+import { api, bearerToken, setToken } from '../api';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
@@ -48,7 +48,7 @@ export default class LoginScreen extends React.Component {
     .then((responseJson) => {
       console.log("LOGIN INFO: "+responseJson.token_type+"/"+responseJson.access_token);
       if(responseJson.token_type && responseJson.access_token){
-        setValue(responseJson.access_token); // Stockage du token
+        setToken(responseJson.access_token); // Stockage du token
         this.props.navigation.navigate('App');
       } else {
         Alert.alert("Utilisateur ou mot de passe incorrect");
