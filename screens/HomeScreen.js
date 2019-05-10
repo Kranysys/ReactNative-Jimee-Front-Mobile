@@ -4,7 +4,7 @@ import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
-import { api, bearerToken, userID, setUserID } from '../api';
+import { api, bearerToken, userID, setUserID, instaUserID, setInstaUserID } from '../api';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -47,7 +47,7 @@ export default class HomeScreen extends React.Component {
       },
 		}).then((response) => response.json()).then((responseJson) => {
       console.log("profile ID: "+responseJson.user_id);
-      if(responseJson.user_id) api.setUserID(responseJson.user_id);
+      if(responseJson.user_id) setUserID(responseJson.user_id);
         else console.log("ERR!! No UserID found for token!!");
     }).catch((error) =>{
       console.log("ERROR LOGS : "+error);
