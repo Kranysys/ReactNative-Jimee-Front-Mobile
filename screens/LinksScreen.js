@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import { Ionicons } from '@expo/vector-icons';
-import { api } from '../api';
+import { api, bearerToken, userInstaID } from '../api';
 
 export default class LinksScreen extends React.Component {
   constructor(props){
@@ -11,8 +11,6 @@ export default class LinksScreen extends React.Component {
     this.maxFollowers = 0;
     this.minFollowings = 0;
     this.maxFollowings = 0;
-    //this.tagLikes = "-";
-    //this.tagComments = "-";
 
     this.commenttagscontent = [];
     this.liketagscontent = [];
@@ -23,12 +21,13 @@ export default class LinksScreen extends React.Component {
     this.request(); // obtension des settings instagram
   }
   request() {
-    let command = "configFollow";
+    let command = "configFollow&userInstaID="+userInstaID;
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+bearerToken,
       },
     }).then((response) => response.json()).then((responseJson) => {
       if(responseJson[0].min_follows>0) this.minFollowings = responseJson[0].min_follows;
@@ -37,46 +36,48 @@ export default class LinksScreen extends React.Component {
       if(responseJson[0].max_followers>0) this.maxFollowers = responseJson[0].max_followers;
       this.forceUpdate();
     }).catch((error) =>{
-        Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
-      });
+      console.log("ERROR "+command+" : "+error);
+    });
 
-      command = "tagLikes";
-      console.log("request -> GET "+api+command);
-      fetch(api+command,  {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-      }).then((response) => response.json()).then((responseJson) => {
-        var count = Object.keys(responseJson).length;
-        //console.log("lenght "+count+"/"+responseJson[0].tag);
-        if(count){this.tagLikes="";}
-        for(var i=0;i<count;i++){
-          this.addMoreTag(0,responseJson[i].tag);
-        }
-      }).catch((error) =>{
-        Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
-      });
+    command = "tagLikes&userInstaID="+userInstaID;
+    console.log("request -> GET "+api+command);
+    fetch(api+command,  {
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+bearerToken,
+      },
+    }).then((response) => response.json()).then((responseJson) => {
+      var count = Object.keys(responseJson).length;
+      //console.log("lenght "+count+"/"+responseJson[0].tag);
+      if(count){this.tagLikes="";}
+      for(var i=0;i<count;i++){
+        this.addMoreTag(0,responseJson[i].tag);
+      }
+    }).catch((error) =>{
+      console.log("ERROR "+command+" : "+error);
+    });
 
-      //this.index = 0;
-      command = "tagComments";
-      console.log("request -> GET "+api+command);
-      fetch(api+command,  {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-      }).then((response) => response.json()).then((responseJson) => {
-        var count = Object.keys(responseJson).length;
-        //console.log("lenght "+count+"/"+responseJson[0].tag);
-        if(count){this.tagComments="";}
-        for(var i=0;i<count;i++){
-          this.addMoreTag(1,responseJson[i].tagcomments);
-        }
-      }).catch((error) =>{
-        Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
-      });
-      //this.forceUpdate();
+    //this.index = 0;
+    command = "tagComments&userInstaID="+userInstaID;
+    console.log("request -> GET "+api+command);
+    fetch(api+command,  {
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+bearerToken,
+      },
+    }).then((response) => response.json()).then((responseJson) => {
+      var count = Object.keys(responseJson).length;
+      //console.log("lenght "+count+"/"+responseJson[0].tag);
+      if(count){this.tagComments="";}
+      for(var i=0;i<count;i++){
+        this.addMoreTag(1,responseJson[i].tagcomments);
+      }
+    }).catch((error) =>{
+      Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
+    });
+    //this.forceUpdate();
   }
   addMoreTag(type,contenu) {
     this.animatedValue.setValue(0);
@@ -131,6 +132,7 @@ deleteTag(type,id,tag){
           method: 'DELETE',
           headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+bearerToken,
           },
           body : {
             
@@ -162,7 +164,6 @@ addTag(type){
       });
       let likeTags = this.state.valueArray.map(( item, key ) =>
       {
-          // todo verifier dernier élément pour ajouter le + à la fin
           if(( key ) == this.index)
           {
               return(

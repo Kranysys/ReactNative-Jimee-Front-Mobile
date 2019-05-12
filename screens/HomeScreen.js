@@ -1,10 +1,10 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Animated, TextInput } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, Alert, Animated, TextInput } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
-import { api, bearerToken, userID, setUserID, instaUserID, setInstaUserID } from '../api';
+import { api, getToken, getUserID, setUserID, getUserInstaID, setUserInstaID } from '../api';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -22,74 +22,78 @@ export default class HomeScreen extends React.Component {
     this.accountPosts = 0;
     this.accountFollowing = 0;
     this.accountPictureId = 0;
-    this.request(); // obtension des informations instagram
 
-    this.state = { valueArray: [], hidePassword: true, showPassword: false };
-    this.index = 0;
+    this.state = { valueArray: [], valueArray2: [], hidePassword: true, showPassword: false };
+    this.index = 0; this.index2 = 0;
     this.logcontent = [];
+    this.instaAccountsContent = [];
+    this.instaAccountsContentID = [];
     this.animatedValue = new Animated.Value(0);
-
-    this.getLogs();
-    this.getInstaAccounts();
 
     this.showOverlay = 0;
     this.InstaAccountcount = 0;
+    this.InstaAccountList = "";
     this.logInput = React.createRef();
     this.passInput = React.createRef();
+    this.addAccount = 0;
   }
   getID() {
-    var command = "users?token="+bearerToken;
+    var command = "users?token="+getToken();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
 		  headers: {
-			'Content-Type': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
       },
 		}).then((response) => response.json()).then((responseJson) => {
-      console.log("profile ID: "+responseJson.user_id);
-      if(responseJson.user_id) setUserID(responseJson.user_id);
-        else console.log("ERR!! No UserID found for token!!");
+      if(responseJson.user_id){
+        setUserID(responseJson.user_id);
+        // userID obtenu, les autres requêtes peuvent être effectués
+        this.request(); // obtension des informations instagram
+        this.getInstaAccounts(); // obtension du compte instagram
+      } 
+      else console.log("ERR!! No UserID found for token!!");
     }).catch((error) =>{
-      console.log("ERROR LOGS : "+error);
+      console.log("ERROR "+command+" : "+error);
     });
   }
   request() {
-    var command = "info?userID="+userID;
+    var command = "info?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
 		  headers: {
-			'Content-Type': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
       },
 		}).then((response) => response.json()).then((responseJson) => {
-      // A CHANGER ENLEVER [0] / API A CHANGER
-      console.log("fl "+responseJson[0].followers+" / "+responseJson[0].followings);
-      if(responseJson[0].followers>0) this.accountFollowers = responseJson[0].followers; else this.accountFollowers = "-";
-      if(responseJson[0].posts>0) this.accountPosts = responseJson[0].posts; else this.accountPosts = "-";
-      if(responseJson[0].followings>0) this.accountFollowing = responseJson[0].followings; else this.accountFollowing = "-";
+      if(responseJson.followers>0) this.accountFollowers = responseJson.followers; else this.accountFollowers = "-";
+      if(responseJson.posts>0) this.accountPosts = responseJson.posts; else this.accountPosts = "-";
+      if(responseJson.followings>0) this.accountFollowing = responseJson.followings; else this.accountFollowing = "-";
       this.forceUpdate();
     }).catch((error) =>{
-      console.log("ERROR LOGS : "+error);
-      });
+      console.log("ERROR "+command+" : "+error);
+    });
 
     
-    command = "configUserInsta?userID="+userID;
+    command = "configUserInsta?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
       },
     }).then((response) => response.json()).then((responseJson) => {
-      // A CHANGER ENLEVER [0] / API A CHANGER
       console.log("fl "+responseJson.followers);
-      if(responseJson[0].follows>0) this.followChecked = true; else this.followChecked = true;
-      if(responseJson[0].unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
-      if(responseJson[0].comments>0) this.commentsChecked = true; else this.commentsChecked = false;
-      if(responseJson[0].likes>0) this.likesChecked = true; else this.likesChecked = false;
+      if(responseJson.follows>0) this.followChecked = true; else this.followChecked = true;
+      if(responseJson.unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
+      if(responseJson.comments>0) this.commentsChecked = true; else this.commentsChecked = false;
+      if(responseJson.likes>0) this.likesChecked = true; else this.likesChecked = false;
       this.forceUpdate();
     }).catch((error) =>{
-      console.log("ERROR LOGS : "+error);
+      console.log("ERROR "+command+" : "+error);
     });
   }
   updateCheck() {
@@ -99,6 +103,7 @@ export default class HomeScreen extends React.Component {
       method: 'POST',
       headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
       },
       body: JSON.stringify({
         follows: Number(this.followChecked), 
@@ -108,29 +113,31 @@ export default class HomeScreen extends React.Component {
       })
     }).then((response) => response.json()).then((responseJson) => {
     }).catch((error) =>{
-      console.log("ERROR LOGS : "+error);
+      console.log("ERROR "+command+" : "+error);
     });
   }
   getLogs() {
-    var command = "userlogs?instaUserID="+instaUserID;
+    var command = "userlogs?instaUserID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
       }
     }).then((response) => response.json()).then((responseJson) => {
-      // API A CHANGER avec instaUserID
-      console.log("Response: "+responseJson[0].id);
-      for(var i=0;i<10;i++) {
-        
-        if(responseJson[i].id>0){
-          console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
-          this.addMoreLog(responseJson[i].user+" : "+responseJson[i].type);
+      let logscount = Object.keys(responseJson).length;
+      if(logscount > 0){
+        for(var i=0;i<10 && i < logscount;i++) {
+          
+          if(responseJson[i].id>0){
+            console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
+            this.addMoreLog(responseJson[i].user+" : "+responseJson[i].type);
+          }
         }
       }
     }).catch((error) =>{
-      console.log("ERROR LOGS : "+error);
+      console.log("ERROR "+command+" : "+error);
     });
   }
   addMoreLog(contenu) {
@@ -155,35 +162,40 @@ export default class HomeScreen extends React.Component {
     });
   }
   getInstaAccounts() {
-    var command = "instaAccounts?userId="+userID;
+    var command = "instaAccounts?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+bearerToken,
+      'Authorization': 'Bearer '+getToken(),
       }
     }).then((response) => response.json()).then((responseJson) => {
       this.InstaAccountcount = Object.keys(responseJson).length;
+      this.InstaAccountList = responseJson;
+
+      console.log("GET INSTACCOUNT SIZE "+this.InstaAccountcount);
       //console.log(JSON.stringify(responseJson));
       if(!this.InstaAccountcount){
         console.log("NO INSTA ACCOUNT");
       } 
-      for(var i=0;i<this.InstaAccountcount;i++) {
-        if(responseJson[i].instauser_id) {
-          console.log("ADD INSTA ACCOUNT ["+responseJson[i].user+"] id ["+responseJson[i].instauser_id+"]");
-          if(i==0) { // TAKE FIRST ACCOUNT (ICON SELECT)
-              
-              this.forceUpdate();
-          }
-          // ... 
-        }
+      for(var i=0;i<(this.InstaAccountcount);i++) {
+        console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
+        if(i==0) setUserInstaID(this.InstaAccountList[i].instauser_id);
+        if(i>=1){
+          this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
+        } 
+      }
+      if(this.InstaAccountcount) {
+        this.getLogs(); // Affichage des logs
+        this.forceUpdate(); // met à jour l'affichage des comptes
       }
     }).catch((error) =>{
-      console.log("ERROR INSTA ACCOUNT : "+error);
+      console.log("ERROR "+command+" : "+error);
     });
   }
   addInstaAccount() {
+    console.log("Adding instaAccount action...");
     var command = "instaAccounts";
     if(!this.logInput.current._lastNativeText || !this.passInput.current._lastNativeText) {
       Alert.alert("Veuillez entrer votre login et mot de passe Instagram.");
@@ -194,12 +206,12 @@ export default class HomeScreen extends React.Component {
       method: 'POST',
       headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+bearerToken,
+      'Authorization': 'Bearer '+getToken(),
       },
       body: JSON.stringify({
         instauser: this.logInput.current._lastNativeText,
         instapass: this.passInput.current._lastNativeText,
-        userid: userID,
+        userID: getUserID(),
       })
     }).then((response) => response.json()).then((responseJson) => {
     }).catch((error) =>{
@@ -209,8 +221,42 @@ export default class HomeScreen extends React.Component {
     this.getInstaAccounts();
     this.forceUpdate();
   }
+  delInstaAccount(userInstaID) {
+    console.log("Deleting instaAccount action...");
+    var command = "instaAccounts";
+    console.log("request -> DELETE "+api+command);
+    fetch(api+command,  {
+      method: 'DELETE',
+      headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
+      },
+      body: JSON.stringify({
+      userInstaID: userInstaID,
+      userID: getUserID(),
+      })
+    }).then((response) => response.json()).then((responseJson) => {
+    }).catch((error) =>{
+      console.log("ERROR ADD INSTA ACCOUNT : "+error);
+    });
+    this.showInstaAccount();
+    this.getInstaAccounts();
+    this.forceUpdate();
+  }
+  addMoreInstaAccount(userInsta, userInstaID) {
+    console.log("ADDMOREINSTAACCOUNT "+userInsta+"/"+userInstaID+" ("+this.index2+")")
+    this.instaAccountsContent[this.index2] = userInsta;
+    this.instaAccountsContentID[this.index2] = userInstaID;
+
+    let newlyAddedValue = { index: this.index2 }
+
+    this.setState({ valueArray2: [ ...this.state.valueArray2, newlyAddedValue ] }, () =>
+    {
+      
+      this.index2 = this.index2 + 1;
+    })
+  }
   showInstaAccount() { // show and hide instaAccounts
-    console.log("show insta account")
     this.showOverlay = !this.showOverlay;
     this.forceUpdate();
   }
@@ -242,56 +288,76 @@ export default class HomeScreen extends React.Component {
             );
         }
     });
+    let accountList = this.state.valueArray2.map(( item, key ) =>
+    { console.log("ACCOUNTLIST : "+this.instaAccountsContent[key]+" ["+key+"]");
+      return(
+        // Icone suppression du compte instagram
+          <View key = { key } style = { styles.viewHolder }>
+            <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]) }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
+              <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+                <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 40, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
+                  {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
+                </View>
+              </View>
+            </TouchableOpacity>
+        
+            <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {  }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
+              <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+                <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
+                  {<Text>{this.instaAccountsContent[key]}</Text>}
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
+      );
+    });
     let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
     if(this.InstaAccountcount>0) {
-      accountIcon = <Ionicons name='md-person' size={46} color='#000' style={{}} />;
+      accountIcon = <Text>{this.InstaAccountList[0].user}</Text>;
     }
     return (
       <ScrollView>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
           { this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
-            <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}} onPress={ () => {this.showInstaAccount()}}>
-              { this.InstaAccountcount==0 && // PAS DE COMPTE, CREATION
-                <View style={{backgroundColor: '#fff', borderRadius: 10, position: 'absolute', top: 250, right: 50, left: 50, zIndex: 4}}>
-                  <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
-                  <TextInput
-                    style={ styles.textBox }
-                    placeholder="Login du compte"
-                    onChangeText={(text) => this.setState({text})}
-                    ref={this.logInput}
-                  />
-                  <TextInput
-                    style={ styles.textBox }
-                    placeholder="Mot de passe"
-                    underlineColorAndroid = "transparent"
-                    secureTextEntry = { this.state.hidePassword }
-                    onChangeText={(text) => this.setState({text})}
-                    ref={this.passInput}
-                  />
-                  <View style={{position: 'relative', alignSelf: 'stretch',}}>
-                    <Button onPress={ () => {this.addInstaAccount();}} title="AJOUTER CE COMPTE"/>
+            <TouchableWithoutFeedback onPress={ () => { this.addAccount=0; this.showInstaAccount(); }}>
+              <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
+                { ( this.InstaAccountcount==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
+                  <View style={{backgroundColor: '#fff', borderRadius: 10, position: 'absolute', top: 250, right: 50, left: 50, zIndex: 10}}>
+                    <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
+                    <TextInput
+                      style={ styles.textBox }
+                      placeholder="Login du compte"
+                      onChangeText={(text) => this.setState({text})}
+                      ref={this.logInput}
+                    />
+                    <TextInput
+                      style={ styles.textBox }
+                      placeholder="Mot de passe"
+                      underlineColorAndroid = "transparent"
+                      secureTextEntry = { this.state.hidePassword }
+                      onChangeText={(text) => this.setState({text})}
+                      ref={this.passInput}
+                    />
+                    <View style={{position: 'relative', alignSelf: 'stretch',}}>
+                      <Button onPress={ () => {this.addInstaAccount();}} title="AJOUTER CE COMPTE"/>
+                    </View>
                   </View>
-                </View>
-              }
-              {/* this.InstaAccountcount==1 && // PROPOSE CREATION COMPTE SUPPLEMENTAIRE
-                    <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {}} style={{zIndex: 3, position: 'absolute', top: 250}}>
+                }
+                { this.InstaAccountcount>0 && // PROPOSE CREATION COMPTE SUPPLEMENTAIRE et liste
+                  <View>
+                    {accountList}
+
+                    <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, position: 'absolute', top: (220+100*(this.InstaAccountcount-1)), width: '100%'}}>
                       <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                         <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
-                          <Ionicons name='md-add' size={46} color='#090' style={{}} />;
+                          {<Ionicons name='md-add' size={46} color='#090' style={{}} />}
                         </View>
                       </View>
                     </TouchableOpacity>
-              }
-              { this.InstaAccountcount>1 && // LISTE LES COMPTES
-                    <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {}} style={{zIndex: 3, position: 'absolute', top: 250}}>
-                      <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                        <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
-                          <Ionicons name='md-person' size={46} color='#090' style={{}} />;
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-              */}
-            </View>
+                  </View>
+                }
+              </View>
+            </TouchableWithoutFeedback>
           }
           <View style={styles.welcomeContainer}>
             <Image
@@ -302,7 +368,7 @@ export default class HomeScreen extends React.Component {
             />
           </View>
 
-          <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {this.showInstaAccount()}} style={{zIndex: 3}}>
+          <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {this.showInstaAccount(); this.addAccount = 0;}} style={{zIndex: 3}}>
             <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
               <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
                 { accountIcon }

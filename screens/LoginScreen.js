@@ -4,7 +4,7 @@ import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
-import { api, bearerToken, setToken } from '../api';
+import { api, setToken } from '../api';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
@@ -94,7 +94,7 @@ export default class LoginScreen extends React.Component {
         <Button onPress={ () => {this.login();}} title="SE CONNECTER"/>
       </View>
       <View style={{ alignSelf: 'stretch', marginLeft: -10, marginRight: -10}}>
-        <CheckBox title='Mémoriser les identifiants' style={{backgroundColor: '#fff'}} uncheckedIcon='circle-o' checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}/>
+        <CheckBox title='Mémoriser les identifiants' style={{backgroundColor: '#fff'}} checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}/>
       </View>
       <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }>
         <Text style={{color: '#66c', fontSize: 18, fontWeight: 'bold'}}>Créer un compte Jimee</Text>

@@ -1,19 +1,36 @@
 
-    const api = "http://62.210.72.103:8001/";  // URL DE L'API
+    export const api = "http://62.210.72.103:8001/";  // URL DE L'API
     let bearerToken = ""; // TOKEN POUR OAUTH2
-    let userID = 1; // UserID Connecté actuellement
-    let instaUserID = 1; // ID Compte instagram sélectionné de l'utilisateur connecté
+    let userID = ""; // UserID Connecté actuellement
+    let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
 
+    // SETTER
+    
     export function setToken(newValue) {
         bearerToken = newValue;
+        console.log("SET bearerToken TO : "+bearerToken);
     }
 
     export function setUserID(newValue) {
         userID = newValue;
+        console.log("SET userID TO : "+userID);
     }
 
-    export function setInstaUserID(newValue) {
-        instaUserID = newValue;
+    export function setUserInstaID(newValue) {
+        userInstaID = newValue;
+        console.log("SET userInstaID TO : "+userInstaID);
     }
 
-export { api, bearerToken, userID };
+    // GETTER
+
+    export function getToken() {
+        return bearerToken;
+    }
+
+    export function getUserID() {
+        return userID;
+    }
+
+    export function getUserInstaID() {
+        return userInstaID;
+    }
