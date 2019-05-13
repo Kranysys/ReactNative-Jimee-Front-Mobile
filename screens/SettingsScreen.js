@@ -12,7 +12,7 @@ export default class SettingsScreen extends React.Component {
     this.maxFollowings = 0;
     this.tagLikes = "-";
     this.tagComments = "-";
-    this.request(); // obtension des settings instagram
+    //this.request(); // obtension des settings instagram
   }
   request() {
     let command = "configFollow";

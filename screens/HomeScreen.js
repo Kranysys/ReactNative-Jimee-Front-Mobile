@@ -171,6 +171,10 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       }
     }).then((response) => response.json()).then((responseJson) => {
+      // On vide les variables
+      this.instaAccountsContent = []; this.instaAccountsContentID = []; this.state.valueArray = []; this.state.valueArray2 = [];
+      this.index2 = 0; this.index = 0;
+
       this.InstaAccountcount = Object.keys(responseJson).length;
       this.InstaAccountList = responseJson;
 
@@ -244,6 +248,7 @@ export default class HomeScreen extends React.Component {
     this.forceUpdate();
   }
   addMoreInstaAccount(userInsta, userInstaID) {
+    if(!userInsta || !userInstaID) return;
     console.log("ADDMOREINSTAACCOUNT "+userInsta+"/"+userInstaID+" ("+this.index2+")")
     this.instaAccountsContent[this.index2] = userInsta;
     this.instaAccountsContentID[this.index2] = userInstaID;
@@ -290,26 +295,28 @@ export default class HomeScreen extends React.Component {
     });
     let accountList = this.state.valueArray2.map(( item, key ) =>
     { console.log("ACCOUNTLIST : "+this.instaAccountsContent[key]+" ["+key+"]");
-      return(
-        // Icone suppression du compte instagram
-          <View key = { key } style = { styles.viewHolder }>
-            <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]) }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
-              <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 40, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
-                  {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
+      if(this.instaAccountsContentID[key] && this.instaAccountsContent[key]){
+        return(
+          // Icone suppression du compte instagram
+            <View key = { key } style = { styles.viewHolder }>
+              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]) }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
+                <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+                  <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 40, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
+                    {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-        
-            <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {  }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
-              <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
-                  {<Text>{this.instaAccountsContent[key]}</Text>}
+              </TouchableOpacity>
+          
+              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {  }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
+                <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+                  <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
+                    {<Text>{this.instaAccountsContent[key]}</Text>}
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-      );
+              </TouchableOpacity>
+            </View>
+        );
+      }
     });
     let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
     if(this.InstaAccountcount>0) {
@@ -327,7 +334,6 @@ export default class HomeScreen extends React.Component {
                     <TextInput
                       style={ styles.textBox }
                       placeholder="Login du compte"
-                      onChangeText={(text) => this.setState({text})}
                       ref={this.logInput}
                     />
                     <TextInput
@@ -335,7 +341,6 @@ export default class HomeScreen extends React.Component {
                       placeholder="Mot de passe"
                       underlineColorAndroid = "transparent"
                       secureTextEntry = { this.state.hidePassword }
-                      onChangeText={(text) => this.setState({text})}
                       ref={this.passInput}
                     />
                     <View style={{position: 'relative', alignSelf: 'stretch',}}>

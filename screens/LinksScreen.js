@@ -1,8 +1,8 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity, TouchableWithoutFeedback, TextInput, Button } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import { Ionicons } from '@expo/vector-icons';
-import { api, bearerToken, userInstaID } from '../api';
+import { api, getToken, getUserInstaID } from '../api';
 
 export default class LinksScreen extends React.Component {
   constructor(props){
@@ -17,17 +17,26 @@ export default class LinksScreen extends React.Component {
     this.state = { valueArray: [], valueArray2: [] };
     this.index = 0; this.index2 = 0;
     this.animatedValue = new Animated.Value(0);
+    this.showOverlay = 0; // affichage ajout tag
+    this.command = ""; // commande (tagLikes/tagComments)
+    this.tagInput = React.createRef();
+
+    console.log("TOKEN: "+getToken())
 
     this.request(); // obtension des settings instagram
   }
   request() {
-    let command = "configFollow&userInstaID="+userInstaID;
+    // On vide
+    this.state.valueArray = []; this.state.valueArray2 = []; this.liketagscontent = []; this.commenttagscontent = [];
+    this.index = 0; this.index2 = 0;
+
+    let command = "configFollow?userInstaID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+bearerToken,
+      'Authorization': 'Bearer '+getToken(),
       },
     }).then((response) => response.json()).then((responseJson) => {
       if(responseJson[0].min_follows>0) this.minFollowings = responseJson[0].min_follows;
@@ -39,13 +48,13 @@ export default class LinksScreen extends React.Component {
       console.log("ERROR "+command+" : "+error);
     });
 
-    command = "tagLikes&userInstaID="+userInstaID;
+    command = "tagLikes?userInstaID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+bearerToken,
+      'Authorization': 'Bearer '+getToken(),
       },
     }).then((response) => response.json()).then((responseJson) => {
       var count = Object.keys(responseJson).length;
@@ -59,15 +68,15 @@ export default class LinksScreen extends React.Component {
     });
 
     //this.index = 0;
-    command = "tagComments&userInstaID="+userInstaID;
+    command = "tagComments?userInstaID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+bearerToken,
+      'Authorization': 'Bearer '+getToken(),
       },
-    }).then((response) => response.json()).then((responseJson) => {
+    }).then(response => /*{console.log(response);}*/ response.json()).then((responseJson) => {
       var count = Object.keys(responseJson).length;
       //console.log("lenght "+count+"/"+responseJson[0].tag);
       if(count){this.tagComments="";}
@@ -75,7 +84,7 @@ export default class LinksScreen extends React.Component {
         this.addMoreTag(1,responseJson[i].tagcomments);
       }
     }).catch((error) =>{
-      Alert.alert("ERREUR",error+"\n\n-Activez le Wifi ou les données mobiles");
+      console.log("ERROR "+command+" : "+error);
     });
     //this.forceUpdate();
   }
@@ -132,15 +141,18 @@ deleteTag(type,id,tag){
           method: 'DELETE',
           headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+bearerToken,
+          'Authorization': 'Bearer '+getToken(),
           },
-          body : {
-            
-          }
+          body : JSON.stringify({
+            userInstaID: getUserInstaID(),
+            tag: tag,
+          })
         }).then((response) => response.json()).then((responseJson) => {
-          this.forceUpdate();
         }).catch((error) =>{
+          console.log("ERROR "+command+" : "+error);
         });
+        this.request();
+        this.forceUpdate();
       }      
       },
     ],
@@ -148,14 +160,34 @@ deleteTag(type,id,tag){
   );
 }
 addTag(type){
-  let command = "tagLikes";
-  if(type==1) command = "tagComments";
-  Alert.alert("comming..");
+  this.tagcommand = "tagLikes";
+  if(type==1) this.tagcommand = "tagComments";
+  this.showOverlay = 1;
+  this.forceUpdate();
 }
-  static navigationOptions = {
-    title: 'Mes profils',
-  };
-
+addTagRequest() {
+  console.log("request -> POST "+api+this.tagcommand);
+  fetch(api+this.tagcommand,  {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer '+getToken(),
+    },
+    body: JSON.stringify({
+      userInstaID: getUserInstaID(),
+      tag: this.tagInput.current._lastNativeText,
+    })
+  }).then((response) => response.json()).then((responseJson) => {
+  }).catch((error) =>{
+    console.log("ERROR "+command+" : "+error);
+  });
+  this.showOverlay = 0;
+  this.request();
+  this.forceUpdate();
+}
+static navigationOptions = {
+  title: 'Mes profils',
+};
   render() {
     const animationValue = this.animatedValue.interpolate(
       {
@@ -170,7 +202,7 @@ addTag(type){
                   <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                     <View style={{position: 'relative'}}>
                       <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>{ this.liketagscontent[item.index] } </Text>
-                      <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
+                      <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
                     </View>
                   </Animated.View>
               );
@@ -211,6 +243,23 @@ addTag(type){
     return (
       <ScrollView>
         <View style={styles.container}>
+          { this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
+            <TouchableWithoutFeedback onPress={ () => { this.showOverlay=0; this.forceUpdate(); }}>
+              <View style={{backgroundColor: '#fff', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
+                <View style={{backgroundColor: '#fff', borderRadius: 10, position: 'absolute', top: 150, right: 50, left: 50, zIndex: 10}}>
+                  <Text style={{fontSize: 17, padding: 3}}>Ajouter un tag ({this.tagcommand})</Text>
+                  <TextInput
+                    style={ styles.textBox }
+                    placeholder="Tag à ajouter"
+                    ref={this.tagInput}
+                  />
+                  <View style={{position: 'relative', alignSelf: 'stretch',}}>
+                    <Button onPress={ () => {this.addTagRequest();}} title="AJOUTER CE TAG"/>
+                  </View>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          }
           <View style={{marginBottom: 15}}>
             <Text>Minimum followers</Text>
             <Text style={{fontSize: 20}}>{this.minFollowers}</Text>
@@ -238,6 +287,19 @@ addTag(type){
 }
 
 const styles = StyleSheet.create({
+  textBox: {
+	  marginBottom: 6,
+    fontSize: 18,
+    alignSelf: 'stretch',
+    height: 35,
+    padding: 4,
+    margin: 5,
+    borderWidth: 1,
+    paddingVertical: 0,
+    borderColor: 'grey',
+    borderRadius: 5,
+    backgroundColor: '#fff'
+  },
   container: {
     flex: 1,
     paddingTop: 15,
