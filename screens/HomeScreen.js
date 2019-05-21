@@ -127,6 +127,7 @@ export default class HomeScreen extends React.Component {
       }
     }).then((response) => response.json()).then((responseJson) => {
       let logscount = Object.keys(responseJson).length;
+      console.log("LOGS COUNT "+logscount);
       if(logscount > 0){
         for(var i=0;i<10 && i < logscount;i++) {
           
@@ -307,7 +308,7 @@ export default class HomeScreen extends React.Component {
                 </View>
               </TouchableOpacity>
           
-              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {  }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
+              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => { this.changeActiveInstaAccount(key); }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
                     {<Text>{this.instaAccountsContent[key]}</Text>}
