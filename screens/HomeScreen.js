@@ -117,7 +117,7 @@ export default class HomeScreen extends React.Component {
     });
   }
   getLogs() {
-    var command = "userlogs?instaUserID="+getUserInstaID();
+    var command = "userlogs?userInstaID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -127,7 +127,8 @@ export default class HomeScreen extends React.Component {
       }
     }).then((response) => response.json()).then((responseJson) => {
       let logscount = Object.keys(responseJson).length;
-      console.log("LOGS COUNT "+logscount);
+      console.log("Nombre de logs : "+logscount);
+      console.log(JSON.stringify(responseJson));
       if(logscount > 0){
         for(var i=0;i<10 && i < logscount;i++) {
           
@@ -266,6 +267,9 @@ export default class HomeScreen extends React.Component {
     this.showOverlay = !this.showOverlay;
     this.forceUpdate();
   }
+  changeActiveInstaAccount(key) {
+
+  }
   static navigationOptions = {
     header: null,
   };
@@ -300,7 +304,7 @@ export default class HomeScreen extends React.Component {
         return(
           // Icone suppression du compte instagram
             <View key = { key } style = { styles.viewHolder }>
-              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]) }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
+              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 40, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
                     {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
