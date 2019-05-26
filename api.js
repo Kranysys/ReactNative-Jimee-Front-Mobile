@@ -3,6 +3,7 @@
     let bearerToken = ""; // TOKEN POUR OAUTH2
     let userID = ""; // UserID Connecté actuellement
     let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
+    let userInsta = ""; // Compte instagramm sélectionné de l'utilisateur connecté
 
     // SETTER
     
@@ -16,9 +17,10 @@
         console.log("SET userID TO : "+userID);
     }
 
-    export function setUserInstaID(newValue) {
-        userInstaID = newValue;
-        console.log("SET userInstaID TO : "+userInstaID);
+    export function setUserInsta(userID, user) {
+        userInstaID = userID;
+        userInsta = user;
+        console.log("SET userInstaID TO : "+userInstaID+" and userInsta TO : "+userInsta);
     }
 
     // GETTER
@@ -33,4 +35,8 @@
 
     export function getUserInstaID() {
         return userInstaID;
+    }
+
+    export function getUserInsta() {
+        return userInsta;
     }
