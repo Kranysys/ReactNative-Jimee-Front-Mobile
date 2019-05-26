@@ -1,9 +1,10 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, Alert, Animated, TextInput } from 'react-native';
-import { WebBrowser } from 'expo';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
+TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid } from 'react-native';
+//import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
-import { MonoText } from '../components/StyledText';
+//import { MonoText } from '../components/StyledText';
 import { api, getToken, getUserID, setUserID, getUserInstaID, setUserInstaID } from '../api';
 
 export default class HomeScreen extends React.Component {
@@ -36,6 +37,9 @@ export default class HomeScreen extends React.Component {
     this.logInput = React.createRef();
     this.passInput = React.createRef();
     this.addAccount = 0;
+
+    this.valider = React.createRef();
+    this.boost = React.createRef();
   }
   getID() {
     var command = "users?token="+getToken();
@@ -97,6 +101,8 @@ export default class HomeScreen extends React.Component {
     });
   }
   updateCheck() {
+    this.valider.disabled=1;
+    this.boost.disabled=1;
     var command = "configUserInsta";
     console.log("request -> POST "+api+command);
     fetch(api+command,  {
@@ -110,8 +116,19 @@ export default class HomeScreen extends React.Component {
         unfollows: Number(this.unfollowChecked),
         comments: Number(this.commentsChecked),
         likes: Number(this.likesChecked),
+        userInstaID: getUserInstaID(),
       })
     }).then((response) => response.json()).then((responseJson) => {
+      if(responseJson){
+        console.log("Réponse du processus python:");
+        console.log(responseJson);
+        if( responseJson.body == "Okay")
+        {  
+          ToastAndroid.show("Processus lancé avec succès !",ToastAndroid.LONG);
+        } else {
+          ToastAndroid.show("Erreur, le processus ne s'est pas lancé.",ToastAndroid.LONG);
+        }
+      }
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
@@ -131,16 +148,21 @@ export default class HomeScreen extends React.Component {
       console.log(JSON.stringify(responseJson));
       if(logscount > 0){
         for(var i=0;i<10 && i < logscount;i++) {
-          
           if(responseJson[i].id>0){
             console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
             this.addMoreLog(responseJson[i].user+" : "+responseJson[i].type);
           }
         }
+      } else {
+        ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
       }
+      setTimeout(() => { this.getLogs() }, 10000);
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
+  }
+  timeout(){
+    console.log("timeout:"+Date.now());
   }
   addMoreLog(contenu) {
     this.animatedValue.setValue(0);
@@ -402,19 +424,23 @@ export default class HomeScreen extends React.Component {
             <CheckBox center title='Commentaires' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.commentsChecked} onPress={ () => {this.commentsChecked=!this.commentsChecked;this.forceUpdate();}}/>
             <CheckBox center title='Follow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.followChecked} onPress={ () => {this.followChecked=!this.followChecked;this.forceUpdate();}}/>
             <CheckBox center title='Unfollow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.unfollowChecked} onPress={ () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}}/>
-            <TouchableOpacity activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
               <Ionicons name='md-checkmark' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> VALIDER </Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog();/*this.updateCheck();*/ } }>
+            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog();/*this.updateCheck();*/ } }>
               <Ionicons name='md-jet' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> BOOST </Text>
             </TouchableOpacity>
           </View>
-          <Text>Historique des actions</Text>
-          <View style={{zIndex: 1,}}>
-            {rows}
+          { this.logscount &&
+          <View>
+            <Text>Historique des actions</Text>
+            <View style={{zIndex: 1,}}>
+              {rows}
+            </View>
           </View>
+          }
         </View>
       </ScrollView>
     );
