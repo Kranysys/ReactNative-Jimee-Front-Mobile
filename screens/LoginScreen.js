@@ -74,6 +74,7 @@ export default class LoginScreen extends React.Component {
       <TextInput
           style={ styles.textBox }
           placeholder="Identifiant"
+          autoCapitalize = 'none'
           onChangeText={(text) => this.setState({text})}
           ref={this.logInput}
       />
@@ -81,6 +82,7 @@ export default class LoginScreen extends React.Component {
         <TextInput
           style={ styles.textBox }
           placeholder="Mot de passe"
+          autoCapitalize = 'none'
           underlineColorAndroid = "transparent"
           secureTextEntry = { this.state.hidePassword }
           onChangeText={(text) => this.setState({text})}

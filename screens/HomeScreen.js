@@ -1,10 +1,12 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View, Alert, Animated, TextInput } from 'react-native';
-import { WebBrowser } from 'expo';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
+TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid,
+AsyncStorage } from 'react-native';
+//import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
-import { MonoText } from '../components/StyledText';
-import { api, getToken, getUserID, setUserID, getUserInstaID, setUserInstaID } from '../api';
+//import { MonoText } from '../components/StyledText';
+import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta } from '../api';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -36,6 +38,11 @@ export default class HomeScreen extends React.Component {
     this.logInput = React.createRef();
     this.passInput = React.createRef();
     this.addAccount = 0;
+
+    this.valider = React.createRef();
+    this.boost = React.createRef();
+
+    this.logscount = -1;
   }
   getID() {
     var command = "users?token="+getToken();
@@ -97,6 +104,8 @@ export default class HomeScreen extends React.Component {
     });
   }
   updateCheck() {
+    this.valider.disabled=1;
+    this.boost.disabled=1;
     var command = "configUserInsta";
     console.log("request -> POST "+api+command);
     fetch(api+command,  {
@@ -110,14 +119,27 @@ export default class HomeScreen extends React.Component {
         unfollows: Number(this.unfollowChecked),
         comments: Number(this.commentsChecked),
         likes: Number(this.likesChecked),
+        userInstaID: getUserInstaID(),
       })
     }).then((response) => response.json()).then((responseJson) => {
+      if(responseJson){
+        console.log("Réponse du processus python:");
+        console.log(responseJson);
+        if( responseJson.body == "Okay")
+        {  
+          ToastAndroid.show("Processus lancé avec succès !",ToastAndroid.LONG);
+        } else {
+          ToastAndroid.show("Erreur, le processus ne s'est pas lancé.",ToastAndroid.LONG);
+        }
+      }
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
   }
   getLogs() {
-    var command = "userlogs?instaUserID="+getUserInstaID();
+    this.logcontent = [];
+    this.state.valueArray = [];
+    var command = "userlogs?userInstaID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -126,16 +148,21 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       }
     }).then((response) => response.json()).then((responseJson) => {
-      let logscount = Object.keys(responseJson).length;
-      if(logscount > 0){
-        for(var i=0;i<10 && i < logscount;i++) {
-          
+      this.logscount = Object.keys(responseJson).length;
+      console.log("Nombre de logs : "+this.logscount);
+      console.log(JSON.stringify(responseJson));
+      if(this.logscount > 0){
+        for(var i=0;i<10 && i < this.logscount;i++) {
           if(responseJson[i].id>0){
             console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
             this.addMoreLog(responseJson[i].user+" : "+responseJson[i].type);
           }
         }
+      } else {
+        this.forceUpdate();
+        ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
       }
+      setTimeout(() => { this.getLogs() }, 12000); // Logs toutes les 12s
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
@@ -161,6 +188,29 @@ export default class HomeScreen extends React.Component {
         }); 
     });
   }
+  async _FetchInstaAccount() {
+    console.log("Fetching ActiveInstaAccount...")
+    try {
+      const value = await AsyncStorage.getItem('ActiveInstaAccount:'+getUserID());
+      if (value !== null) {
+        console.log("Récupération de ActiveInstaAccount : ");
+        console.log(value);
+        return value;
+      } else console.log("Pas de ActiveInstaAccount.");
+    } catch (error) {
+      console.log("Error fetching:"+error);
+    }
+  };
+  async _storeInstaAccount(key) {
+    console.log("Saving ActiveInstaAccount...")
+    try {
+      await AsyncStorage.setItem('ActiveInstaAccount:'+getUserID(),key+'');
+      this.showInstaAccount();
+      this.getInstaAccounts();
+    } catch (error) {
+      console.log("Error storing:"+error);
+    }
+  };
   getInstaAccounts() {
     var command = "instaAccounts?userID="+getUserID();
     console.log("request -> GET "+api+command);
@@ -183,16 +233,34 @@ export default class HomeScreen extends React.Component {
       if(!this.InstaAccountcount){
         console.log("NO INSTA ACCOUNT");
       } 
-      for(var i=0;i<(this.InstaAccountcount);i++) {
-        console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
-        if(i==0) setUserInstaID(this.InstaAccountList[i].instauser_id);
-        if(i>=1){
-          this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
-        } 
-      }
-      if(this.InstaAccountcount) {
-        this.getLogs(); // Affichage des logs
-        this.forceUpdate(); // met à jour l'affichage des comptes
+      else
+      {
+        this._FetchInstaAccount().then((val) => { // Compte actuel sauvegardé
+          console.log("InstaAccount fetched : "+val);
+          if(val){ // val -> active userInstaID
+            for(var i=0;i<(this.InstaAccountcount);i++) {
+              console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
+              if(this.InstaAccountList[i].instauser_id == val){
+                setUserInsta(this.InstaAccountList[i].instauser_id,this.InstaAccountList[i].user);
+              }
+              else {
+                this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
+              }
+            }    
+          } else { // 1er compte actif par défaut
+            for(var i=0;i<(this.InstaAccountcount);i++) {
+              console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
+              if(i==0) setUserInsta(this.InstaAccountList[i].instauser_id,this.InstaAccountList[i].user);
+              if(i>=1){
+                this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
+              } 
+            }     
+          }
+          if(this.InstaAccountcount>0 && this.logscount<=0) {
+            this.getLogs(); // Affichage des logs
+            this.forceUpdate(); // met à jour l'affichage des comptes
+          }
+        }); 
       }
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
@@ -247,6 +315,16 @@ export default class HomeScreen extends React.Component {
     this.getInstaAccounts();
     this.forceUpdate();
   }
+  getUserInstaFromID(userInstaID){
+    for(var i = 0;i<=this.InstaAccountcount;i++){
+      console.log(i+":"+this.instaAccountsContentID[i]+" = "+userInstaID+" ?")
+      if( this.instaAccountsContentID[i] == userInstaID )
+      {
+        console.log("yes!");
+        return this.instaAccountsContent[i];
+      }
+    }
+  }
   addMoreInstaAccount(userInsta, userInstaID) {
     if(!userInsta || !userInstaID) return;
     console.log("ADDMOREINSTAACCOUNT "+userInsta+"/"+userInstaID+" ("+this.index2+")")
@@ -257,7 +335,6 @@ export default class HomeScreen extends React.Component {
 
     this.setState({ valueArray2: [ ...this.state.valueArray2, newlyAddedValue ] }, () =>
     {
-      
       this.index2 = this.index2 + 1;
     })
   }
@@ -299,7 +376,7 @@ export default class HomeScreen extends React.Component {
         return(
           // Icone suppression du compte instagram
             <View key = { key } style = { styles.viewHolder }>
-              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]) }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
+              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 40, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
                     {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
@@ -307,7 +384,7 @@ export default class HomeScreen extends React.Component {
                 </View>
               </TouchableOpacity>
           
-              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {  }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
+              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
                     {<Text>{this.instaAccountsContent[key]}</Text>}
@@ -320,7 +397,7 @@ export default class HomeScreen extends React.Component {
     });
     let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
     if(this.InstaAccountcount>0) {
-      accountIcon = <Text>{this.InstaAccountList[0].user}</Text>;
+      accountIcon = <Text>{getUserInsta()}</Text>;
     }
     return (
       <ScrollView>
@@ -397,19 +474,28 @@ export default class HomeScreen extends React.Component {
             <CheckBox center title='Commentaires' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.commentsChecked} onPress={ () => {this.commentsChecked=!this.commentsChecked;this.forceUpdate();}}/>
             <CheckBox center title='Follow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.followChecked} onPress={ () => {this.followChecked=!this.followChecked;this.forceUpdate();}}/>
             <CheckBox center title='Unfollow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.unfollowChecked} onPress={ () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}}/>
-            <TouchableOpacity activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
               <Ionicons name='md-checkmark' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> VALIDER </Text>
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog();/*this.updateCheck();*/ } }>
+            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog();/*this.updateCheck();*/ } }>
               <Ionicons name='md-jet' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> BOOST </Text>
             </TouchableOpacity>
           </View>
-          <Text>Historique des actions</Text>
-          <View style={{zIndex: 1,}}>
-            {rows}
-          </View>
+          { this.logscount==-1 &&
+            <View>
+              <Text>Récupération de l'historique des actions...</Text>
+            </View>
+          }
+          { this.logscount>0 &&
+            <View>
+              <Text>Historique des actions (Dernière mise à jour : {Date()})</Text>
+              <View style={{zIndex: 1}}>
+                {rows}
+              </View>
+            </View>
+          }
         </View>
       </ScrollView>
     );
