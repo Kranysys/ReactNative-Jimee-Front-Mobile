@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, AsyncStorage } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
@@ -13,29 +13,77 @@ export default class LoginScreen extends React.Component {
     this.saveChecked = true;
     this.logInput = React.createRef();
     this.passInput = React.createRef();
+    this.rememberMe = React.createRef();
+    this.savedLogin = "";
+    this.savedPass = "";
+
+    this._FetchRememberMe();
   }
   managePasswordVisibility = () =>
   {
     this.setState({ hidePassword: !this.state.hidePassword });
   }
+  async _FetchRememberMe() { // Récupération des informations de login si RememberMe est checked
+    console.log("Fetching RememberMe...")
+    try {
+      const value = await AsyncStorage.getItem('RememberMe:');
+      if (value !== null) {
+        if(value.split(",")[0] == "" || value.split(",")[0] == undefined || value.split(",")[0] == "undefined" || value.split(",")[1] == "undefined" || value.split(",")[1] == "" || value.split(",")[1] == undefined){
+          if(value.split(",")[2] == 0){
+            this.saveChecked = 0; 
+            this.forceUpdate(); 
+          }
+        }
+        else {
+          console.log("active account is "+value);
+          var pieces = value.split(","); 
+          //return string(pieces[field]);
+          this.savedLogin = pieces[0]+""; console.log("set savedLogin to "+pieces[0]+" / "+pieces[1]+" / "+pieces[2])
+          this.logInput.current._lastNativeText = pieces[0]+"";
+          this.savedPass = pieces[1]+"";
+          this.passInput.current._lastNativeText = pieces[1]+"";
+          this.saveChecked = pieces[2]; 
+          this.forceUpdate(); 
+          //return value;
+        }
+      } else console.log("Pas de ActiveInstaAccount.");
+    } catch (error) {
+      console.log("Error fetching:"+error);
+    } 
+  };
+  async _storeRememberMe(key) { // Sauvegarde des informations de login si RememberMe est checked
+    console.log("Saving RememberMe...")
+    try {
+      await AsyncStorage.setItem('RememberMe:',key+'');
+    } catch (error) {
+      console.log("Error storing:"+error);
+    }
+  };
   login() {
     let command = "auth/login";
     console.log("POST "+api+command);
+
     var details = {
       'username': this.logInput.current._lastNativeText,
       'password': this.passInput.current._lastNativeText,
       'grant_type': 'password',
       'client_id': 'null',
       'client_secret': 'null'
-  };
+    };
+
+    if( this.rememberMe.current.props.checked == true ){
+      this._storeRememberMe(this.logInput.current._lastNativeText+","+this.passInput.current._lastNativeText+",1");
+    } else {
+      this._storeRememberMe(",,0");
+    }
   
-  var formBody = [];
-  for (var property in details) {
-    var encodedKey = encodeURIComponent(property);
-    var encodedValue = encodeURIComponent(details[property]);
-    formBody.push(encodedKey + "=" + encodedValue);
-  }
-  formBody = formBody.join("&");
+    var formBody = [];
+    for (var property in details) { 
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
     fetch(api+command, {
 		  method: 'POST',
 		  headers: {
@@ -64,7 +112,7 @@ export default class LoginScreen extends React.Component {
   };
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20, paddingBottom: 100 }}>
       <Image
         source={
           require('../assets/images/logo-large.png')
@@ -76,6 +124,7 @@ export default class LoginScreen extends React.Component {
           placeholder="Identifiant"
           autoCapitalize = 'none'
           onChangeText={(text) => this.setState({text})}
+          defaultValue={this.savedLogin}
           ref={this.logInput}
       />
       <View style = { styles.textBoxBtnHolder }>
@@ -86,6 +135,7 @@ export default class LoginScreen extends React.Component {
           underlineColorAndroid = "transparent"
           secureTextEntry = { this.state.hidePassword }
           onChangeText={(text) => this.setState({text})}
+          defaultValue={this.savedPass}
           ref={this.passInput}
         />
         <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6}} onPress = { this.managePasswordVisibility }>
@@ -96,7 +146,7 @@ export default class LoginScreen extends React.Component {
         <Button onPress={ () => {this.login();}} title="SE CONNECTER"/>
       </View>
       <View style={{ alignSelf: 'stretch', marginLeft: -10, marginRight: -10}}>
-        <CheckBox title='Mémoriser les identifiants' style={{backgroundColor: '#fff'}} checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}/>
+        <CheckBox title='Mémoriser les identifiants' style={{backgroundColor: '#fff'}} checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} ref={this.rememberMe}/>
       </View>
       <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }>
         <Text style={{color: '#66c', fontSize: 18, fontWeight: 'bold'}}>Créer un compte Jimee</Text>

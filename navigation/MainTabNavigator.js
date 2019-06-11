@@ -6,21 +6,18 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: 'Tableau de bord',
+  tabBarLabel: 'Accueil',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
+      name={'ios-home'}
     />
   ),
 };
@@ -30,25 +27,53 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Mes profils',
+  tabBarLabel: 'Config',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+      name={'md-people'}
     />
   ),
 };
 
-const SettingsStack = createStackNavigator({
+const StatsStack = createStackNavigator({
   Settings: SettingsScreen,
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Paramètres',
+StatsStack.navigationOptions = {
+  tabBarLabel: 'Stats',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+      name={'ios-pie'}
+    /> 
+  ),
+};
+
+const MissionsStack = createStackNavigator({
+  Settings: SettingsScreen,
+});
+
+MissionsStack.navigationOptions = {
+  tabBarLabel: 'Missions',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={'md-flag'}
+    />
+  ),
+};
+
+const ActivityStack = createStackNavigator({
+  Settings: SettingsScreen,
+});
+
+ActivityStack.navigationOptions = {
+  tabBarLabel: 'Activité',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={'md-megaphone'}
     />
   ),
 };
@@ -56,5 +81,7 @@ SettingsStack.navigationOptions = {
 export default createBottomTabNavigator({
   HomeStack,
   LinksStack,
-  SettingsStack,
+  StatsStack,
+  MissionsStack,
+  ActivityStack
 });
