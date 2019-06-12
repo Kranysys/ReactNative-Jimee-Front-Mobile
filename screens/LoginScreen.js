@@ -42,7 +42,7 @@ export default class LoginScreen extends React.Component {
           this.logInput.current._lastNativeText = pieces[0]+"";
           this.savedPass = pieces[1]+"";
           this.passInput.current._lastNativeText = pieces[1]+"";
-          this.saveChecked = pieces[2]; 
+          this.saveChecked = (pieces[2])-0; 
           this.forceUpdate(); 
           //return value;
         }
@@ -112,7 +112,7 @@ export default class LoginScreen extends React.Component {
   };
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20, paddingBottom: 100 }}>
+      <View style={styles.loginBackground}>
       <Image
         source={
           require('../assets/images/logo-large.png')
@@ -142,14 +142,17 @@ export default class LoginScreen extends React.Component {
           <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
         </TouchableOpacity>
       </View>
-      <View style={{position: 'relative', alignSelf: 'stretch',}}>
-        <Button onPress={ () => {this.login();}} title="SE CONNECTER"/>
-      </View>
+      {/*<View style={{position: 'relative', alignSelf: 'stretch'}}>
+        <Button onPress={ () => {this.login();}} title="Se connecter" style={{color: '#000'}}/>
+      </View>*/}
+      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton } onPress = { () => { this.login(); } }>
+        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> BOOST </Text>
+      </TouchableOpacity>
       <View style={{ alignSelf: 'stretch', marginLeft: -10, marginRight: -10}}>
         <CheckBox title='Mémoriser les identifiants' style={{backgroundColor: '#fff'}} checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} ref={this.rememberMe}/>
       </View>
       <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }>
-        <Text style={{color: '#66c', fontSize: 18, fontWeight: 'bold'}}>Créer un compte Jimee</Text>
+        <Text style={styles.register}>Créer un compte Jimee</Text>
       </TouchableOpacity>
     </View>
     );
@@ -157,24 +160,13 @@ export default class LoginScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
+  loginBackground: {
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    padding: 20, 
+    paddingBottom: 100, 
+    backgroundColor: '#3400B1',
   },
   welcomeImage: {
     width: 100,
@@ -232,10 +224,6 @@ const styles = StyleSheet.create({
   navigationFilename: {
     marginTop: 5,
   },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
   helpLink: {
     paddingVertical: 15,
   },
@@ -272,8 +260,19 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     borderWidth: 1,
     paddingVertical: 0,
-    borderColor: 'grey',
-    borderRadius: 5
+    backgroundColor: '#fff',
+    borderColor: '#fff',
+    borderRadius: 35,
+    color: '#3800bf',
+    paddingLeft: 25, 
+    paddingBottom: 5,
+  },
+  loginButton: {
+    fontSize: 25,
+    borderRadius: 35,
+    color: '#fff',
+    borderColor: '#fff',
+    backgroundColor: '#3800bf',
   },
   picker: {
     marginLeft: 20,
@@ -293,10 +292,6 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignSelf: 'stretch',
     justifyContent: 'center'
-  },
-  container: {
-    paddingTop: 60,
-    alignItems: 'center'
   },
   button: {
     marginLeft: 20,
@@ -322,5 +317,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     height: '100%',
     width: '100%'
+  },
+  register:
+  {
+    color: '#66c', 
+    fontSize: 18, 
+    fontWeight: 'bold',
+    color: '#fff',
   }
 });
