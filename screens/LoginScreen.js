@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, AsyncStorage } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, AsyncStorage, Font } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
@@ -42,7 +42,7 @@ export default class LoginScreen extends React.Component {
           this.logInput.current._lastNativeText = pieces[0]+"";
           this.savedPass = pieces[1]+"";
           this.passInput.current._lastNativeText = pieces[1]+"";
-          this.saveChecked = (pieces[2])-0; 
+          this.saveChecked = Boolean(pieces[2]); 
           this.forceUpdate(); 
           //return value;
         }
@@ -113,12 +113,14 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.loginBackground}>
-      <Image
+      {/*<Image
         source={
           require('../assets/images/logo-large.png')
         }
         style={styles.welcomeImage}
-      />
+      />*/}
+      <Text style={styles.welcomeText}>Jimee</Text>
+      <Text style={{ textAlign: 'center', color: '#fff', fontSize: 22, marginTop: -20, marginBottom: 40 }}>mon Coach social</Text>
       <TextInput
           style={ styles.textBox }
           placeholder="Identifiant"
@@ -138,19 +140,17 @@ export default class LoginScreen extends React.Component {
           defaultValue={this.savedPass}
           ref={this.passInput}
         />
-        <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6}} onPress = { this.managePasswordVisibility }>
+        <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6, top: 9, }} onPress = { this.managePasswordVisibility }>
           <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
         </TouchableOpacity>
       </View>
       {/*<View style={{position: 'relative', alignSelf: 'stretch'}}>
         <Button onPress={ () => {this.login();}} title="Se connecter" style={{color: '#000'}}/>
       </View>*/}
-      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton } onPress = { () => { this.login(); } }>
-        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> BOOST </Text>
+      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.login(); } }>
+        <Text style={{color: '#fff', fontSize: 18}}> Se connecter </Text>
       </TouchableOpacity>
-      <View style={{ alignSelf: 'stretch', marginLeft: -10, marginRight: -10}}>
-        <CheckBox title='Mémoriser les identifiants' style={{backgroundColor: '#fff'}} checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} ref={this.rememberMe}/>
-      </View>
+      <CheckBox checkedColor='#3400B1' title='Mémoriser les identifiants' checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} ref={this.rememberMe}/>
       <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }>
         <Text style={styles.register}>Créer un compte Jimee</Text>
       </TouchableOpacity>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: "center", 
     alignItems: "center", 
     padding: 20, 
-    paddingBottom: 100, 
+    paddingBottom: '20%', 
     backgroundColor: '#3400B1',
   },
   welcomeImage: {
@@ -174,6 +174,18 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginTop: 3,
     marginLeft: -10,
+  },
+  welcomeText: {
+    fontSize: 90,
+    fontFamily: 'Roboto',
+    //resizeMode: 'contain',
+    letterSpacing: -6,
+    //borderWidth: 1,
+    borderColor: '#f00',
+    fontWeight: 'bold',
+    marginTop: 3,
+    //marginLeft: -10,
+    color: '#fff'
   },
   getStartedContainer: {
     alignItems: 'center',
@@ -244,8 +256,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 3,
     height: 40,
-    width: 35,
-    padding: 5
+    width: 35
   },
   buttonText: {
     padding: 20,
@@ -265,14 +276,19 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     color: '#3800bf',
     paddingLeft: 25, 
-    paddingBottom: 5,
+    marginBottom: 21,
   },
   loginButton: {
-    fontSize: 25,
-    borderRadius: 35,
-    color: '#fff',
-    borderColor: '#fff',
-    backgroundColor: '#3800bf',
+    borderColor: '#fff', 
+    borderRadius: 35, 
+    backgroundColor: '#3800bf', 
+    borderWidth: 1, 
+    height: 45, 
+    textAlign: 'center', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    alignSelf: 'stretch',
+    marginBottom: 18,
   },
   picker: {
     marginLeft: 20,
