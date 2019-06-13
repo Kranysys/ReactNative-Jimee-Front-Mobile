@@ -23,6 +23,13 @@
         console.log("SET userInstaID TO : "+userInstaID+" and userInsta TO : "+userInsta);
     }
 
+    export function clearAll() {
+        bearerToken = "";
+        userID = "";
+        userInsta = "";
+        userInstaID = "";
+    }
+
     // GETTER
 
     export function getToken() {

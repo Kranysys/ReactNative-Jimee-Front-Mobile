@@ -1,14 +1,18 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, AsyncStorage, Font } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, AsyncStorage, Font, Dimensions } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
-import { api, setToken } from '../api';
+import { api, setToken, clearAll } from '../api';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
     super(props);
+    console.log("w"+Dimensions.get('window').width)
+
+    clearAll();
+
     this.state = { hidePassword: true, showPassword: false };
     this.saveChecked = true;
     this.logInput = React.createRef();
@@ -120,7 +124,7 @@ export default class LoginScreen extends React.Component {
         style={styles.welcomeImage}
       />*/}
       <Text style={styles.welcomeText}>Jimee</Text>
-      <Text style={{ textAlign: 'center', color: '#fff', fontSize: 22, marginTop: -20, marginBottom: 40 }}>mon Coach social</Text>
+      <Text style={styles.smallWelcomeText}>mon Coach social</Text>
       <TextInput
           style={ styles.textBox }
           placeholder="Identifiant"
@@ -144,9 +148,6 @@ export default class LoginScreen extends React.Component {
           <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
         </TouchableOpacity>
       </View>
-      {/*<View style={{position: 'relative', alignSelf: 'stretch'}}>
-        <Button onPress={ () => {this.login();}} title="Se connecter" style={{color: '#000'}}/>
-      </View>*/}
       <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.login(); } }>
         <Text style={{color: '#fff', fontSize: 18}}> Se connecter </Text>
       </TouchableOpacity>
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: "center", 
     alignItems: "center", 
-    padding: 20, 
+    padding: '10%', 
     paddingBottom: '20%', 
     backgroundColor: '#3400B1',
   },
@@ -176,16 +177,23 @@ const styles = StyleSheet.create({
     marginLeft: -10,
   },
   welcomeText: {
-    fontSize: 90,
+    fontSize: (Dimensions.get('window').width / 3),
     fontFamily: 'Roboto',
     //resizeMode: 'contain',
-    letterSpacing: -6,
+    letterSpacing: -9,
     //borderWidth: 1,
     borderColor: '#f00',
     fontWeight: 'bold',
     marginTop: 3,
     //marginLeft: -10,
     color: '#fff'
+  },
+  smallWelcomeText: { 
+    textAlign: 'center', 
+    color: '#fff', 
+    fontSize: (Dimensions.get('window').width / 16), 
+    marginTop: -10, 
+    marginBottom: 40 
   },
   getStartedContainer: {
     alignItems: 'center',

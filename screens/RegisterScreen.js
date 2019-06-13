@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, Dimensions } from 'react-native';
 import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button, registerCustomIconType } from 'react-native-elements';
@@ -74,8 +74,9 @@ export default class LoginScreen extends React.Component {
 */
   render() {
     return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", padding: 20 }}>
-      <Text style={{marginBottom: 20, fontSize: 23}}>Inscription à Jimee</Text>
+    <View style={styles.loginBackground}>
+      <Text style={styles.welcomeText}>Jimee</Text>
+      <Text style={styles.smallWelcomeText}>mon Coach social</Text>
       <TextInput
           style={ styles.textBox }
           placeholder="Identifiant"
@@ -91,19 +92,52 @@ export default class LoginScreen extends React.Component {
           onChangeText={(text) => this.setState({text})}
           ref={this.passInput}
         />
-        <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6}} onPress = { this.managePasswordVisibility }>
+        <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6, top: 9, }} onPress = { this.managePasswordVisibility }>
           <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
         </TouchableOpacity>
       </View>
-      <View style={{position: 'relative', alignSelf: 'stretch',}}>
+      {/*<View style={{position: 'relative', alignSelf: 'stretch',}}>
         <Button onPress={() => {this.register(); this.props.navigation.navigate('Auth');}} title="INSCRIPTION"/>
-      </View>
+      </View>*/}
+      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.register(); } }>
+        <Text style={{color: '#fff', fontSize: 18}}> S'inscire </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Auth');} }>
+        <Text style={styles.login}>Se connecter à un compte Jimee</Text>
+      </TouchableOpacity>
     </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  loginBackground: {
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    padding: '10%', 
+    paddingBottom: '20%', 
+    backgroundColor: '#3400B1',
+  },
+  welcomeText: {
+    fontSize: (Dimensions.get('window').width / 3),
+    fontFamily: 'Roboto',
+    //resizeMode: 'contain',
+    letterSpacing: -9,
+    //borderWidth: 1,
+    borderColor: '#f00',
+    fontWeight: 'bold',
+    marginTop: 3,
+    //marginLeft: -10,
+    color: '#fff'
+  },
+  smallWelcomeText: { 
+    textAlign: 'center', 
+    color: '#fff', 
+    fontSize: (Dimensions.get('window').width / 16), 
+    marginTop: -10, 
+    marginBottom: 40 
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -203,8 +237,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 3,
     height: 40,
-    width: 35,
-    padding: 5
+    width: 35
   },
   buttonText: {
     padding: 20,
@@ -219,8 +252,24 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     borderWidth: 1,
     paddingVertical: 0,
-    borderColor: 'grey',
-    borderRadius: 5
+    backgroundColor: '#fff',
+    borderColor: '#fff',
+    borderRadius: 35,
+    color: '#3800bf',
+    paddingLeft: 25, 
+    marginBottom: 21,
+  },
+  loginButton: {
+    borderColor: '#fff', 
+    borderRadius: 35, 
+    backgroundColor: '#3800bf', 
+    borderWidth: 1, 
+    height: 45, 
+    textAlign: 'center', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    alignSelf: 'stretch',
+    marginBottom: 18,
   },
   picker: {
     marginLeft: 20,
@@ -269,5 +318,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     height: '100%',
     width: '100%'
-  }
+  },
+  login:
+  {
+    color: '#66c', 
+    fontSize: 18, 
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });

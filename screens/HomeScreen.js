@@ -82,8 +82,7 @@ export default class HomeScreen extends React.Component {
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
-
-    
+ 
     command = "configUserInsta?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
@@ -137,6 +136,7 @@ export default class HomeScreen extends React.Component {
     });
   }
   getLogs() {
+    if(!getToken()) return;
     this.logcontent = [];
     this.state.valueArray = [];
     var command = "userlogs?userInstaID="+getUserInstaID();
