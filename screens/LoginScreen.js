@@ -20,6 +20,7 @@ export default class LoginScreen extends React.Component {
     this.rememberMe = React.createRef();
     this.savedLogin = "";
     this.savedPass = "";
+    this.loading = 0;
 
     this._FetchRememberMe();
   }
@@ -101,7 +102,8 @@ export default class LoginScreen extends React.Component {
       console.log("LOGIN INFO: "+responseJson.token_type+"/"+responseJson.access_token);
       if(responseJson.token_type && responseJson.access_token){
         setToken(responseJson.access_token); // Stockage du token
-        this.props.navigation.navigate('App');
+        console.log("Navigate to AccountsStack");
+        this.props.navigation.navigate('Accounts');
       } else {
         Alert.alert("Utilisateur ou mot de passe incorrect");
       }
@@ -148,13 +150,24 @@ export default class LoginScreen extends React.Component {
           <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.login(); } }>
+      { this.loading==0 &&
+      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); } }>
         <Text style={{color: '#fff', fontSize: 18}}> Se connecter </Text>
       </TouchableOpacity>
-      <CheckBox checkedColor='#3400B1' title='Mémoriser les identifiants' checked={this.saveChecked} onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} ref={this.rememberMe}/>
+      }
+      { this.loading==1 && 
+      <Image style={{height: 35, width: 35}} source={require('../assets/images/load.gif')} />
+      }
+      <TouchableOpacity onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+        <CheckBox 
+        checkedColor='#fff' 
+        checked={this.saveChecked} 
+        onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}
+        ref={this.rememberMe}/><Text style={{color: '#fff', marginTop: 17, marginLeft: -14}}>Mémoriser les Identifiants</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }>
         <Text style={styles.register}>Créer un compte Jimee</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> 
     </View>
     );
   }
