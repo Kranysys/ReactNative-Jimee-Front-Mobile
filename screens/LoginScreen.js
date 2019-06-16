@@ -159,9 +159,10 @@ export default class LoginScreen extends React.Component {
         onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}
         ref={this.rememberMe}/><Text style={{color: '#fff', marginTop: 17, marginLeft: -14}}>Mémoriser les Identifiants</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }>
+      {/*<TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }> BETA
         <Text style={styles.register}>Créer un compte Jimee</Text>
       </TouchableOpacity> 
+      */}
     </View>
     );
   }
@@ -355,5 +356,7 @@ const styles = StyleSheet.create({
     fontSize: 18, 
     fontWeight: 'bold',
     color: '#fff',
+    textDecorationLine: 'line-through', 
+    textDecorationStyle: 'solid'
   }
 });

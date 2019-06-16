@@ -301,7 +301,7 @@ export default class HomeScreen extends React.Component {
         return(
           // Icone suppression du compte instagram
             <View key = { key } style = { { marginBottom: 25 } }>
-              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 100,}}>
+              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 100, position: 'absolute'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 60, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
                     {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
@@ -325,7 +325,7 @@ export default class HomeScreen extends React.Component {
       accountIcon = <Text>{getUserInsta()}</Text>;
     }
     return (
-      <ScrollView style={{backgroundColor: '#FAFAFD'}}>
+      <ScrollView style={{/*backgroundColor: '#FAFAFD'*/}}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
           {/* this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
             <TouchableWithoutFeedback onPress={ () => { this.addAccount=0; this.showInstaAccount(); }}>

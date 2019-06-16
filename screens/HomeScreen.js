@@ -13,7 +13,8 @@ export default class HomeScreen extends React.Component {
     super(props);
 
     // Obtension de l'ID de l'utilisateur + nettoyage token
-    this.getID();
+    //this.getID();
+    this.request(); 
 
     this.likesChecked = false;
     this.commentsChecked = false;
@@ -43,8 +44,10 @@ export default class HomeScreen extends React.Component {
     this.boost = React.createRef();
 
     this.logscount = -1;
+
+    this.loading = 1;
   }
-  getID() {
+  /*getID() {
     var command = "users?token="+getToken();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
@@ -64,7 +67,7 @@ export default class HomeScreen extends React.Component {
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
-  }
+  }*/
   request() {
     var command = "info?userID="+getUserID();
     console.log("request -> GET "+api+command);
@@ -97,7 +100,9 @@ export default class HomeScreen extends React.Component {
       if(responseJson.unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
       if(responseJson.comments>0) this.commentsChecked = true; else this.commentsChecked = false;
       if(responseJson.likes>0) this.likesChecked = true; else this.likesChecked = false;
+      this.loading = 0;
       this.forceUpdate();
+      this.getLogs(); // Affichage des logs
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
@@ -155,7 +160,7 @@ export default class HomeScreen extends React.Component {
         for(var i=0;i<10 && i < this.logscount;i++) {
           if(responseJson[i].id>0){
             console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
-            this.addMoreLog(responseJson[i].user+" : "+responseJson[i].type);
+            this.addMoreLog("@"+responseJson[i].user+" : "+responseJson[i].type);
           }
         }
       } else {
@@ -211,7 +216,7 @@ export default class HomeScreen extends React.Component {
       console.log("Error storing:"+error);
     }
   };
-  getInstaAccounts() {
+  /*getInstaAccounts() {
     var command = "instaAccounts?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
@@ -341,7 +346,7 @@ export default class HomeScreen extends React.Component {
   showInstaAccount() { // show and hide instaAccounts
     this.showOverlay = !this.showOverlay;
     this.forceUpdate();
-  }
+  }*/
   static navigationOptions = {
     header: null,
   };
@@ -357,7 +362,7 @@ export default class HomeScreen extends React.Component {
         {
             return(
                 <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 1, margin: 5}}>{ this.logcontent[item.index] }</Text>
+                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{}} /> { this.logcontent[item.index] }</Text>
                 </Animated.View>
             );
         }
@@ -365,7 +370,7 @@ export default class HomeScreen extends React.Component {
         {
             return(
                 <View key = { key } style = { styles.viewHolder }>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 1, margin: 5}}>{ this.logcontent[item.index] }</Text>
+                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{}} /> { this.logcontent[item.index] }</Text>
                 </View>
             );
         }
@@ -395,10 +400,7 @@ export default class HomeScreen extends React.Component {
         );
       }
     });
-    let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
-    if(this.InstaAccountcount>0) {
-      accountIcon = <Text>{getUserInsta()}</Text>;
-    }
+    let accountIcon = <Text>{getUserInsta()}</Text>;
     return (
       <ScrollView>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -446,19 +448,26 @@ export default class HomeScreen extends React.Component {
             <Ionicons name='md-menu' size={35} color='#3800bf' style={{position: 'absolute', top: 0, right: 15}} />
           </View>
 
-          <TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, padding: 25}}>
+          { this.loading==1 && 
+            <View style={{textAlign: 'center', alignItems: 'center'}}>
+              <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+            </View>
+          }
+          { this.loading==0 && 
+          <View>
+          <View style={{padding: 20}}>
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
-              <View style={{borderWidth: 1, borderRadius: 10, left: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', width: 100, height: 100, margin: 25, padding: 25, position: 'absolute',}}>
+              <View style={{borderWidth: 1, borderRadius: 10, left: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', width: 100, height: 100, padding: 25, position: 'absolute',}}>
                 { accountIcon } 
               </View>
               <View style={{right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 25, position: 'absolute',}}>
                 <Text style={{fontWeight: 'bold', fontSize: 22}}>{getUserInsta()}</Text>
               </View>
               <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%',marginTop: 150}}>
-                <Switch onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
-                <Switch onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
-                <Switch onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
-                <Switch onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
               </View>
               <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%'}}>
                 <Text style={styles.getStartedText}>like</Text>
@@ -467,31 +476,49 @@ export default class HomeScreen extends React.Component {
                 <Text style={styles.getStartedText}>unfollow</Text>
               </View>
             </View>
+          </View>
+
+          <TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, paddingLeft: 20, paddingRight: 20}}>
+            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#5948FF', width: '100%', height: 50, alignItems: 'center', justifyContent: 'center', }}>
+              <Text style={{color: '#A599FF'}}>Booster mon compte<Ionicons name='md-information-circle' size={12} color='#A599FF' style={{marginTop: 12}} /></Text>
+              <Ionicons name='md-heart' size={36} color='#302597' style={{position: 'absolute', right: 25, top: 5}} />
+            </View>
           </TouchableOpacity>
 
-          <View style={{zIndex: 1,}}>
+          {/*<View style={{zIndex: 1,}}>
             <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
               <Ionicons name='md-checkmark' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> VALIDER </Text>
             </TouchableOpacity>
-            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog();/*this.updateCheck();*/ } }>
+            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog(); } }>
               <Ionicons name='md-jet' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> BOOST </Text>
             </TouchableOpacity>
           </View>
-          { this.logscount==-1 &&
-            <View>
-              <Text>Récupération de l'historique des actions...</Text>
+          */}
+
+          <View style={{padding: 20}}>
+            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
+              { this.logscount==-1 &&
+                <View>
+                  <Text>Récupération de l'historique des actions...</Text>
+                  <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+                </View>
+              }
+              { this.logscount>0 &&
+                <View style={{width: '90%'}}>
+                  <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
+                  <Text style={{fontWeight: 'bold'}}>Dernières actions</Text>
+                  <View style={{zIndex: 1}}>
+                    {rows}
+                  </View>
+                </View>
+              }
             </View>
-          }
-          { this.logscount>0 &&
-            <View>
-              <Text>Historique des actions (Dernière mise à jour : {Date()})</Text>
-              <View style={{zIndex: 1}}>
-                {rows}
-              </View>
-            </View>
-          }
+          </View>
+
+        </View>
+        }
         </View>
       </ScrollView>
     );
