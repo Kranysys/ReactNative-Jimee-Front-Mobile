@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
 TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid,
-AsyncStorage } from 'react-native';
+AsyncStorage, Switch } from 'react-native';
 //import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
@@ -402,7 +402,7 @@ export default class HomeScreen extends React.Component {
     return (
       <ScrollView>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
-          { this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
+          {/* this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
             <TouchableWithoutFeedback onPress={ () => { this.addAccount=0; this.showInstaAccount(); }}>
               <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
                 { ( this.InstaAccountcount==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
@@ -440,40 +440,36 @@ export default class HomeScreen extends React.Component {
                 }
               </View>
             </TouchableWithoutFeedback>
-          }
+              */}
           <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                require('../assets/images/logo-large.png')
-              }
-              style={styles.welcomeImage}
-            />
+            <Text style={{fontSize: 30, fontWeight: '700'}}>Mes comptes</Text>
+            <Ionicons name='md-menu' size={35} color='#3800bf' style={{position: 'absolute', top: 0, right: 15}} />
           </View>
 
-          <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => {this.showInstaAccount(); this.addAccount = 0;}} style={{zIndex: 3}}>
-            <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-              <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
-                { accountIcon }
+          <TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, padding: 25}}>
+            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
+              <View style={{borderWidth: 1, borderRadius: 10, left: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', width: 100, height: 100, margin: 25, padding: 25, position: 'absolute',}}>
+                { accountIcon } 
+              </View>
+              <View style={{right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 25, position: 'absolute',}}>
+                <Text style={{fontWeight: 'bold', fontSize: 22}}>{getUserInsta()}</Text>
+              </View>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%',marginTop: 150}}>
+                <Switch onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
+                <Switch onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
+                <Switch onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
+                <Switch onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
+              </View>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%'}}>
+                <Text style={styles.getStartedText}>like</Text>
+                <Text style={styles.getStartedText}>comments</Text>
+                <Text style={styles.getStartedText}>follow</Text>
+                <Text style={styles.getStartedText}>unfollow</Text>
               </View>
             </View>
           </TouchableOpacity>
 
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20,zIndex:1}}>
-            <Text style={styles.getStartedText}>Abonnées</Text>
-            <Text style={styles.getStartedText}>Publications</Text>
-            <Text style={styles.getStartedText}>Abonnements</Text>
-          </View>
-          <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 20,zIndex:1}}>
-            <Text style={styles.instaNumbers}>{this.accountFollowers}</Text>
-            <Text style={styles.instaNumbers}>{this.accountPosts}</Text>
-            <Text style={styles.instaNumbers}>{this.accountFollowing}</Text>
-          </View>
-
           <View style={{zIndex: 1,}}>
-            <CheckBox center title='Likes' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.likesChecked} onPress={ () => {this.likesChecked=!this.likesChecked;this.forceUpdate();}}/>
-            <CheckBox center title='Commentaires' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.commentsChecked} onPress={ () => {this.commentsChecked=!this.commentsChecked;this.forceUpdate();}}/>
-            <CheckBox center title='Follow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.followChecked} onPress={ () => {this.followChecked=!this.followChecked;this.forceUpdate();}}/>
-            <CheckBox center title='Unfollow' checkedIcon='dot-circle-o' uncheckedIcon='circle-o' checked={this.unfollowChecked} onPress={ () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}}/>
             <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
               <Ionicons name='md-checkmark' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
               <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> VALIDER </Text>
@@ -532,9 +528,8 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 50,
+    marginLeft: 25,
   },
   welcomeImage: {
     width: 100,

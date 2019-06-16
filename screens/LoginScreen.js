@@ -119,12 +119,6 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.loginBackground}>
-      {/*<Image
-        source={
-          require('../assets/images/logo-large.png')
-        }
-        style={styles.welcomeImage}
-      />*/}
       <Text style={styles.welcomeText}>Jimee</Text>
       <Text style={styles.smallWelcomeText}>mon Coach social</Text>
       <TextInput
