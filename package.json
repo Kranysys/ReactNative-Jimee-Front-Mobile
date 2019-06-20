@@ -23,6 +23,7 @@
     "react-native-drawer": "^2.5.1",
     "react-native-elements": "^1.1.0",
     "react-native-maps": "^0.23.0",
+    "react-native-side-drawer": "^1.1.7",
     "react-navigation": "^3.0.9"
   },
   "devDependencies": {

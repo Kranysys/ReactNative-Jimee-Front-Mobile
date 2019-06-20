@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
 import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta } from '../api';
+import MenuDrawer from 'react-native-side-drawer';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -270,6 +271,19 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+  // menu
+  toggleOpen = () => {
+    this.setState({ open: !this.state.open });
+  };
+
+  drawerContent = () => {
+    return (
+      <TouchableOpacity onPress={this.toggleOpen} style={styles.animatedBox}>
+        <Text>Close</Text>
+      </TouchableOpacity>
+    );
+  };
+  // ------------------------------------------------------------------------------------------
   render() {
     const animationValue = this.animatedValue.interpolate(
     {
@@ -426,6 +440,16 @@ export default class HomeScreen extends React.Component {
                 }
           </View>
           }
+            <MenuDrawer 
+            open={this.state.open} 
+            drawerContent={this.drawerContent()}
+            drawerPercentage={45}
+            animationTime={250}
+            overlay={true}
+            opacity={0.4}
+            >
+              <Button title="TEST" style={{padding: 30, fontSize: 20, width: 200, height: 300}} onPress={ () => { console.log("fuckthisshit"); this.toggleOpen; } } />
+            </MenuDrawer>
         </View>
       </ScrollView>
     );
@@ -536,5 +560,10 @@ const styles = StyleSheet.create({
   },
   instaActions: {
     fontSize: 16, 
+  },
+  animatedBox: {
+    flex: 1,
+    backgroundColor: "#38C8EC",
+    padding: 10
   },
 });

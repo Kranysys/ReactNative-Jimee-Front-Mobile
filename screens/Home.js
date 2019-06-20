@@ -1,140 +1,65 @@
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, 
-    View, FlatList, TouchableOpacity, 
-    Image, SafeAreaView } from 'react-native';
-import ic_menu from './Image/list.png'
-import Drawer from 'react-native-drawer'
-console.disableYellowBox = true;
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import MenuDrawer from 'react-native-side-drawer'
 
-const menu = [
-    { 'title': 'Home' },
-    { 'title': 'Wishlist' },
-    { 'title': 'Avout us' },
-    { 'title': 'Contact us' },
-    { 'title': 'Log out' }
-]
+export default class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false
+    };
+  }
 
-export default class Home extends Component {
+  toggleOpen = () => {
+    this.setState({ open: !this.state.open });
+  };
 
-    constructor(props) {
-        super(props)
+  drawerContent = () => {
+    return (
+      <TouchableOpacity onPress={this.toggleOpen} style={styles.animatedBox}>
+        <Text>Close</Text>
+      </TouchableOpacity>
+    );
+  };
 
-    }
-
-    renderDrawer() {
-        //SlideMenu
-        return (
-            <View style={styles.menuContainer}>
-                <FlatList
-                    style={{ flex: 1.0 }}
-                    data={menu}
-                    extraData={this.state}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <TouchableOpacity style={styles.menuTitleContainer}>
-                                <Text style={styles.menuTitle}
-                                    key={index}>
-                                    {item.title}
-                                </Text>
-                            </TouchableOpacity>
-                        )
-                    }} />
-            </View>
-        )
-    }
-
-    openDrawer() {
-        this.drawer.open()
-    }
-
-    closeDrawer() {
-        this.drawer.close()
-    }
-
-    render() {
-        return (
-            <SafeAreaView style={styles.safeAreaStyle}>
-                <View style={styles.mainContainer}>
-                    <Drawer
-                        ref={(ref) => this.drawer = ref}
-                        content={this.renderDrawer()}
-                        type='static'
-                        tapToClose={true}
-                        openDrawerOffset={0.35}
-                        styles={drawerStyles}>
-                        {/* //Main View */}
-                        <View style={styles.headerContainer}>
-                            <View style={styles.menuButton}>
-                                <TouchableOpacity
-                                    onPress={this.openDrawer.bind(this)}>
-                                    <Image style={{ tintColor: 'white' }} source={ic_menu} />
-                                </TouchableOpacity>
-                            </View>
-                            <Text style={styles.headerTitle}>DRAWER</Text>
-                            <View style={styles.menuButton} />
-                        </View>
-                    </Drawer>
-                </View>
-            </SafeAreaView>
-        );
-    }
+  render() {
+    return (
+      <View style={styles.container}>
+        <MenuDrawer 
+          open={this.state.open} 
+          drawerContent={this.drawerContent()}
+          drawerPercentage={45}
+          animationTime={250}
+          overlay={true}
+          opacity={0.4}
+        >
+          <TouchableOpacity onPress={this.toggleOpen} style={{width: 250, height: 250, backgroundColor: '#f00'}}>
+            <Text>Open</Text>
+          </TouchableOpacity>
+        </MenuDrawer>
+      </View>
+    );
+  }
 }
 
-const drawerStyles = {
-    drawer: {
-        flex: 1.0,
-        backgroundColor: '#3B5998',
-        marginTop: 25,
-    },
-    main: {
-        flex: 1.0,
-        backgroundColor: 'white',
-        marginTop: 25,
-    }
-}
-
-const styles = {
-    mainContainer: {
-        flex: 1.0,
-        backgroundColor: 'white'
-    },
-    safeAreaStyle: {
-        flex: 1.0,
-        backgroundColor: '#3B5998',
-    },
-    headerContainer: {
-        height: 44,
-        flexDirection: 'row',
-        justifyContect: 'center',
-        backgroundColor: '#3B5998',
-    },
-    headerTitle: {
-        flex: 1.0,
-        textAlign: 'center',
-        alignSelf: 'center',
-        color: 'white'
-    },
-    menuButton: {
-        marginLeft: 8,
-        marginRight: 8,
-        alignSelf: 'center',
-        tintColor: 'white'
-    },
-    menuContainer: {
-        flex: 1.0,
-        backgroundColor: '#3B5998',
-    },
-    menuTitleContainer: {
-        alignItem:'center',
-        height: 60,
-        width:'100%',
-        flexDirection:'row',
-    },
-    menuTitle: {
-        width:'100%',
-        color: 'white',
-        textAlign: 'center',
-        fontSize: 17,
-        alignSelf:'center',
-    }
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 30,
+    zIndex: 0
+  },
+  animatedBox: {
+    flex: 1,
+    backgroundColor: "#38C8EC",
+    padding: 10
+  },
+  body: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F04812'
+  }
+})
