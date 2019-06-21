@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
 import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta } from '../api';
-import MenuDrawer from 'react-native-side-drawer';
+import { StackNavigator } from  'react-navigation';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -31,7 +31,6 @@ export default class HomeScreen extends React.Component {
       valueArray2: [], 
       hidePassword: true, 
       showPassword: false,
-      open: false,
      };
     this.index = 0; this.index2 = 0;
     this.logcontent = [];
@@ -277,24 +276,6 @@ export default class HomeScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-  // menu
-  toggleOpen = () => {
-    this.setState({ open: !this.state.open });
-  };
-
-  drawerContent = () => {
-    return (
-      <View style={{backgroundColor: '#fff', borderWidth: 1}}>
-        <FlatList
-          data={[{key: 'a'}, {key: 'b'}]}
-          renderItem={({item}) => <Text>{item.key}</Text>}
-        />
-        <TouchableOpacity onPress={this.toggleOpen} style={styles.animatedBox}>
-          <Text>Close</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
   // =====================================================================================================================
   render() {
     const animationValue = this.animatedValue.interpolate(
@@ -354,18 +335,9 @@ export default class HomeScreen extends React.Component {
     return (
       <SafeAreaView style={styles.AndroidSafeArea}>
         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-          <MenuDrawer 
-            open={this.state.open} 
-            drawerContent={this.drawerContent()}
-            drawerPercentage={45}
-            animationTime={250}
-            overlay={true}
-            opacity={0.4}
-          >
-            <TouchableOpacity onPress={ () => { console.log("kk"); this.toggleOpen(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
+            <TouchableOpacity onPress={ () => { console.log("kk"); this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
               <Ionicons name='md-menu' size={44} color='#3800bf' />
             </TouchableOpacity>
-          </MenuDrawer>
           <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 5, right: 15}}>Mes comptes</Text>
         </View>
       </SafeAreaView>

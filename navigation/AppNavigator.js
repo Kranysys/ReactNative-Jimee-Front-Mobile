@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppRegistry, Dimensions } from 'react-native';
-import { createAppContainer, createSwitchNavigator, createStackNavigator, DrawerNavigator } from 'react-navigation';
+import { AppRegistry, Dimensions, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { createAppContainer, createSwitchNavigator, createStackNavigator, createDrawerNavigator } from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
 
@@ -15,13 +16,13 @@ const AuthStack = createStackNavigator({ SignIn: LoginScreen });
 const RegisterStack = createStackNavigator({ Register: RegisterScreen });
 const AccountsStack = createStackNavigator({ Accounts: AccountsScreen });
 
-const drawernav = DrawerNavigator({
+const drawernav = createDrawerNavigator({
   Item1: {
       screen: AccountsStack,
     }
   }, {
     contentComponent: SideMenu,
-    drawerWidth: Dimensions.get('window').width - 120,  
+    //drawerWidth: Dimensions.get('window').width - 120,  
 });
 
 export default createAppContainer(createSwitchNavigator({
