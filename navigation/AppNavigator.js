@@ -12,6 +12,8 @@ import AccountsScreen from '../screens/AccountsScreen';
 
 import SideMenu from '../components/sidemenu'
 
+console.disableYellowBox = true; // désactive les warnings (pas pro si ça arrive)
+
 const AuthStack = createStackNavigator({ SignIn: LoginScreen });
 const RegisterStack = createStackNavigator({ Register: RegisterScreen });
 const AccountsStack = createStackNavigator({ Accounts: AccountsScreen });

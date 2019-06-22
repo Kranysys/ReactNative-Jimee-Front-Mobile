@@ -6,7 +6,8 @@ AsyncStorage, StatusBar, SafeAreaView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
-import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta } from '../api';
+import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, 
+setUserInsta, setInstaAccountList, getInstaAccountList, countInstaAccountList } from '../api';
 import { StackNavigator } from  'react-navigation';
 
 export default class HomeScreen extends React.Component {
@@ -39,8 +40,6 @@ export default class HomeScreen extends React.Component {
     this.animatedValue = new Animated.Value(0);
 
     this.showOverlay = 1;
-    this.InstaAccountcount = 0;
-    this.InstaAccountList = "";
     this.logInput = React.createRef();
     this.passInput = React.createRef();
     this.addAccount = 0;
@@ -109,26 +108,23 @@ export default class HomeScreen extends React.Component {
     });
   }
   async _FetchInstaAccount() {
-    console.log("Fetching ActiveInstaAccount...")
     try {
       const value = await AsyncStorage.getItem('ActiveInstaAccount:'+getUserID());
       if (value !== null) {
-        console.log("Récupération de ActiveInstaAccount : ");
-        console.log(value);
+        console.log("Fetch ActiveInstaAccount : "+value);
         return value;
       } else console.log("Pas de ActiveInstaAccount.");
     } catch (error) {
       console.log("Error fetching:"+error);
     }
   };
-  async _storeInstaAccount(key) {
-    console.log("Saving ActiveInstaAccount...")
+  async _storeInstaAccount(key,name) {
+    console.log("Saving ActiveInstaAccount ("+key+" ["+name+"])...")
     try {
       await AsyncStorage.setItem('ActiveInstaAccount:'+getUserID(),key+'');
+      setUserInsta(key,name);
+
       this.props.navigation.navigate('App');
-      
-      //this.showInstaAccount();
-      //this.getInstaAccounts();
     } catch (error) {
       console.log("Error storing:"+error);
     }
@@ -147,12 +143,11 @@ export default class HomeScreen extends React.Component {
       this.instaAccountsContent = []; this.instaAccountsContentID = []; this.state.valueArray = []; this.state.valueArray2 = [];
       this.index2 = 0; this.index = 0;
 
-      this.InstaAccountcount = Object.keys(responseJson).length;
-      this.InstaAccountList = responseJson;
+      //this.InstaAccountcount = Object.keys(responseJson).length;
+      setInstaAccountList(responseJson);
 
-      console.log("GET INSTACCOUNT SIZE "+this.InstaAccountcount);
       //console.log(JSON.stringify(responseJson));
-      if(!this.InstaAccountcount){
+      if(!countInstaAccountList()){
         console.log("NO INSTA ACCOUNT");
       } 
       else
@@ -160,21 +155,21 @@ export default class HomeScreen extends React.Component {
         this._FetchInstaAccount().then((val) => { // Compte actuel sauvegardé
           console.log("InstaAccount fetched : "+val);
           if(val){ // val -> active userInstaID
-            for(var i=0;i<(this.InstaAccountcount);i++) {
-              console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
-              if(this.InstaAccountList[i].instauser_id == val){
-                setUserInsta(this.InstaAccountList[i].instauser_id,this.InstaAccountList[i].user);
+            for(var i=0;i<(countInstaAccountList());i++) {
+              console.log("ADD INSTA ACCOUNT "+i+" ["+getInstaAccountList()[i].user+"] id ["+getInstaAccountList()[i].instauser_id+"]");
+              if(getInstaAccountList()[i].instauser_id == val){
+                setUserInsta(getInstaAccountList()[i].instauser_id,getInstaAccountList()[i].user);
               }
               else {
-                this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
+                this.addMoreInstaAccount(getInstaAccountList()[i].user, getInstaAccountList()[i].instauser_id);
               }
             }    
           } else { // 1er compte actif par défaut
-            for(var i=0;i<(this.InstaAccountcount);i++) {
-              console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
-              if(i==0) setUserInsta(this.InstaAccountList[i].instauser_id,this.InstaAccountList[i].user);
+            for(var i=0;i<(countInstaAccountList());i++) {
+              console.log("ADD INSTA ACCOUNT "+i+" ["+getInstaAccountList()[i].user+"] id ["+getInstaAccountList()[i].instauser_id+"]");
+              if(i==0) setUserInsta(getInstaAccountList()[i].instauser_id,getInstaAccountList()[i].user);
               if(i>=1){
-                this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
+                this.addMoreInstaAccount(getInstaAccountList()[i].user, getInstaAccountList()[i].instauser_id);
               } 
             }     
           }
@@ -247,7 +242,7 @@ export default class HomeScreen extends React.Component {
     );
   }
   getUserInstaFromID(userInstaID){
-    for(var i = 0;i<=this.InstaAccountcount;i++){
+    for(var i = 0;i<=countInstaAccountList();i++){
       console.log(i+":"+this.instaAccountsContentID[i]+" = "+userInstaID+" ?")
       if( this.instaAccountsContentID[i] == userInstaID )
       {
@@ -316,7 +311,7 @@ export default class HomeScreen extends React.Component {
                 </View>
               </TouchableOpacity>
           
-              <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 100}}>
+              <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 100}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={this.state.pressStatus ? styles.accountButPress : styles.accountBut}>
                     {<Text>{this.instaAccountsContent[key]}</Text>}
@@ -328,7 +323,10 @@ export default class HomeScreen extends React.Component {
       }
     });
     let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
-    if(this.InstaAccountcount>0) {
+    console.log("here before crash");
+    console.log("lenght is "+countInstaAccountList());
+    console.log("modafucking")
+    if(countInstaAccountList()>0) {
       accountIcon = <Text>{getUserInsta()}</Text>;
     }
     // ===============================================================================================================
@@ -354,7 +352,7 @@ export default class HomeScreen extends React.Component {
                 </View>
               </View>
             </TouchableOpacity>
-                { ( this.InstaAccountcount==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
+                { ( countInstaAccountList()==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
                   <View style={{backgroundColor: '#fff', borderRadius: 10, marginRight: 50, marginLeft: 50, zIndex: 10}}>
                     <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
                     <TextInput
@@ -374,7 +372,7 @@ export default class HomeScreen extends React.Component {
                     </View>
                   </View>
                 }
-                { this.InstaAccountcount>0 && // PROPOSE CREATION COMPTE SUPPLEMENTAIRE et liste
+                { countInstaAccountList()>0 && // PROPOSE CREATION COMPTE SUPPLEMENTAIRE et liste
                   <View>
                     {accountList}
 

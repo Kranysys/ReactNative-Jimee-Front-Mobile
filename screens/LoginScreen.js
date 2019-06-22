@@ -29,7 +29,6 @@ export default class LoginScreen extends React.Component {
     this.setState({ hidePassword: !this.state.hidePassword });
   }
   async _FetchRememberMe() { // Récupération des informations de login si RememberMe est checked
-    console.log("Fetching RememberMe...")
     try {
       const value = await AsyncStorage.getItem('RememberMe:');
       if (value !== null) {
@@ -40,10 +39,9 @@ export default class LoginScreen extends React.Component {
           }
         }
         else {
-          console.log("active account is "+value);
           var pieces = value.split(","); 
           //return string(pieces[field]);
-          this.savedLogin = pieces[0]+""; console.log("set savedLogin to "+pieces[0]+" / "+pieces[1]+" / "+pieces[2])
+          this.savedLogin = pieces[0]+"";
           this.logInput.current._lastNativeText = pieces[0]+"";
           this.savedPass = pieces[1]+"";
           this.passInput.current._lastNativeText = pieces[1]+"";
@@ -57,7 +55,6 @@ export default class LoginScreen extends React.Component {
     } 
   };
   async _storeRememberMe(key) { // Sauvegarde des informations de login si RememberMe est checked
-    console.log("Saving RememberMe...")
     try {
       await AsyncStorage.setItem('RememberMe:',key+'');
     } catch (error) {

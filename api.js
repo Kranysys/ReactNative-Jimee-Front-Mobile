@@ -4,6 +4,7 @@
     let userID = ""; // UserID Connecté actuellement
     let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
     let userInsta = ""; // Compte instagramm sélectionné de l'utilisateur connecté
+    var InstaAccountList; // Liste des comptes Instagram en cache
 
     // SETTER
     
@@ -30,6 +31,13 @@
         userInstaID = "";
     }
 
+    // LISTE DES COMPTES (CACHE)
+
+    export function setInstaAccountList(json) {
+        console.log(json);
+        InstaAccountList = json;
+    }
+
     // GETTER
 
     export function getToken() {
@@ -46,4 +54,30 @@
 
     export function getUserInsta() {
         return userInsta;
+    }
+
+    // LISTE DES COMPTES (CACHE)
+
+    export function getInstaAccountList() {
+        return InstaAccountList;
+    }
+
+    export function countInstaAccountList() {
+        var str = JSON.stringify(InstaAccountList);
+        //console.log("str : "+str+" len "+str.length);
+        //var parse = JSON.parse(str);
+        //let list = InstaAccountList;
+        //console.log("count is "+Object.keys(list).length);
+        if( InstaAccountList != undefined ){
+            console.log("not un 1")
+            console.log(InstaAccountList)
+            if( InstaAccountList.lenght != undefined ){
+                console.log("not un 2")
+                return InstaAccountList.lenght;
+            } else {
+                console.log("undef 2 : "+Object.keys(InstaAccountList).length)
+                return Object.keys(InstaAccountList).length;
+            }
+        } else console.log("InstaAccountList undef")
+        return 0;
     }
