@@ -316,9 +316,9 @@ export default class HomeScreen extends React.Component {
                 </View>
               </TouchableOpacity>
           
-              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 3, width: '100%'}}>
+              <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 100}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
+                  <View style={this.state.pressStatus ? styles.accountButPress : styles.accountBut}>
                     {<Text>{this.instaAccountsContent[key]}</Text>}
                   </View>
                 </View>
@@ -334,18 +334,89 @@ export default class HomeScreen extends React.Component {
     // ===============================================================================================================
     return (
       <SafeAreaView style={styles.AndroidSafeArea}>
-        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-            <TouchableOpacity onPress={ () => { console.log("kk"); this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
+        <View style={{marginBottom: 100}}>
+            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
               <Ionicons name='md-menu' size={44} color='#3800bf' />
             </TouchableOpacity>
           <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 5, right: 15}}>Mes comptes</Text>
         </View>
+        { this.loading==1 && 
+            <View style={{textAlign: 'center', alignItems: 'center'}}>
+              <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+            </View>
+          }
+          { this.loading==0 && 
+          <View>
+            <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => {this.props.navigation.navigate('App'); this.addAccount = 0;}} style={{zIndex: 3, height: 75, marginBottom: 100}}>
+              <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+                <View style={this.state.pressStatus ? styles.accountButPress : styles.accountBut}>
+                  { accountIcon }
+                </View>
+              </View>
+            </TouchableOpacity>
+                { ( this.InstaAccountcount==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
+                  <View style={{backgroundColor: '#fff', borderRadius: 10, marginRight: 50, marginLeft: 50, zIndex: 10}}>
+                    <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
+                    <TextInput
+                      style={ styles.textBox }
+                      placeholder="Login du compte"
+                      ref={this.logInput}
+                    />
+                    <TextInput
+                      style={ styles.textBox }
+                      placeholder="Mot de passe"
+                      underlineColorAndroid = "transparent"
+                      secureTextEntry = { this.state.hidePassword }
+                      ref={this.passInput}
+                    />
+                    <View style={{position: 'relative', alignSelf: 'stretch',}}>
+                      <Button onPress={ () => {this.addInstaAccount();}} title="AJOUTER CE COMPTE"/>
+                    </View>
+                  </View>
+                }
+                { this.InstaAccountcount>0 && // PROPOSE CREATION COMPTE SUPPLEMENTAIRE et liste
+                  <View>
+                    {accountList}
+
+                    <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, width: '100%', height: 200}}>
+                      <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
+                        <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#3800bf', width: 45, height: 45, alignItems: 'center', justifyContent: 'center'}}>
+                          {<Ionicons name='md-add' size={20} color='#fff' style={{}} />}
+                        </View>
+                      </View>
+                      <Text style={{textAlign: 'center', marginTop: 0, fontWeight: '300'}}>Ajouter un compte Instagram</Text>
+                    </TouchableOpacity>
+                  </View>
+                }
+          </View>
+          }
       </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  accountBut: {
+    borderWidth: 1, 
+    borderRadius: 5, 
+    borderColor: '#ccc', 
+    backgroundColor: '#fff', 
+    width: '80%', 
+    height: 75, 
+    alignItems: 'center', 
+    justifyContent: 'center'
+  },
+  accountButPress: {
+    borderWidth: 1, 
+    borderRadius: 5, 
+    borderColor: '#ccc', 
+    backgroundColor: '#fff', 
+    width: '80%', 
+    height: 75, 
+    alignItems: 'center', 
+    justifyContent: 'center',
+    backgroundColor: '#999'
+  },
   AndroidSafeArea: {
     flex: 1,
     backgroundColor: "white",

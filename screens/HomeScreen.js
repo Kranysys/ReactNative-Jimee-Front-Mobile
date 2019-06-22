@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
 TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid,
-AsyncStorage, Switch } from 'react-native';
+AsyncStorage, Switch, StatusBar } from 'react-native';
 //import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
@@ -402,7 +402,7 @@ export default class HomeScreen extends React.Component {
     });
     let accountIcon = <Text>{getUserInsta()}</Text>;
     return (
-      <ScrollView>
+      <ScrollView style={styles.AndroidSafeArea}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
           {/* this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
             <TouchableWithoutFeedback onPress={ () => { this.addAccount=0; this.showInstaAccount(); }}>
@@ -443,10 +443,12 @@ export default class HomeScreen extends React.Component {
               </View>
             </TouchableWithoutFeedback>
               */}
-          <View style={styles.welcomeContainer}>
-            <Text style={{fontSize: 30, fontWeight: '700'}}>Mes comptes</Text>
-            <Ionicons name='md-menu' size={35} color='#3800bf' style={{position: 'absolute', top: 0, right: 15}} />
-          </View>
+        <View style={{marginBottom: 100}}>
+            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
+              <Ionicons name='md-menu' size={44} color='#3800bf' />
+            </TouchableOpacity>
+          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 5, right: 15}}>Accueil</Text>
+        </View>
 
           { this.loading==1 && 
             <View style={{textAlign: 'center', alignItems: 'center'}}>
@@ -526,6 +528,11 @@ export default class HomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+  },
   textBox: {
 	  marginBottom: 6,
     fontSize: 18,

@@ -21,16 +21,20 @@ const drawernav = createDrawerNavigator({
       screen: AccountsStack,
     }
   }, {
-    contentComponent: SideMenu,
-    //drawerWidth: Dimensions.get('window').width - 120,  
+    contentComponent: SideMenu, 
+});
+
+const drawernavtab = createDrawerNavigator({
+  Item1: {
+      screen: MainTabNavigator,
+    }
+  }, {
+    contentComponent: SideMenu, 
 });
 
 export default createAppContainer(createSwitchNavigator({
-  // You could add another route here for authentication.
-  // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-
   Auth: AuthStack,
   Accounts: drawernav,
-  App: MainTabNavigator,
+  App: drawernavtab,
   Register: RegisterStack,
 }));

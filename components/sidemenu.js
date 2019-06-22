@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {NavigationActions} from 'react-navigation';
-import {ScrollView, Text, View, StyleSheet} from 'react-native';
+import {ScrollView, Text, View, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import { StackNavigator } from 'react-navigation';
+import { getUserInsta } from '../api';
 
 class SideMenu extends Component {
   navigateToScreen = (route) => () => {
@@ -15,43 +16,36 @@ class SideMenu extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        <ScrollView style={{marginTop: 25}}>
           <View>
             <Text style={styles.sectionHeadingStyle}>
-              Section 1
+              {getUserInsta()}
             </Text>
-            <View style={styles.navSectionStyle}>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page1')}>
-              Page1
-              </Text>
-            </View>
           </View>
-          <View>
-            <Text style={styles.sectionHeadingStyle}>
-              Section 2
-            </Text>
-            <View style={styles.navSectionStyle}>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page2')}>
-                Page2
+          <View style={{borderTopWidth: 1, borderTopColor: '#ccc'}}>
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT); } }>     
+              <Text style={styles.sectionHeadingStyle}>
+                Mon Abonnement
+              </Text>        
+              <Text style={styles.sectionHeadingStyle}>
+                Mes Réglages
+              </Text>      
+              <Text style={styles.sectionHeadingStyle}>
+                Chat
+              </Text>      
+              <Text style={styles.sectionHeadingStyle2}>
+                A Propos
               </Text>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page3')}>
-                Page3
-              </Text>
-            </View>            
-          </View>
-          <View>
-            <Text style={styles.sectionHeadingStyle}>
-              Section 3
-            </Text>
-            <View style={styles.navSectionStyle}>
-              <Text style={styles.navItemStyle} onPress={this.navigateToScreen('Page4')}>
-              Page4
-              </Text>
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { this.props.navigation.navigate('Auth');} }>     
+              <Text style={styles.sectionHeadingStyle2}>
+                Se Déconnecter
+              </Text> 
+            </TouchableOpacity>
           </View>
         </ScrollView>
         <View style={styles.footerContainer}>
-          <Text>This is my fixed footer</Text>
+          <Text>Jimee 1.0 BETA</Text>
         </View>
       </View>
     );
@@ -75,7 +69,15 @@ const styles = StyleSheet.create({
   },
   sectionHeadingStyle: {
     paddingVertical: 10,
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
+    color: '#8C87FC',
+    fontSize: 22,
+  },
+  sectionHeadingStyle2: {
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    color: '#73798B',
+    fontSize: 22,
   },
   footerContainer: {
     padding: 20,

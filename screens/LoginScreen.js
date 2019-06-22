@@ -106,6 +106,8 @@ export default class LoginScreen extends React.Component {
         this.props.navigation.navigate('Accounts');
       } else {
         Alert.alert("Utilisateur ou mot de passe incorrect");
+        this.loading=0;
+        this.forceUpdate();
       }
     })
     .catch((error) =>{
@@ -120,7 +122,7 @@ export default class LoginScreen extends React.Component {
     return (
       <View style={styles.loginBackground}>
       <Text style={styles.welcomeText}>Jimee</Text>
-      <Text style={styles.smallWelcomeText}>mon Coach social</Text>
+      <Text style={styles.smallWelcomeText}>le p'tit pote qui te rend visible</Text>
       <TextInput
           style={ styles.textBox }
           placeholder="Identifiant"
