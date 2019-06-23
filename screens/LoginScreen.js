@@ -144,7 +144,7 @@ export default class LoginScreen extends React.Component {
         </TouchableOpacity>
       </View>
       { this.loading==0 &&
-      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); } }>
+      <TouchableOpacity ref={this.boost} activeOpacity = { 0.5 } style = { styles.loginButton }  onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); } }>
         <Text style={{color: '#fff', fontSize: 18}}> Se connecter </Text>
       </TouchableOpacity>
       }

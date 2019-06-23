@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
 import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, 
-setUserInsta, setInstaAccountList, getInstaAccountList, countInstaAccountList } from '../api';
+setUserInsta, setInstaAccountList, getInstaAccountList, countInstaAccountList, getInstaAccount } from '../api';
 import { StackNavigator } from  'react-navigation';
 
 export default class HomeScreen extends React.Component {
@@ -62,7 +62,7 @@ export default class HomeScreen extends React.Component {
       if(responseJson.user_id){
         setUserID(responseJson.user_id);
         // userID obtenu, les autres requêtes peuvent être effectués
-        this.request(); // obtension des informations instagram
+        //this.request(); // obtension des informations instagram
         this.getInstaAccounts(); // obtension du compte instagram
       } 
       else console.log("ERR!! No UserID found for token!!");
@@ -70,7 +70,7 @@ export default class HomeScreen extends React.Component {
       console.log("ERROR "+command+" : "+error);
     });
   }
-  request() {
+  /*request() {
     var command = "info?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
@@ -88,7 +88,7 @@ export default class HomeScreen extends React.Component {
       console.log("ERROR "+command+" : "+error);
     });
  
-    command = "configUserInsta?userID="+getUserID();
+    /*command = "configUserInsta?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -106,12 +106,13 @@ export default class HomeScreen extends React.Component {
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
-  }
+}*/
   async _FetchInstaAccount() {
+    console.log("fetching active account...");
     try {
       const value = await AsyncStorage.getItem('ActiveInstaAccount:'+getUserID());
       if (value !== null) {
-        console.log("Fetch ActiveInstaAccount : "+value);
+        console.log("Fetched ActiveInstaAccount : "+value);
         return value;
       } else console.log("Pas de ActiveInstaAccount.");
     } catch (error) {
@@ -146,7 +147,7 @@ export default class HomeScreen extends React.Component {
       //this.InstaAccountcount = Object.keys(responseJson).length;
       setInstaAccountList(responseJson);
 
-      //console.log(JSON.stringify(responseJson));
+      console.log("creating account list...");
       if(!countInstaAccountList()){
         console.log("NO INSTA ACCOUNT");
       } 
@@ -173,6 +174,7 @@ export default class HomeScreen extends React.Component {
               } 
             }     
           }
+          console.log("finished.");
           this.loading = 0;
           this.forceUpdate(); // met à jour l'affichage des comptes
         }); 
@@ -183,6 +185,9 @@ export default class HomeScreen extends React.Component {
   }
   addInstaAccount() {
     console.log("Adding instaAccount action...");
+    this.addAccount = 0;
+    this.loading = 1;
+    this.forceUpdate();
     var command = "instaAccounts";
     if(!this.logInput.current._lastNativeText || !this.passInput.current._lastNativeText) {
       Alert.alert("Veuillez entrer votre login et mot de passe Instagram.");
@@ -204,7 +209,6 @@ export default class HomeScreen extends React.Component {
     }).catch((error) =>{
       console.log("ERROR ADD INSTA ACCOUNT : "+error);
     });
-    this.showInstaAccount();
     this.getInstaAccounts();
     this.forceUpdate();
   }
@@ -278,25 +282,6 @@ export default class HomeScreen extends React.Component {
       inputRange: [ 0, 1 ],
       outputRange: [ -59, 0 ]
     });
-    let rows = this.state.valueArray.map(( item, key ) =>
-    {
-        if(( key ) == this.index)
-        {
-            return(
-                <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 1, margin: 5}}>{ this.logcontent[item.index] }</Text>
-                </Animated.View>
-            );
-        }
-        else
-        {
-            return(
-                <View key = { key } style = { styles.viewHolder }>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 1, margin: 5}}>{ this.logcontent[item.index] }</Text>
-                </View>
-            );
-        }
-    });
     let accountList = this.state.valueArray2.map(( item, key ) =>
     { console.log("ACCOUNTLIST : "+this.instaAccountsContent[key]+" ["+key+"]");
       if(this.instaAccountsContentID[key] && this.instaAccountsContent[key]){
@@ -305,7 +290,7 @@ export default class HomeScreen extends React.Component {
             <View key = { key } style = { { marginBottom: 25 } }>
               <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 100, position: 'absolute'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 60, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
+                  <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 50, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
                     {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
                   </View>
                 </View>
@@ -314,7 +299,16 @@ export default class HomeScreen extends React.Component {
               <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 100}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={this.state.pressStatus ? styles.accountButPress : styles.accountBut}>
-                    {<Text>{this.instaAccountsContent[key]}</Text>}
+                    <Image
+                        style={{width: 55, height: 55, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', position: 'absolute', top: 10, left: '12%' }}
+                        source={{uri: getInstaAccount(this.instaAccountsContentID[key]).avatar}}
+                      />
+                    <Text style={{fontSize: 16, fontWeight: '600'}}>{this.instaAccountsContent[key]}</Text>
+                    <View style={{height: '100%', width: '30%', position: 'absolute', right: 0, top: 0, padding: '12%', borderLeftColor: '#ccc', borderLeftWidth: 1}}>
+                      <View style={{position: "absolute", borderBottomColor: '#ccc', borderWidth: 1, width: '100%', height: '100%', padding: '12%'}}>
+                        <Text>{getInstaAccount(this.instaAccountsContentID[key]).n_followers} fl</Text>
+                      </View>
+                    </View>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -323,15 +317,12 @@ export default class HomeScreen extends React.Component {
       }
     });
     let accountIcon = <Ionicons name='md-add' size={46} color='#090' style={{}} />;
-    console.log("here before crash");
-    console.log("lenght is "+countInstaAccountList());
-    console.log("modafucking")
     if(countInstaAccountList()>0) {
       accountIcon = <Text>{getUserInsta()}</Text>;
     }
     // ===============================================================================================================
     return (
-      <SafeAreaView style={styles.AndroidSafeArea}>
+      <ScrollView style={styles.AndroidSafeArea}>
         <View style={{marginBottom: 100}}>
             <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
               <Ionicons name='md-menu' size={44} color='#3800bf' />
@@ -388,7 +379,7 @@ export default class HomeScreen extends React.Component {
                 }
           </View>
           }
-      </SafeAreaView>
+      </ScrollView>
     );
   }
 }
@@ -396,7 +387,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   accountBut: {
     borderWidth: 1, 
-    borderRadius: 5, 
+    borderRadius: 12, 
     borderColor: '#ccc', 
     backgroundColor: '#fff', 
     width: '80%', 

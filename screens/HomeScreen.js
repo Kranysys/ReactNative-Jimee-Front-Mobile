@@ -6,7 +6,7 @@ AsyncStorage, Switch, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
-import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta } from '../api';
+import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta, getInstaAccount } from '../api';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -14,6 +14,7 @@ export default class HomeScreen extends React.Component {
 
     // Obtension de l'ID de l'utilisateur + nettoyage token
     //this.getID();
+
     this.request(); 
 
     this.likesChecked = false;
@@ -154,12 +155,12 @@ export default class HomeScreen extends React.Component {
       }
     }).then((response) => response.json()).then((responseJson) => {
       this.logscount = Object.keys(responseJson).length;
-      console.log("Nombre de logs : "+this.logscount);
-      console.log(JSON.stringify(responseJson));
+      //console.log("Nombre de logs : "+this.logscount);
+      //console.log(JSON.stringify(responseJson));
       if(this.logscount > 0){
         for(var i=0;i<10 && i < this.logscount;i++) {
           if(responseJson[i].id>0){
-            console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
+            //console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
             this.addMoreLog("@"+responseJson[i].user+" : "+responseJson[i].type);
           }
         }
@@ -193,7 +194,7 @@ export default class HomeScreen extends React.Component {
         }); 
     });
   }
-  async _FetchInstaAccount() {
+  /*async _FetchInstaAccount() {
     console.log("Fetching ActiveInstaAccount...")
     try {
       const value = await AsyncStorage.getItem('ActiveInstaAccount:'+getUserID());
@@ -216,7 +217,7 @@ export default class HomeScreen extends React.Component {
       console.log("Error storing:"+error);
     }
   };
-  /*getInstaAccounts() {
+  getInstaAccounts() {
     var command = "instaAccounts?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
@@ -400,7 +401,10 @@ export default class HomeScreen extends React.Component {
         );
       }
     });
-    let accountIcon = <Text>{getUserInsta()}</Text>;
+    let accountIcon = <Image
+                        style={{width: 120, height: 120, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', }}
+                        source={{uri: getInstaAccount(getUserInstaID()).avatar}}
+                      />;
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -459,19 +463,19 @@ export default class HomeScreen extends React.Component {
           <View>
           <View style={{padding: 20}}>
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
-              <View style={{borderWidth: 1, borderRadius: 10, left: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', width: 100, height: 100, padding: 25, position: 'absolute',}}>
+              <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
                 { accountIcon } 
               </View>
               <View style={{right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 25, position: 'absolute',}}>
                 <Text style={{fontWeight: 'bold', fontSize: 22}}>{getUserInsta()}</Text>
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%',marginTop: 150}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%',marginTop: 150, paddingLeft: '12%', paddingRight: '12%'}}>
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%'}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%'}}>
                 <Text style={styles.getStartedText}>like</Text>
                 <Text style={styles.getStartedText}>comments</Text>
                 <Text style={styles.getStartedText}>follow</Text>
@@ -588,9 +592,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
+    fontSize: 13,
+    color: '#999',
+    lineHeight: 10,
     textAlign: 'center',
   },
   tabBarInfoContainer: {

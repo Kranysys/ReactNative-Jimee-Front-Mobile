@@ -62,22 +62,33 @@
         return InstaAccountList;
     }
 
+    export function getInstaAccount(userInstaID) {
+        console.log("getInstaAccount "+userInstaID);
+        console.log("count instaccount : "+countInstaAccountList());
+        for(var i = 0;i<countInstaAccountList();i++){
+            console.log(i+"/"+countInstaAccountList()+" : "+InstaAccountList[i].instauser_id+" = "+userInstaID+" ?");
+            if( InstaAccountList[i].instauser_id == userInstaID )
+            {
+                console.log("OK -- ");
+                console.log(InstaAccountList[i]);
+              return InstaAccountList[i];
+            }
+        }
+    }
+
     export function countInstaAccountList() {
         var str = JSON.stringify(InstaAccountList);
-        //console.log("str : "+str+" len "+str.length);
-        //var parse = JSON.parse(str);
-        //let list = InstaAccountList;
-        //console.log("count is "+Object.keys(list).length);
+
         if( InstaAccountList != undefined ){
-            console.log("not un 1")
-            console.log(InstaAccountList)
+            //console.log("not un 1")
+            //console.log(InstaAccountList)
             if( InstaAccountList.lenght != undefined ){
-                console.log("not un 2")
+                //console.log("not un 2")
                 return InstaAccountList.lenght;
             } else {
-                console.log("undef 2 : "+Object.keys(InstaAccountList).length)
+                //console.log("undef 2 : "+Object.keys(InstaAccountList).length)
                 return Object.keys(InstaAccountList).length;
             }
-        } else console.log("InstaAccountList undef")
+        } else //console.log("InstaAccountList undef")
         return 0;
     }
