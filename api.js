@@ -63,14 +63,14 @@
     }
 
     export function getInstaAccount(userInstaID) {
-        console.log("getInstaAccount "+userInstaID);
-        console.log("count instaccount : "+countInstaAccountList());
+        //console.log("getInstaAccount "+userInstaID);
+        //console.log("count instaccount : "+countInstaAccountList());
         for(var i = 0;i<countInstaAccountList();i++){
-            console.log(i+"/"+countInstaAccountList()+" : "+InstaAccountList[i].instauser_id+" = "+userInstaID+" ?");
+            //console.log(i+"/"+countInstaAccountList()+" : "+InstaAccountList[i].instauser_id+" = "+userInstaID+" ?");
             if( InstaAccountList[i].instauser_id == userInstaID )
             {
-                console.log("OK -- ");
-                console.log(InstaAccountList[i]);
+                //console.log("OK -- ");
+                //console.log(InstaAccountList[i]);
               return InstaAccountList[i];
             }
         }

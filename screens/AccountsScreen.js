@@ -140,6 +140,7 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       }
     }).then((response) => response.json()).then((responseJson) => {
+      console.log("got reponse !");
       // On vide les variables
       this.instaAccountsContent = []; this.instaAccountsContentID = []; this.state.valueArray = []; this.state.valueArray2 = [];
       this.index2 = 0; this.index = 0;
@@ -153,8 +154,9 @@ export default class HomeScreen extends React.Component {
       } 
       else
       {
-        this._FetchInstaAccount().then((val) => { // Compte actuel sauvegardé
-          console.log("InstaAccount fetched : "+val);
+        //this._FetchInstaAccount().then((val) => { // Compte actuel sauvegardé (TROP LONG)
+          //console.log("InstaAccount fetched : "+val);
+          /*var val = 0;
           if(val){ // val -> active userInstaID
             for(var i=0;i<(countInstaAccountList());i++) {
               console.log("ADD INSTA ACCOUNT "+i+" ["+getInstaAccountList()[i].user+"] id ["+getInstaAccountList()[i].instauser_id+"]");
@@ -165,19 +167,19 @@ export default class HomeScreen extends React.Component {
                 this.addMoreInstaAccount(getInstaAccountList()[i].user, getInstaAccountList()[i].instauser_id);
               }
             }    
-          } else { // 1er compte actif par défaut
+          } else { */ // 1er compte actif par défaut
             for(var i=0;i<(countInstaAccountList());i++) {
               console.log("ADD INSTA ACCOUNT "+i+" ["+getInstaAccountList()[i].user+"] id ["+getInstaAccountList()[i].instauser_id+"]");
-              if(i==0) setUserInsta(getInstaAccountList()[i].instauser_id,getInstaAccountList()[i].user);
-              if(i>=1){
+              /*if(i==0) setUserInsta(getInstaAccountList()[i].instauser_id,getInstaAccountList()[i].user);
+              if(i>=1){*/
                 this.addMoreInstaAccount(getInstaAccountList()[i].user, getInstaAccountList()[i].instauser_id);
-              } 
+              //} 
             }     
-          }
+          //}
           console.log("finished.");
           this.loading = 0;
           this.forceUpdate(); // met à jour l'affichage des comptes
-        }); 
+        //}); 
       }
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
@@ -287,26 +289,35 @@ export default class HomeScreen extends React.Component {
       if(this.instaAccountsContentID[key] && this.instaAccountsContent[key]){
         return(
           // Icone suppression du compte instagram
-            <View key = { key } style = { { marginBottom: 25 } }>
-              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 100, position: 'absolute'}}>
+            <View key = { key } style = { { marginBottom: 0 } }>
+              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 20, position: 'absolute'}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 50, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
-                    {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
+                  <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 40, height: 35, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
+                    {<Ionicons name='md-trash' size={18} color='#700' style={{}} />}
                   </View>
                 </View>
               </TouchableOpacity>
           
               <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 100}}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={this.state.pressStatus ? styles.accountButPress : styles.accountBut}>
+                  <View style={styles.accountBut}>
                     <Image
-                        style={{width: 55, height: 55, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', position: 'absolute', top: 10, left: '12%' }}
+                        style={{width: 55, height: 55, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', position: 'absolute', top: 8, left: '12%' }}
                         source={{uri: getInstaAccount(this.instaAccountsContentID[key]).avatar}}
                       />
                     <Text style={{fontSize: 16, fontWeight: '600'}}>{this.instaAccountsContent[key]}</Text>
-                    <View style={{height: '100%', width: '30%', position: 'absolute', right: 0, top: 0, padding: '12%', borderLeftColor: '#ccc', borderLeftWidth: 1}}>
-                      <View style={{position: "absolute", borderBottomColor: '#ccc', borderWidth: 1, width: '100%', height: '100%', padding: '12%'}}>
-                        <Text>{getInstaAccount(this.instaAccountsContentID[key]).n_followers} fl</Text>
+                    <View style={{height: '80%', width: '30%', position: 'absolute', right: 0, top: 0, borderLeftColor: '#ddd', borderLeftWidth: 1, flex: 1, flexDirection: 'column', top: '10%', bottom: '10%'}}>
+                      <View style={{position: "absolute", borderBottomColor: '#ddd', borderBottomWidth: 1, width: '75%', height: 30, left: '12%', top: 0  }}>
+                        <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followers}</Text>
+                        <View style={{position: "absolute", bottom: 0, left: 12, padding: '2%'}}>
+                          <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
+                        </View>
+                      </View>
+                      <View style={{position: "absolute", bottom: 0,  width: '75%', height: 30,  left: '12%',  }}>
+                        <Text style={{fontWeight: '600', marginLeft: 12, marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followings}</Text>
+                        <View style={{position: "absolute", bottom: 0, left: 12, padding: '0%'}}>
+                          <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
+                        </View>
                       </View>
                     </View>
                   </View>
@@ -329,20 +340,20 @@ export default class HomeScreen extends React.Component {
             </TouchableOpacity>
           <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 5, right: 15}}>Mes comptes</Text>
         </View>
-        { this.loading==1 && 
+          { this.loading==1 && 
             <View style={{textAlign: 'center', alignItems: 'center'}}>
               <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
             </View>
           }
           { this.loading==0 && 
           <View>
-            <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => {this.props.navigation.navigate('App'); this.addAccount = 0;}} style={{zIndex: 3, height: 75, marginBottom: 100}}>
+            {/*<TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => {this.props.navigation.navigate('App'); this.addAccount = 0;}} style={{zIndex: 3, height: 75, marginBottom: 100}}>
               <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                <View style={this.state.pressStatus ? styles.accountButPress : styles.accountBut}>
+                <View style={styles.accountBut}>
                   { accountIcon }
                 </View>
               </View>
-            </TouchableOpacity>
+          </TouchableOpacity>*/}
                 { ( countInstaAccountList()==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
                   <View style={{backgroundColor: '#fff', borderRadius: 10, marginRight: 50, marginLeft: 50, zIndex: 10}}>
                     <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
@@ -367,7 +378,7 @@ export default class HomeScreen extends React.Component {
                   <View>
                     {accountList}
 
-                    <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, width: '100%', height: 200}}>
+                    <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, width: '100%', height: 150, marginBottom: 150}}>
                       <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                         <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#3800bf', width: 45, height: 45, alignItems: 'center', justifyContent: 'center'}}>
                           {<Ionicons name='md-add' size={20} color='#fff' style={{}} />}
@@ -395,21 +406,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
-  accountButPress: {
-    borderWidth: 1, 
-    borderRadius: 5, 
-    borderColor: '#ccc', 
-    backgroundColor: '#fff', 
-    width: '80%', 
-    height: 75, 
-    alignItems: 'center', 
-    justifyContent: 'center',
-    backgroundColor: '#999'
-  },
   AndroidSafeArea: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   textBox: {
 	  marginBottom: 6,
