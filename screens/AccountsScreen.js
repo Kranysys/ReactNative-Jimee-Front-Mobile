@@ -289,32 +289,36 @@ export default class HomeScreen extends React.Component {
       if(this.instaAccountsContentID[key] && this.instaAccountsContent[key]){
         return(
           // Icone suppression du compte instagram
-            <View key = { key } style = { { marginBottom: 0 } }>
-              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 20, position: 'absolute'}}>
+            <View key = { key }>
+              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 20, position: 'absolute', }}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={{borderWidth: 1, borderRadius: 5, borderColor: '#ccc', backgroundColor: '#fff', width: 40, height: 35, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
-                    {<Ionicons name='md-trash' size={18} color='#700' style={{}} />}
+                  <View style={{borderRadius: 20, borderColor: '#ccc', backgroundColor: '#C1BAFC', width: 35, height: 35, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
+                    {<Ionicons name='md-trash' size={18} color='#fff' style={{}} />}
                   </View>
                 </View>
               </TouchableOpacity>
           
-              <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 100}}>
+              <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 3, width: '100%', height: 75, marginBottom: 9, }}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
                   <View style={styles.accountBut}>
                     <Image
-                        style={{width: 55, height: 55, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', position: 'absolute', top: 8, left: '12%' }}
+                        style={{width: 55, height: 55, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', position: 'absolute', top: 8, left: 40 }}
                         source={{uri: getInstaAccount(this.instaAccountsContentID[key]).avatar}}
                       />
-                    <Text style={{fontSize: 16, fontWeight: '600'}}>{this.instaAccountsContent[key]}</Text>
-                    <View style={{height: '80%', width: '30%', position: 'absolute', right: 0, top: 0, borderLeftColor: '#ddd', borderLeftWidth: 1, flex: 1, flexDirection: 'column', top: '10%', bottom: '10%'}}>
+                    <View style={{flex: 1, flexDirection: 'column', position: 'absolute', top: 20, left: 110 }}>
+                      <Text style={{fontSize: 16, fontWeight: '200', fontFamily: 'Roboto'}}>{this.instaAccountsContent[key]}</Text>
+                      <Text style={{fontSize: 12, color: '#bbb', fontFamily: 'Roboto'}}>@{this.instaAccountsContent[key]}</Text>
+                    </View>
+
+                    <View style={{height: '80%', width: '25%', position: 'absolute', right: 0, top: 0, borderLeftColor: '#ddd', borderLeftWidth: 1, flex: 1, flexDirection: 'column', top: '10%', bottom: '10%'}}>
                       <View style={{position: "absolute", borderBottomColor: '#ddd', borderBottomWidth: 1, width: '75%', height: 30, left: '12%', top: 0  }}>
-                        <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followers}</Text>
+                        <Text style={{fontWeight: '100', marginLeft: 12, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followers}</Text>
                         <View style={{position: "absolute", bottom: 0, left: 12, padding: '2%'}}>
                           <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
                         </View>
                       </View>
                       <View style={{position: "absolute", bottom: 0,  width: '75%', height: 30,  left: '12%',  }}>
-                        <Text style={{fontWeight: '600', marginLeft: 12, marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followings}</Text>
+                        <Text style={{fontWeight: '100', marginLeft: 12, marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followings}</Text>
                         <View style={{position: "absolute", bottom: 0, left: 12, padding: '0%'}}>
                           <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
                         </View>
@@ -335,10 +339,10 @@ export default class HomeScreen extends React.Component {
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={{marginBottom: 100}}>
-            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
-              <Ionicons name='md-menu' size={44} color='#3800bf' />
+            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
+              <Image source={require('../images/menu.png')} />
             </TouchableOpacity>
-          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 5, right: 15}}>Mes comptes</Text>
+          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 65, fontFamily: 'Roboto'}}>Mes comptes</Text>
         </View>
           { this.loading==1 && 
             <View style={{textAlign: 'center', alignItems: 'center'}}>
@@ -378,13 +382,14 @@ export default class HomeScreen extends React.Component {
                   <View>
                     {accountList}
 
-                    <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, width: '100%', height: 150, marginBottom: 150}}>
+                    { /* AJOUTER UN COMPTE */}
+                    <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, width: '100%', height: 90, marginBottom: 150}}>
                       <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                        <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#3800bf', width: 45, height: 45, alignItems: 'center', justifyContent: 'center'}}>
+                        <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#5643FF', width: 45, height: 45, alignItems: 'center', justifyContent: 'center', shadowRadius: 8, shadowColor: '#455b63', shadowOffset: {  width: 4,  height: 4,  }, shadowOpacity: 0.9, elevation: 1,}}>
                           {<Ionicons name='md-add' size={20} color='#fff' style={{}} />}
                         </View>
                       </View>
-                      <Text style={{textAlign: 'center', marginTop: 0, fontWeight: '300'}}>Ajouter un compte Instagram</Text>
+                      <Text style={{textAlign: 'center', marginTop: 0, fontWeight: '300', fontSize: 16}}>Ajouter un compte Instagram</Text>
                     </TouchableOpacity>
                   </View>
                 }
@@ -397,18 +402,23 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   accountBut: {
-    borderWidth: 1, 
+    borderWidth: 0, 
     borderRadius: 12, 
     borderColor: '#ccc', 
     backgroundColor: '#fff', 
     width: '80%', 
     height: 75, 
     alignItems: 'center', 
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowRadius: 8, 
+    shadowColor: '#455b63', 
+    shadowOffset: {  width: 4,  height: 4,  }, 
+    shadowOpacity: 0.9, 
+    elevation: 1,
   },
   AndroidSafeArea: {
     //flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#F8FCFF",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
     paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },

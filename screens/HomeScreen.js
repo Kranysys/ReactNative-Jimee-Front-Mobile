@@ -448,10 +448,10 @@ export default class HomeScreen extends React.Component {
             </TouchableWithoutFeedback>
               */}
         <View style={{marginBottom: 100}}>
-            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 0, left: 15}}>
-              <Ionicons name='md-menu' size={44} color='#3800bf' />
+            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
+              <Image source={require('../images/menu.png')} />
             </TouchableOpacity>
-          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 5, right: 15}}>Accueil</Text>
+          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 65, fontFamily: 'Roboto'}}>Mes comptes</Text>
         </View>
 
           { this.loading==1 && 
