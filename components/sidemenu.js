@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {NavigationActions} from 'react-navigation';
-import {ScrollView, Text, View, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import {ScrollView, Text, View, StyleSheet, TouchableOpacity, ToastAndroid, Image } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import { getUserInsta } from '../api';
+import { getUserInsta, getInstaAccount, getUserInstaID } from '../api';
 
 class SideMenu extends Component {
   navigateToScreen = (route) => () => {
@@ -17,12 +17,33 @@ class SideMenu extends Component {
     return (
       <View style={styles.container}>
         <ScrollView style={{marginTop: 25}}>
-          <View>
-            <Text style={styles.sectionHeadingStyle}>
-              {getUserInsta()}
-            </Text>
+          { getUserInsta() != "" && 
+          <View styles={{flex: 1, flexDirection: 'row', marginLeft: 38}}>
+            <View>
+              <Image
+                style={{
+                  width: 85, 
+                  height: 85, 
+                  borderWidth: 1, 
+                  borderRadius: 10, 
+                  borderColor: '#ccc', 
+                  shadowRadius: 8, 
+                  shadowColor: '#455b63', 
+                  shadowOffset: {  width: 4,  height: 4,  }, 
+                  shadowOpacity: 0.9, 
+                  elevation: 1,
+                }}
+                source={{uri: getInstaAccount(getUserInstaID()).avatar}}
+              />
+            </View>
+            <View>
+              <Text style={styles.sectionHeadingStyle}>
+                {getUserInsta()}
+              </Text>
+            </View>
           </View>
-          <View style={{borderTopWidth: 1, borderTopColor: '#ccc'}}>
+          }
+          <View style={{borderTopWidth: 1, borderTopColor: '#ccc', marginLeft: 38}}>
             <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT); } }>     
               <Text style={styles.sectionHeadingStyle}>
                 Mon Abonnement
