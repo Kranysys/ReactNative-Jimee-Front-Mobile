@@ -447,20 +447,20 @@ export default class HomeScreen extends React.Component {
               </View>
             </TouchableWithoutFeedback>
               */}
-        <View style={{marginBottom: 100}}>
+        <View style={{marginBottom: 25}}>
             <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
               <Image source={require('../images/menu.png')} />
             </TouchableOpacity>
-          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 65, fontFamily: 'Roboto'}}>Mes comptes</Text>
+          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Mes comptes</Text>
         </View>
 
-          { this.loading==1 && 
-            <View style={{textAlign: 'center', alignItems: 'center'}}>
-              <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
-            </View>
-          }
-          { this.loading==0 && 
-          <View>
+        { this.loading==1 && 
+          <View style={{textAlign: 'center', alignItems: 'center'}}>
+            <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+          </View>
+        }
+        { this.loading==0 && 
+        <View>
           <View style={{padding: 20}}>
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
               <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
@@ -535,7 +535,8 @@ const styles = StyleSheet.create({
   AndroidSafeArea: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
   textBox: {
 	  marginBottom: 6,

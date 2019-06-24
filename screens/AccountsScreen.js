@@ -351,13 +351,6 @@ export default class HomeScreen extends React.Component {
           }
           { this.loading==0 && 
           <View>
-            {/*<TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => {this.props.navigation.navigate('App'); this.addAccount = 0;}} style={{zIndex: 3, height: 75, marginBottom: 100}}>
-              <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                <View style={styles.accountBut}>
-                  { accountIcon }
-                </View>
-              </View>
-          </TouchableOpacity>*/}
                 { ( countInstaAccountList()==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
                   <View style={{backgroundColor: '#fff', borderRadius: 10, marginRight: 50, marginLeft: 50, zIndex: 10}}>
                     <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
