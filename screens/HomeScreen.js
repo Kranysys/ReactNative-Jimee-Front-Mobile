@@ -402,7 +402,10 @@ export default class HomeScreen extends React.Component {
       }
     });
     let accountIcon = <Image
-                        style={{width: 120, height: 120, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', }}
+                        style={{width: 120, height: 120, borderWidth: 1, borderRadius: 10, borderColor: '#ccc',     shadowRadius: 8, 
+                        shadowColor: '#455b63', 
+                        shadowOffset: {  width: 4,  height: 4,  }, 
+                        shadowOpacity: 0.9, }}
                         source={{uri: getInstaAccount(getUserInstaID()).avatar}}
                       />;
     return (
@@ -447,7 +450,7 @@ export default class HomeScreen extends React.Component {
               </View>
             </TouchableWithoutFeedback>
               */}
-        <View style={{marginBottom: 25}}>
+        <View style={{marginBottom: 35}}>
             <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
               <Image source={require('../images/menu.png')} />
             </TouchableOpacity>
@@ -466,21 +469,39 @@ export default class HomeScreen extends React.Component {
               <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
                 { accountIcon } 
               </View>
-              <View style={{right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 25, position: 'absolute',}}>
-                <Text style={{fontWeight: 'bold', fontSize: 22}}>{getUserInsta()}</Text>
+              <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#ddd', }}>
+                <Text style={{fontWeight: 'bold', fontSize: 23, marginBottom: 3}}>{getUserInsta()}</Text>
+                <Text style={{fontSize: 15, fontFamily: 'Roboto', color: '#bbb'}}>@{getUserInsta()}</Text>
+              
+                <View style={{height: 60, width: '100%', flex: 1, flexDirection: 'column', borderTopWidth: 1, borderTopColor: '#ddd', paddingTop: 10, marginTop: 10}}>
+                  <View style={{borderRightColor: '#ddd', borderRightWidth: 1, width: '50%', height: '90%' }}>
+                    <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 18}}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
+                    <View style={{bottom: 0, left: 12, padding: '2%'}}>
+                      <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
+                    </View>
+                  </View>
+                {/*<View style={{position: "absolute", bottom: 0,  width: '75%', height: 30, left: '12%', BottomWidth: 1, }}>
+                    <Text style={{fontWeight: '100', marginLeft: 12, marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
+                    <View style={{position: "absolute", bottom: 0, left: 12, padding: '0%'}}>
+                      <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
+                    </View>
+                  </View>*/}
+                </View>
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%',marginTop: 150, paddingLeft: '12%', paddingRight: '12%'}}>
+
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: 160, width: '85%', borderTopWidth: 1, borderTopColor: '#ddd'}}>
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%'}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%'}}>
                 <Text style={styles.getStartedText}>like</Text>
                 <Text style={styles.getStartedText}>comments</Text>
                 <Text style={styles.getStartedText}>follow</Text>
                 <Text style={styles.getStartedText}>unfollow</Text>
               </View>
+              <Text style={{position: 'absolute', bottom: 9, right: 9, fontSize: 9, color: '#bbb'}}>Config 1 ></Text>
             </View>
           </View>
 
