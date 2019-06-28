@@ -110,6 +110,8 @@ export default class LoginScreen extends React.Component {
     .catch((error) =>{
       console.log("ERROR: "+error);
         Alert.alert("Utilisateur ou mot de passe incorrect");
+        this.loading=0;
+        this.forceUpdate();
     });
   }
   static navigationOptions = {
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
     marginLeft: -10,
   },
   welcomeText: {
-    fontSize: (Dimensions.get('window').width / 3),
+    fontSize: (Dimensions.get('window').width / 3), // font qui s'adapte à l'écran
     fontFamily: 'Roboto',
     //resizeMode: 'contain',
     letterSpacing: -9,

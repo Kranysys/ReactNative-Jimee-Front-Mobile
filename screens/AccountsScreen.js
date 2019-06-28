@@ -305,21 +305,21 @@ export default class HomeScreen extends React.Component {
                         style={{width: 55, height: 55, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', position: 'absolute', top: 8, left: 40 }}
                         source={{uri: getInstaAccount(this.instaAccountsContentID[key]).avatar}}
                       />
-                    <View style={{flex: 1, flexDirection: 'column', position: 'absolute', top: 20, left: 110 }}>
-                      <Text style={{fontSize: 16, fontWeight: '200', fontFamily: 'Roboto'}}>{this.instaAccountsContent[key]}</Text>
-                      <Text style={{fontSize: 12, color: '#bbb', fontFamily: 'Roboto'}}>@{this.instaAccountsContent[key]}</Text>
+                    <View style={{flex: 1, flexDirection: 'column', position: 'absolute', top: 20, left: 110, width: '30%' }}>
+                      <Text style={{fontSize: 16, fontWeight: '200', fontFamily: 'Roboto'}} numberOfLines={1}>{this.instaAccountsContent[key]}</Text> 
+                      <Text style={{fontSize: 12, color: '#bbb', fontFamily: 'Roboto'}} numberOfLines={1}>@{this.instaAccountsContent[key]}</Text>
                     </View>
 
                     <View style={{height: '80%', width: '25%', position: 'absolute', right: 0, top: 0, borderLeftColor: '#ddd', borderLeftWidth: 1, flex: 1, flexDirection: 'column', top: '10%', bottom: '10%'}}>
                       <View style={{position: "absolute", borderBottomColor: '#ddd', borderBottomWidth: 1, width: '75%', height: 30, left: '12%', top: 0  }}>
-                        <Text style={{fontWeight: '100', marginLeft: 12, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followers}</Text>
-                        <View style={{position: "absolute", bottom: 0, left: 12, padding: '2%'}}>
+                        <Text style={{fontWeight: '100', marginLeft: '12%', fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followers}</Text>
+                        <View style={{position: "absolute", bottom: 0, left: '12%', padding: '2%'}}>
                           <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
                         </View>
                       </View>
                       <View style={{position: "absolute", bottom: 0,  width: '75%', height: 30,  left: '12%',  }}>
-                        <Text style={{fontWeight: '100', marginLeft: 12, marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followings}</Text>
-                        <View style={{position: "absolute", bottom: 0, left: 12, padding: '0%'}}>
+                        <Text style={{fontWeight: '100', marginLeft: '12%', marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(this.instaAccountsContentID[key]).n_followings}</Text>
+                        <View style={{position: "absolute", bottom: 0, left: '12%', padding: '0%'}}>
                           <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
                         </View>
                       </View>

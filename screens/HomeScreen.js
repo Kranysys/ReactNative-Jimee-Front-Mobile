@@ -402,7 +402,7 @@ export default class HomeScreen extends React.Component {
       }
     });
     let accountIcon = <Image
-                        style={{width: 120, height: 120, borderWidth: 1, borderRadius: 10, borderColor: '#ccc',     shadowRadius: 8, 
+                        style={{width: 120, height: 120, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', shadowRadius: 8, 
                         shadowColor: '#455b63', 
                         shadowOffset: {  width: 4,  height: 4,  }, 
                         shadowOpacity: 0.9, }}
@@ -469,27 +469,27 @@ export default class HomeScreen extends React.Component {
               <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
                 { accountIcon } 
               </View>
-              <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#ddd', }}>
+              <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#eee', }}>
                 <Text style={{fontWeight: 'bold', fontSize: 23, marginBottom: 3}}>{getUserInsta()}</Text>
                 <Text style={{fontSize: 15, fontFamily: 'Roboto', color: '#bbb'}}>@{getUserInsta()}</Text>
               
-                <View style={{height: 60, width: '100%', flex: 1, flexDirection: 'column', borderTopWidth: 1, borderTopColor: '#ddd', paddingTop: 10, marginTop: 10}}>
-                  <View style={{borderRightColor: '#ddd', borderRightWidth: 1, width: '50%', height: '90%' }}>
+                <View style={{height: 60, width: '100%', flex: 1, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 10, marginTop: 10}}>
+                  <View style={{borderRightColor: '#eee', borderRightWidth: 1, width: '50%', height: '90%' }}>
                     <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 18}}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
                     <View style={{bottom: 0, left: 12, padding: '2%'}}>
                       <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
                     </View>
                   </View>
-                {/*<View style={{position: "absolute", bottom: 0,  width: '75%', height: 30, left: '12%', BottomWidth: 1, }}>
-                    <Text style={{fontWeight: '100', marginLeft: 12, marginTop: 3, fontFamily: 'Roboto'}}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
-                    <View style={{position: "absolute", bottom: 0, left: 12, padding: '0%'}}>
-                      <Text style={{fontSize: 9, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
+                  <View style={{ width: '50%', height: '90%' }}>
+                    <Text style={{fontWeight: '600', marginLeft: 13, fontFamily: 'Roboto', fontSize: 18}}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
+                    <View style={{bottom: 0, left: 12, padding: '2%'}}>
+                      <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
                     </View>
-                  </View>*/}
+                  </View>
                 </View>
               </View>
 
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: 160, width: '85%', borderTopWidth: 1, borderTopColor: '#ddd'}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: 160, width: '85%', borderTopWidth: 1, borderTopColor: '#eee'}}>
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
@@ -501,14 +501,17 @@ export default class HomeScreen extends React.Component {
                 <Text style={styles.getStartedText}>follow</Text>
                 <Text style={styles.getStartedText}>unfollow</Text>
               </View>
-              <Text style={{position: 'absolute', bottom: 9, right: 9, fontSize: 9, color: '#bbb'}}>Config 1 ></Text>
+              <Text style={{position: 'absolute', bottom: 9, right: 9, fontSize: 10, color: '#aaa'}}>Config 1 ></Text>
             </View>
           </View>
 
           <TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, paddingLeft: 20, paddingRight: 20}}>
-            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#5948FF', width: '100%', height: 50, alignItems: 'center', justifyContent: 'center', }}>
-              <Text style={{color: '#A599FF'}}>Booster mon compte<Ionicons name='md-information-circle' size={12} color='#A599FF' style={{marginTop: 12}} /></Text>
-              <Ionicons name='md-heart' size={36} color='#302597' style={{position: 'absolute', right: 25, top: 5}} />
+            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#5948FF', width: '100%', height: 70, alignItems: 'center', justifyContent: 'center', }}>
+              <View style={{left: 32, position: 'absolute', top: 5}}>
+                <Text style={{color: '#A599FF'}}>Booster mon compte<Ionicons name='md-information-circle' size={12} color='#A599FF' style={{marginTop: 12}} /></Text>
+                <Text style={{fontSize: 32, color: '#fff'}}>0/0</Text>
+              </View>
+              <Ionicons name='md-heart' size={36} color='#302597' style={{position: 'absolute', right: 25, top: 15}} />
             </View>
           </TouchableOpacity>
 
@@ -533,7 +536,7 @@ export default class HomeScreen extends React.Component {
                 </View>
               }
               { this.logscount>0 &&
-                <View style={{width: '90%'}}>
+                <View style={{width: '90%', marginBottom: 30}}>
                   <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
                   <Text style={{fontWeight: 'bold'}}>Dernières actions</Text>
                   <View style={{zIndex: 1}}>
@@ -557,7 +560,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   textBox: {
 	  marginBottom: 6,

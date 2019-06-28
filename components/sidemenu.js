@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {NavigationActions} from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
-import {ScrollView, Text, View, StyleSheet, TouchableOpacity, ToastAndroid, Image } from 'react-native';
+import {ScrollView, Text, View, StyleSheet, TouchableOpacity, ToastAndroid, Image, Linking } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { getUserInsta, getInstaAccount, getUserInstaID } from '../api';
 
@@ -114,7 +114,7 @@ class SideMenu extends Component {
           </View>
           }
           <View style={{borderTopWidth: 1, borderTopColor: '#ccc', paddingLeft: 38}}>
-            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT); } }>     
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { /*ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT);*/ Linking.openURL('https://jimee.fr') } }>     
               <Text style={styles.sectionHeadingStyle}>
                 Mon Abonnement
               </Text>        
