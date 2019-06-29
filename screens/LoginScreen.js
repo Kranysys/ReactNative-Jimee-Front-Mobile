@@ -1,3 +1,4 @@
+/* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, TextInput, AsyncStorage, Font, Dimensions } from 'react-native';
 import { WebBrowser } from 'expo';

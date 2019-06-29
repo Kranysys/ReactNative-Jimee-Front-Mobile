@@ -1,3 +1,4 @@
+/* Nicolas BAPTISTA - V1.0 */
 import PropTypes from 'prop-types';
 import React, {Component} from 'react';
 import {NavigationActions} from 'react-navigation';
@@ -30,8 +31,8 @@ class SideMenu extends Component {
     console.log("Saving ActiveInstaAccount ("+key+" ["+name+"])...")
     try {
       await AsyncStorage.setItem('ActiveInstaAccount:'+getUserID(),key+'');
+      this.props.navigation.navigate('Accounts'); // hard reset
       setUserInsta(key,name);
-
       this.props.navigation.navigate('App');
     } catch (error) {
       console.log("Error storing:"+error);

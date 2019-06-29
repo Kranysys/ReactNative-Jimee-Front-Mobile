@@ -1,3 +1,4 @@
+/* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
 TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid,

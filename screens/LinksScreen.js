@@ -1,34 +1,39 @@
-/* Nicolas BAPTISTA - V1 */
+/* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
 import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity, 
-TouchableWithoutFeedback, TextInput, Button, Platform, StatusBar, Image, Slider } from 'react-native';
+TouchableWithoutFeedback, TextInput, Button, Platform, StatusBar, Image, Slider,
+Dimensions, Switch } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import { Ionicons } from '@expo/vector-icons';
-import { api, getToken, getUserInstaID } from '../api';
+import { api, getToken, getUserInstaID, getConfigUserInsta } from '../api';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 export default class LinksScreen extends React.Component {
   constructor(props){
     super(props);
-    this.minFollowers = 0;
-    this.maxFollowers = 0;
-    this.minFollowings = 0;
-    this.maxFollowings = 0;
 
     this.commenttagscontent = [];
     this.liketagscontent = [];
-    this.state = { valueArray: [], valueArray2: [] };
+    this.state = { valueArray: [], valueArray2: [], minFollowers: 100, maxFollowers: 5000, minFollowings: 100, maxFollowings: 4000 };
     this.index = 0; this.index2 = 0;
     this.animatedValue = new Animated.Value(0);
     this.showOverlay = 0; // affichage ajout tag
     this.command = ""; // commande (tagLikes/tagComments)
     this.tagInput = React.createRef();
 
-    console.log("TOKEN: "+getToken())
+    this.followChecked = false;
+    this.unfollowChecked = false;
+    this.commentsChecked = false;
+    this.likesChecked = false;
 
-    this.request(); // obtension des settings instagram
+    if(getConfigUserInsta().follows>0) this.followChecked = true; else this.followChecked = true;
+    if(getConfigUserInsta().unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
+    if(getConfigUserInsta().comments>0) this.commentsChecked = true; else this.commentsChecked = false;
+    if(getConfigUserInsta().likes>0) this.likesChecked = true; else this.likesChecked = false;
+
+    this.getFollows(); // obtension des settings instagram
   }
-  request() {
+  getFollows() {
     // On vide
     this.state.valueArray = []; this.state.valueArray2 = []; this.liketagscontent = []; this.commenttagscontent = [];
     this.index = 0; this.index2 = 0;
@@ -42,10 +47,10 @@ export default class LinksScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       },
     }).then((response) => response.json()).then((responseJson) => {
-      if(responseJson[0].min_follows>0) this.minFollowings = responseJson[0].min_follows;
-      if(responseJson[0].max_follows>0) this.maxFollowings = responseJson[0].max_follows;
-      if(responseJson[0].min_followers>0) this.minFollowers = responseJson[0].min_followers;
-      if(responseJson[0].max_followers>0) this.maxFollowers = responseJson[0].max_followers;
+      if(responseJson[0].min_follows>0) this.state.minFollowings = responseJson[0].min_follows;
+      if(responseJson[0].max_follows>0) this.state.maxFollowings = responseJson[0].max_follows;
+      if(responseJson[0].min_followers>0) this.state.minFollowers = responseJson[0].min_followers;
+      if(responseJson[0].max_followers>0) this.state.maxFollowers = responseJson[0].max_followers;
       this.forceUpdate();
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
@@ -154,7 +159,7 @@ deleteTag(type,id,tag){
         }).catch((error) =>{
           console.log("ERROR "+command+" : "+error);
         });
-        this.request();
+        this.getFollows();
         this.forceUpdate();
       }      
       },
@@ -185,7 +190,7 @@ addTagRequest() {
     console.log("ERROR "+command+" : "+error);
   });
   this.showOverlay = 0;
-  this.request();
+  this.getFollows();
   this.forceUpdate();
 }
 static navigationOptions = {
@@ -204,7 +209,7 @@ static navigationOptions = {
               return(
                   <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                     <View style={{position: 'relative'}}>
-                      <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>{ this.liketagscontent[item.index] } </Text>
+                      <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>#{ this.liketagscontent[item.index] } </Text>
                       <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
                     </View>
                   </Animated.View>
@@ -214,7 +219,7 @@ static navigationOptions = {
           {
               return(
                 <View key = { key } style={{position: 'relative'}}>
-                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>{ this.liketagscontent[item.index] } </Text>
+                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>#{ this.liketagscontent[item.index] } </Text>
                   <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
                 </View>
               );
@@ -269,25 +274,63 @@ static navigationOptions = {
             </TouchableWithoutFeedback>
           }
           <View style={styles.content}>
-            <Text>Minimum followers</Text>
+            <View style={{borderBottomWidth: 1, borderBottomColor: '#ddd', marginBottom: 50}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1, width: '100%', }}>
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
+              </View>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%'}}>
+                <Text style={styles.getStartedText}>like</Text>
+                <Text style={styles.getStartedText}>comments</Text>
+                <Text style={styles.getStartedText}>follow</Text>
+                <Text style={styles.getStartedText}>unfollow</Text>
+              </View>
+            </View>
+
+            {/*<Text>Minimum followers</Text>
             <Text style={{fontSize: 20}}>{this.minFollowers}</Text>
             <Text>Maximum followers</Text>
             <Text style={{fontSize: 20}}>{this.maxFollowers}</Text>
             <Text>Minimum followings</Text>
             <Text style={{fontSize: 20}}>{this.minFollowings}</Text>
             <Text>Maximum followings</Text>
-            <Text style={{fontSize: 20}}>{this.maxFollowings}</Text>
-            <Text style={styles.titre}>Abonnements <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} /></Text>
+            <Text style={{fontSize: 20}}>{this.maxFollowings}</Text>*/}
+
+            <Text style={styles.titre}>Abonnées <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} />             <Text style={styles.titregauche}>{this.state.minFollowers} → {this.state.maxFollowers}</Text> </Text>
 
             { <MultiSlider
                         values={[
-                            10,
-                            20,
+                          this.state.minFollowers,
+                          this.state.maxFollowers,
                         ]}
-                        sliderLength={280}
-                        //onValuesChange={this.multiSliderValuesChange}
+                        trackStyle={{backgroundColor:'#A599FF'}}
+                        selectedStyle={{backgroundColor:'#5544ff'}}
+                        markerStyle={{backgroundColor:'#5544ff'}}
+                        sliderLength={(Dimensions.get('window').width-(Dimensions.get('window').width*0.2))}
+                        onValuesChange={ (data) => { this.state.minFollowers = data[0]; this.state.maxFollowers = data[1]; this.forceUpdate(); }}
                         min={0}
-                        max={30}
+                        max={10000}
+                        step={1}
+                        allowOverlap
+                        snapped
+                      /> }
+
+            <Text style={styles.titre}>Abonnements <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} />             <Text style={styles.titregauche}>{this.state.minFollowings} → {this.state.maxFollowings}</Text> </Text>
+
+            { <MultiSlider
+                        values={[
+                          this.state.minFollowings,
+                          this.state.maxFollowings,
+                        ]}
+                        trackStyle={{backgroundColor:'#A599FF'}}
+                        selectedStyle={{backgroundColor:'#5544ff'}}
+                        markerStyle={{backgroundColor:'#5544ff'}}
+                        sliderLength={(Dimensions.get('window').width-(Dimensions.get('window').width*0.2))}
+                        onValuesChange={ (data) => { this.state.minFollowings = data[0]; this.state.maxFollowings = data[1]; this.forceUpdate(); }}
+                        min={0}
+                        max={10000}
                         step={1}
                         allowOverlap
                         snapped
@@ -311,7 +354,7 @@ static navigationOptions = {
 
 const styles = StyleSheet.create({
   content: {
-    marginBottom: 15,
+    marginBottom: 55,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 15,
@@ -328,6 +371,12 @@ const styles = StyleSheet.create({
   titre: {
     fontSize: 14,
     fontWeight: '500',
+  },
+  titregauche: {
+    fontSize: 14,
+    fontWeight: '500',
+    position: 'absolute',
+    right: 12,
   },
   textBox: {
 	  marginBottom: 6,

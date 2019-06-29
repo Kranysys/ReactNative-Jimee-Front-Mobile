@@ -1,10 +1,11 @@
-
-    export const api = "http://62.210.72.103:8001/";  // URL DE L'API
+/* Nicolas BAPTISTA - V1.0 */
+    export const api = "http://62.210.72.103:8001/"; // URL DE L'API
     let bearerToken = ""; // TOKEN POUR OAUTH2
     let userID = ""; // UserID Connecté actuellement
     let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
     let userInsta = ""; // Compte instagramm sélectionné de l'utilisateur connecté
     var InstaAccountList; // Liste des comptes Instagram en cache
+    var ConfigUserInsta; // Liste des configurations (like,follow,unfollow,comment) en cache
 
     // SETTER
     
@@ -34,8 +35,15 @@
     // LISTE DES COMPTES (CACHE)
 
     export function setInstaAccountList(json) {
-        console.log(json);
+        //console.log(json);
         InstaAccountList = json;
+    }
+
+    // LISTE DES CONFIGURATIONS (CACHE)
+
+    export function setConfigUserInsta(json) {
+        //console.log(json);
+        ConfigUserInsta = json;
     }
 
     // GETTER
@@ -101,4 +109,10 @@
             }
         } else //console.log("InstaAccountList undef")
         return 0;
+    }
+
+    // GETTER LISTE DES CONFIGURATIONS (CACHE)
+
+    export function getConfigUserInsta() {
+        return ConfigUserInsta;
     }

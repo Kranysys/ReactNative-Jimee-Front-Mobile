@@ -1,3 +1,4 @@
+/* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';

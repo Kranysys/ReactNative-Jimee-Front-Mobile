@@ -1,3 +1,4 @@
+/* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
 TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid,
@@ -6,7 +7,8 @@ AsyncStorage, Switch, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
-import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, setUserInsta, getInstaAccount } from '../api';
+import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, 
+setUserInsta, getInstaAccount, setConfigUserInsta } from '../api';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -97,6 +99,7 @@ export default class HomeScreen extends React.Component {
       },
     }).then((response) => response.json()).then((responseJson) => {
       console.log("fl "+responseJson.followers);
+      setConfigUserInsta(responseJson); // cache pour config
       if(responseJson.follows>0) this.followChecked = true; else this.followChecked = true;
       if(responseJson.unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
       if(responseJson.comments>0) this.commentsChecked = true; else this.commentsChecked = false;
@@ -491,13 +494,13 @@ export default class HomeScreen extends React.Component {
                 </View>
               </View>
 
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: 160, width: '85%', borderTopWidth: 1, borderTopColor: '#eee'}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: 160, width: '85%', borderTopWidth: 1, borderTopColor: '#eee', }}>
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%'}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%'}}>
                 <Text style={styles.getStartedText}>like</Text>
                 <Text style={styles.getStartedText}>comments</Text>
                 <Text style={styles.getStartedText}>follow</Text>
@@ -627,7 +630,7 @@ const styles = StyleSheet.create({
   getStartedText: {
     fontSize: 13,
     color: '#999',
-    lineHeight: 10,
+    lineHeight: 15,
     textAlign: 'center',
   },
   tabBarInfoContainer: {
