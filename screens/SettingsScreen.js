@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ExpoConfigView } from '@expo/samples';
 import { api } from '../api';
@@ -12,22 +12,17 @@ export default class SettingsScreen extends React.Component {
 
   }
   static navigationOptions = {
-    title: 'Paramètres',
+    header: null,
   };
-
   render() {
     return(
       <ScrollView>
-        <View style={styles.container}>
-          <View style={{marginBottom: 15}}>
-            <Text>VERSION</Text>
-            <Text style={{fontSize: 20}}>{pkg.version} BETA</Text>
+        <View style={styles.AndroidSafeArea}>
+          <View style={{marginTop: 35, alignItems: 'center', }}>
+            <Ionicons name='ios-beer' size={42} color='#ddd'/>
+            <Text>Fonctionnalité à venir prochainement.</Text>
           </View>
           <View>
-            <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#ccc', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.props.navigation.navigate('Auth');} }>
-              <Ionicons name='md-exit' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> DECONNEXION </Text>
-            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -36,6 +31,12 @@ export default class SettingsScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
   container: {
     flex: 1,
     paddingTop: 15,

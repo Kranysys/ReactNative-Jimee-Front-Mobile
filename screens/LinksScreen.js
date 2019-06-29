@@ -1,8 +1,11 @@
+/* Nicolas BAPTISTA - V1 */
 import React from 'react';
-import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity, TouchableWithoutFeedback, TextInput, Button } from 'react-native';
+import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity, 
+TouchableWithoutFeedback, TextInput, Button, Platform, StatusBar, Image, Slider } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 import { Ionicons } from '@expo/vector-icons';
 import { api, getToken, getUserInstaID } from '../api';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 export default class LinksScreen extends React.Component {
   constructor(props){
@@ -186,7 +189,7 @@ addTagRequest() {
   this.forceUpdate();
 }
 static navigationOptions = {
-  title: 'Mes profils',
+  header: null,
 };
   render() {
     const animationValue = this.animatedValue.interpolate(
@@ -241,9 +244,14 @@ static navigationOptions = {
           }
       });
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          { this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
+      <ScrollView style={styles.AndroidSafeArea}>
+          <View style={{marginBottom: 55}}>
+              <TouchableOpacity onPress={ () => { this.props.navigation.openDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
+                <Image source={require('../images/menu.png')} />
+              </TouchableOpacity>
+            <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Mes configs</Text>
+          </View>
+          { this.showOverlay==1 &&
             <TouchableWithoutFeedback onPress={ () => { this.showOverlay=0; this.forceUpdate(); }}>
               <View style={{backgroundColor: '#fff', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
                 <View style={{backgroundColor: '#fff', borderRadius: 10, position: 'absolute', top: 150, right: 50, left: 50, zIndex: 10}}>
@@ -260,7 +268,7 @@ static navigationOptions = {
               </View>
             </TouchableWithoutFeedback>
           }
-          <View style={{marginBottom: 15}}>
+          <View style={styles.content}>
             <Text>Minimum followers</Text>
             <Text style={{fontSize: 20}}>{this.minFollowers}</Text>
             <Text>Maximum followers</Text>
@@ -269,24 +277,58 @@ static navigationOptions = {
             <Text style={{fontSize: 20}}>{this.minFollowings}</Text>
             <Text>Maximum followings</Text>
             <Text style={{fontSize: 20}}>{this.maxFollowings}</Text>
+            <Text style={styles.titre}>Abonnements <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} /></Text>
+
+            { <MultiSlider
+                        values={[
+                            10,
+                            20,
+                        ]}
+                        sliderLength={280}
+                        //onValuesChange={this.multiSliderValuesChange}
+                        min={0}
+                        max={30}
+                        step={1}
+                        allowOverlap
+                        snapped
+                      /> }
+
+            <Text>Tags Likes</Text>
+            <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
+              {likeTags}
+              <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(0); } }><Ionicons name='md-add-circle' size={32} color='#6D48F7'/></TouchableOpacity>
+            </View>
+            <Text>Tags Comments</Text>
+            <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
+              {commentTags}
+              <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(1); } }><Ionicons name='md-add-circle' size={32} color='#6D48F7'/></TouchableOpacity>
+            </View>
           </View>
-          <Text>Tags Likes</Text>
-          <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
-            {likeTags}
-            <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(0); } }><Ionicons name='md-add-circle' size={32} color='#6D48F7'/></TouchableOpacity>
-          </View>
-          <Text>Tags Comments</Text>
-          <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
-            {commentTags}
-            <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(1); } }><Ionicons name='md-add-circle' size={32} color='#6D48F7'/></TouchableOpacity>
-          </View>
-        </View>
       </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  content: {
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 15,
+    marginLeft: '5%',
+    width: '90%', 
+    padding: '5%',
+  },
+  AndroidSafeArea: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  titre: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
   textBox: {
 	  marginBottom: 6,
     fontSize: 18,
@@ -302,10 +344,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 15,
     backgroundColor: '#fff',
-    alignSelf: 'stretch',
-    alignItems: 'center'
   },
 });
 

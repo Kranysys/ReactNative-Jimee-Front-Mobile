@@ -166,7 +166,7 @@ export default class HomeScreen extends React.Component {
         }
       } else {
         this.forceUpdate();
-        ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
+        //ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
       }
       setTimeout(() => { this.getLogs() }, 12000); // Logs toutes les 12s
     }).catch((error) =>{
@@ -371,7 +371,7 @@ export default class HomeScreen extends React.Component {
         {
             return(
                 <View key = { key } style = { styles.viewHolder }>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{}} /> { this.logcontent[item.index] }</Text>
+                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{borderWidth: 1, borderColor: '#A7A2FB', borderRadius: 5}} /> { this.logcontent[item.index] }</Text>
                 </View>
             );
         }
@@ -451,10 +451,10 @@ export default class HomeScreen extends React.Component {
             </TouchableWithoutFeedback>
               */}
         <View style={{marginBottom: 35}}>
-            <TouchableOpacity onPress={ () => { this.props.navigation.toggleDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
+            <TouchableOpacity onPress={ () => { this.props.navigation.openDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
               <Image source={require('../images/menu.png')} />
             </TouchableOpacity>
-          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Mes comptes</Text>
+          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Accueil</Text>
         </View>
 
         { this.loading==1 && 
@@ -469,21 +469,23 @@ export default class HomeScreen extends React.Component {
               <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
                 { accountIcon } 
               </View>
-              <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#eee', }}>
-                <Text style={{fontWeight: 'bold', fontSize: 23, marginBottom: 3}}>{getUserInsta()}</Text>
-                <Text style={{fontSize: 15, fontFamily: 'Roboto', color: '#bbb'}}>@{getUserInsta()}</Text>
+              <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#eee', width: '50%' }}>
+                <Text style={{fontWeight: 'bold', fontSize: 23, marginBottom: 3}} numberOfLines={1}>{getUserInsta()}</Text>
+                <Text style={{fontSize: 15, fontFamily: 'Roboto', color: '#bbb'}} numberOfLines={1}>@{getUserInsta()}</Text>
               
                 <View style={{height: 60, width: '100%', flex: 1, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 10, marginTop: 10}}>
                   <View style={{borderRightColor: '#eee', borderRightWidth: 1, width: '50%', height: '90%' }}>
-                    <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 18}}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
+                    <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 18}} numberOfLines={1}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
                     <View style={{bottom: 0, left: 12, padding: '2%'}}>
                       <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
+                      <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 12, color: '#4ad991'}} numberOfLines={1}><Ionicons name='md-arrow-round-up' size={18} color='#4ad991' style={{}} /> 0</Text>
                     </View>
                   </View>
                   <View style={{ width: '50%', height: '90%' }}>
-                    <Text style={{fontWeight: '600', marginLeft: 13, fontFamily: 'Roboto', fontSize: 18}}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
-                    <View style={{bottom: 0, left: 12, padding: '2%'}}>
+                    <Text style={{fontWeight: '600', marginLeft: 13, fontFamily: 'Roboto', fontSize: 18}} numberOfLines={1}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
+                    <View style={{bottom: 0, left: 12, padding: '2%', flex: 1, flexDirection: 'column'}}>
                       <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
+                      <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 12, color: '#4ad991'}} numberOfLines={1}><Ionicons name='md-arrow-round-up' size={18} color='#4ad991' style={{}} /> 0</Text>
                     </View>
                   </View>
                 </View>
@@ -508,7 +510,7 @@ export default class HomeScreen extends React.Component {
           <TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, paddingLeft: 20, paddingRight: 20}}>
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#5948FF', width: '100%', height: 70, alignItems: 'center', justifyContent: 'center', }}>
               <View style={{left: 32, position: 'absolute', top: 5}}>
-                <Text style={{color: '#A599FF'}}>Booster mon compte<Ionicons name='md-information-circle' size={12} color='#A599FF' style={{marginTop: 12}} /></Text>
+                <Text style={{color: '#A599FF'}}>Booster mon compte <Ionicons name='md-information-circle' size={18} color='#FFF' style={{marginTop: 12, marginLeft: 3}} /></Text>
                 <Text style={{fontSize: 32, color: '#fff'}}>0/0</Text>
               </View>
               <Ionicons name='md-heart' size={36} color='#302597' style={{position: 'absolute', right: 25, top: 15}} />
@@ -533,6 +535,12 @@ export default class HomeScreen extends React.Component {
                 <View>
                   <Text>Récupération de l'historique des actions...</Text>
                   <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+                </View>
+              }
+              { this.logscount==0 &&
+                <View style={{width: '90%', marginBottom: 30}}>
+                  <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
+                  <Text style={{fontWeight: 'bold'}}>Aucune action à afficher</Text>
                 </View>
               }
               { this.logscount>0 &&

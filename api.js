@@ -63,15 +63,25 @@
     }
 
     export function getInstaAccount(userInstaID) {
-        //console.log("getInstaAccount "+userInstaID);
-        //console.log("count instaccount : "+countInstaAccountList());
-        for(var i = 0;i<countInstaAccountList();i++){
-            //console.log(i+"/"+countInstaAccountList()+" : "+InstaAccountList[i].instauser_id+" = "+userInstaID+" ?");
-            if( InstaAccountList[i].instauser_id == userInstaID )
-            {
-                //console.log("OK -- ");
-                //console.log(InstaAccountList[i]);
-              return InstaAccountList[i];
+/*
+  "avatar": "https://scontent-cdt1-1.cdninstagram.com/vp/86329583651a5c17e8cc1c368a8e64d0/5D84D7CB/t51.2885-19/s150x150/50064673_374786013358447_8539822137655951360_n.jpg?_nc_ht=scontent-cdt1-1.cdninstagram.com",
+  "instauser_id": 12,
+  "n_followers": 16,
+  "n_followings": 5,
+  "n_posts": 0,
+  "user": "kranysys",
+*/
+        if( InstaAccountList != undefined ){
+            //console.log("getInstaAccount "+userInstaID);
+            //console.log("count instaccount : "+countInstaAccountList());
+            for(var i = 0;i<countInstaAccountList();i++){
+            // console.log(i+"/"+countInstaAccountList()+" : "+InstaAccountList[i].instauser_id+" = "+userInstaID+" ?");
+                if( InstaAccountList[i].instauser_id == userInstaID )
+                {
+                    //console.log("OK -- ");
+                    //console.log(InstaAccountList[i]);
+                return InstaAccountList[i];
+                }
             }
         }
     }
