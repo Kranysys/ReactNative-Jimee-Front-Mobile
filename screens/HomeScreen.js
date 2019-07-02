@@ -72,7 +72,7 @@ export default class HomeScreen extends React.Component {
     });
   }*/
   request() {
-    var command = "info?userID="+getUserID();
+    /*var command = "info?userID="+getUserID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
@@ -87,7 +87,11 @@ export default class HomeScreen extends React.Component {
       this.forceUpdate();
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
-    });
+    });*/
+
+    if(getInstaAccount(getUserInstaID()).n_followers>0) this.accountFollowers = getInstaAccount(getUserInstaID()).n_posts; else this.accountFollowers = "-";
+    if(getInstaAccount(getUserInstaID()).n_posts>0) this.accountPosts = getInstaAccount(getUserInstaID()).n_posts; else this.accountPosts = "-";
+    if(getInstaAccount(getUserInstaID()).n_followings>0) this.accountFollowing = getInstaAccount(getUserInstaID()).n_followings; else this.accountFollowing = "-";
  
     command = "configUserInsta?userID="+getUserID();
     console.log("request -> GET "+api+command);
@@ -455,7 +459,7 @@ export default class HomeScreen extends React.Component {
               */}
         <View style={{marginBottom: 35}}>
             <TouchableOpacity onPress={ () => { this.props.navigation.openDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
-              <Image source={require('../images/menu.png')} />
+              <Image source={require('../assets/images/menu.png')} />
             </TouchableOpacity>
           <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Accueil</Text>
         </View>
@@ -494,13 +498,13 @@ export default class HomeScreen extends React.Component {
                 </View>
               </View>
 
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: 160, width: '85%', borderTopWidth: 1, borderTopColor: '#eee', }}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: '45%', width: '85%', borderTopWidth: 1, borderTopColor: '#eee', }}>
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%'}}>
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%', paddingTop: '5%', }}>
                 <Text style={styles.getStartedText}>like</Text>
                 <Text style={styles.getStartedText}>comments</Text>
                 <Text style={styles.getStartedText}>follow</Text>
