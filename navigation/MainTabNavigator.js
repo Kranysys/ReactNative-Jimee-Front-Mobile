@@ -107,6 +107,10 @@ export default createMaterialTopTabNavigator({
     labelStyle: {
       fontSize: 12,
       fontFamily: 'Roboto',
+    },
+    indicatorStyle: {
+      backgroundColor: '#6170fc',
+      color: '#6170fc',
     }
   }
 });

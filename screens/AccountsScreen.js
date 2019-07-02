@@ -61,9 +61,10 @@ export default class HomeScreen extends React.Component {
       },
 		}).then((response) => response.json()).then((responseJson) => {
       if(responseJson.user_id){
+        console.log("reponse users: ")
+        console.log(responseJson)
         setUserID(responseJson.user_id);
         // userID obtenu, les autres requêtes peuvent être effectués
-        //this.request(); // obtension des informations instagram
         this.getInstaAccounts(); // obtension du compte instagram
       } 
       else console.log("ERR!! No UserID found for token!!");
@@ -342,7 +343,7 @@ export default class HomeScreen extends React.Component {
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={{marginBottom: 100}}>
             <TouchableOpacity onPress={ () => { this.props.navigation.openDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
-              <Image source={require('../images/menu.png')} />
+              <Image source={require('../assets/images/menu.png')} />
             </TouchableOpacity>
           <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 65, fontFamily: 'Roboto'}}>Mes comptes</Text>
         </View>
