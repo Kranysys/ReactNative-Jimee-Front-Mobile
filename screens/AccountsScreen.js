@@ -60,10 +60,10 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       },
 		}).then((response) => response.json()).then((responseJson) => {
-      if(responseJson.user_id){
-        console.log("reponse users: ")
-        console.log(responseJson)
-        setUserID(responseJson.user_id);
+      console.log("reponse users: ("+responseJson[0].user_id+")")
+      console.log(responseJson)
+      if(responseJson[0].user_id){
+        setUserID(responseJson[0].user_id);
         // userID obtenu, les autres requêtes peuvent être effectués
         this.getInstaAccounts(); // obtension du compte instagram
       } 

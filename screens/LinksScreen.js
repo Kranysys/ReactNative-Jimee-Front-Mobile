@@ -25,8 +25,9 @@ export default class LinksScreen extends React.Component {
     this.unfollowChecked = false;
     this.commentsChecked = false;
     this.likesChecked = false;
+    this.updating=0;
 
-    if(getConfigUserInsta().follows>0) this.followChecked = true; else this.followChecked = true;
+    if(getConfigUserInsta().follows>0) this.followChecked = true; else this.followChecked = false;
     if(getConfigUserInsta().unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
     if(getConfigUserInsta().comments>0) this.commentsChecked = true; else this.commentsChecked = false;
     if(getConfigUserInsta().likes>0) this.likesChecked = true; else this.likesChecked = false;
@@ -95,6 +96,32 @@ export default class LinksScreen extends React.Component {
       console.log("ERROR "+command+" : "+error);
     });
     //this.forceUpdate();
+  }
+  updateFollow() {
+    this.updating=1;
+    this.forceUpdate();
+
+    command = "configFollow";
+    console.log("request -> POST "+api+command);
+    fetch(api+command,  {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
+      },
+      body: JSON.stringify({
+        userInstaID: getUserInstaID(),
+        min_followers: this.state.minFollowers,
+        max_followers: this.state.maxFollowers,
+        min_follows: this.state.minFollowings,
+        max_follows: this.state.maxFollowings,
+      })
+    }).then(response => /*{console.log(response);}*/ response.json()).then((responseJson) => {
+      this.updating=0;
+      this.forceUpdate();
+    }).catch((error) =>{
+      console.log("ERROR "+command+" : "+error);
+    });
   }
   addMoreTag(type,contenu) {
     this.animatedValue.setValue(0);
@@ -209,8 +236,8 @@ static navigationOptions = {
               return(
                   <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                     <View style={{position: 'relative'}}>
-                      <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>#{ this.liketagscontent[item.index] } </Text>
-                      <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
+                      <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>#{ this.liketagscontent[item.index] } </Text>
+                      <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
                     </View>
                   </Animated.View>
               );
@@ -219,8 +246,8 @@ static navigationOptions = {
           {
               return(
                 <View key = { key } style={{position: 'relative'}}>
-                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>#{ this.liketagscontent[item.index] } </Text>
-                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
+                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>#{ this.liketagscontent[item.index] } </Text>
+                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
                 </View>
               );
           }
@@ -232,8 +259,8 @@ static navigationOptions = {
               return(
                 <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                 <View style={{position: 'relative'}}>
-                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>{ this.commenttagscontent[item.index2] } </Text>
-                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => {this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]);  } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
+                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>{ this.commenttagscontent[item.index2] } </Text>
+                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => {this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]);  } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
                 </View>
               </Animated.View>
               );
@@ -242,8 +269,8 @@ static navigationOptions = {
           {
               return(
                 <View  key = { key } style={{position: 'relative'}}>
-                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 15}}>{ this.commenttagscontent[item.index2] } </Text>
-                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 13, alignItems: 'center'}} onPress={ () => { this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]); } }><Ionicons name='md-close-circle' size={15} color='#fff'/></TouchableOpacity>
+                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>{ this.commenttagscontent[item.index2] } </Text>
+                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]); } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
                 </View>
               );
           }
@@ -312,7 +339,8 @@ static navigationOptions = {
                         onValuesChange={ (data) => { this.state.minFollowers = data[0]; this.state.maxFollowers = data[1]; this.forceUpdate(); }}
                         min={0}
                         max={10000}
-                        step={1}
+                        step={100}
+                        touchDimensions={{height: 100,width: 100,borderRadius: 15,slipDisplacement: 200}}
                         allowOverlap
                         snapped
                       /> }
@@ -331,11 +359,20 @@ static navigationOptions = {
                         onValuesChange={ (data) => { this.state.minFollowings = data[0]; this.state.maxFollowings = data[1]; this.forceUpdate(); }}
                         min={0}
                         max={10000}
-                        step={1}
+                        step={100}
+                        touchDimensions={{height: 100,width: 100,borderRadius: 15,slipDisplacement: 200}}
                         allowOverlap
                         snapped
                       /> }
-
+            { this.updating==1 &&
+              <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')}/>
+            }
+            { this.updating==0 &&
+            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#A599FF', borderWidth: 1, borderColor: '#999', height: 35, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateFollow(); } }>
+              <Ionicons name='md-checkmark' size={32} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
+              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}>OK</Text>
+            </TouchableOpacity>
+            }
             <Text>Tags Likes</Text>
             <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
               {likeTags}

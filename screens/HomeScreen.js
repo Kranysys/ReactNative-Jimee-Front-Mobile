@@ -93,7 +93,7 @@ export default class HomeScreen extends React.Component {
     if(getInstaAccount(getUserInstaID()).n_posts>0) this.accountPosts = getInstaAccount(getUserInstaID()).n_posts; else this.accountPosts = "-";
     if(getInstaAccount(getUserInstaID()).n_followings>0) this.accountFollowing = getInstaAccount(getUserInstaID()).n_followings; else this.accountFollowing = "-";
  
-    command = "configUserInsta?userID="+getUserID();
+    command = "configUserInsta?userInstaID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
       method: 'GET',
@@ -102,12 +102,18 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       },
     }).then((response) => response.json()).then((responseJson) => {
-      console.log("fl "+responseJson.followers);
-      setConfigUserInsta(responseJson); // cache pour config
-      if(responseJson.follows>0) this.followChecked = true; else this.followChecked = true;
-      if(responseJson.unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
-      if(responseJson.comments>0) this.commentsChecked = true; else this.commentsChecked = false;
-      if(responseJson.likes>0) this.likesChecked = true; else this.likesChecked = false;
+      console.log("CongifUserInsta:")
+      console.log(responseJson[0]);
+      if(responseJson.error) {
+        console.log("=========\n!!ERREUR CongifUserInsta!! :\n=========")
+        console.log(responseJson);
+      }
+
+      setConfigUserInsta(responseJson[0]); // cache pour config
+      if(responseJson[0].follows>0) this.followChecked = true; else this.followChecked = false;
+      if(responseJson[0].unfollows>0) this.unfollowChecked = true; else this.unfollowChecked = false;
+      if(responseJson[0].comments>0) this.commentsChecked = true; else this.commentsChecked = false;
+      if(responseJson[0].likes>0) this.likesChecked = true; else this.likesChecked = false;
       this.loading = 0;
       this.forceUpdate();
       this.getLogs(); // Affichage des logs
