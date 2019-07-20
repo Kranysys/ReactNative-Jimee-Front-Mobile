@@ -181,7 +181,9 @@ export default class HomeScreen extends React.Component {
         this.forceUpdate();
         //ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
       }
-      setTimeout(() => { this.getLogs() }, 12000); // Logs toutes les 12s
+      setTimeout(() => { 
+        this.getLogs();
+      }, 12000); // Logs toutes les 12s
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });

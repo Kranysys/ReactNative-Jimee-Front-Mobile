@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
 import { api, setToken, clearAll } from '../api';
+import fetchTimeout from 'fetch-timeout';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
@@ -87,14 +88,14 @@ export default class LoginScreen extends React.Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch(api+command, {
+    fetchTimeout(api+command, {
 		  method: 'POST',
 		  headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formBody,
       timeout: 2000,
-    })
+    },3000,"Impossible de se connecter. Veuillez recommencer d'ici 30 secondes.")
     .then((response) => response.json())
     .then((responseJson) => {
       console.log("LOGIN INFO: "+responseJson.token_type+"/"+responseJson.access_token);
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     marginLeft: -10,
   },
   welcomeText: {
-    fontSize: (Dimensions.get('window').width / 3), // font qui s'adapte à l'écran
+    fontSize: (Dimensions.get('window').width / 4), // font qui s'adapte à l'écran
     fontFamily: 'Roboto',
     //resizeMode: 'contain',
     letterSpacing: -9,

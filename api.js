@@ -1,6 +1,6 @@
 /* Nicolas BAPTISTA - V1.0 */
     export const api = "http://62.210.72.103:8001/"; // URL DE L'API
-    //export const api = "http://192.168.1.50:8001/"; // URL DE L'API
+    //export const api = "http://192.168.1.33:8001/"; // URL DE L'API
     let bearerToken = ""; // TOKEN POUR OAUTH2
     let userID = ""; // UserID Connecté actuellement
     let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
