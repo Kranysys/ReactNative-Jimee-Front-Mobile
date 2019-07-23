@@ -10,6 +10,8 @@ import StatsScreen from '../screens/StatsScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+var IconSize = 20;
+
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
 });
@@ -18,7 +20,7 @@ HomeStack.navigationOptions = {
   tabBarLabel: 'Accueil',
   tabBarIcon: ({ tintColor }) => (
     <Icon
-      size={32}
+      size={IconSize}
       color={tintColor}
       name={'ios-home'}
     />
@@ -33,7 +35,7 @@ LinksStack.navigationOptions = {
   tabBarLabel: 'Config',
   tabBarIcon: ({ tintColor }) => (
     <Icon
-      size={28}
+      size={IconSize}
       color={tintColor}
       name={'md-people'}
     />
@@ -48,7 +50,7 @@ StatsStack.navigationOptions = {
   tabBarLabel: 'Stats',
   tabBarIcon: ({ tintColor }) => (
     <Icon
-      size={28}
+      size={IconSize}
       color={tintColor}
       name={'ios-pie'}
     /> 
@@ -63,7 +65,7 @@ MissionsStack.navigationOptions = {
   tabBarLabel: 'Missions',
   tabBarIcon: ({ tintColor }) => (
     <Icon
-      size={32}
+      size={IconSize}
       color={tintColor}
       name={'md-flag'}
     />
@@ -78,7 +80,7 @@ ActivityStack.navigationOptions = {
   tabBarLabel: 'Activité',
   tabBarIcon: ({ tintColor }) => (
     <Icon
-      size={26}
+      size={IconSize}
       color={tintColor}
       name={'md-megaphone'}
     />

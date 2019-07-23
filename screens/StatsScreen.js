@@ -27,7 +27,7 @@ export default class StatsScreen extends React.Component {
     this.timeline = ['January', 'February', 'March', 'April', 'May', 'June'];
     this.loading = 1;
     this.maxSize = 6; 
-    this.mode = 0; // tous / flwings / flwers
+    this.mode = 1; // tous / flwings / flwers
 
     this.getChart();
   }
@@ -156,8 +156,8 @@ static navigationOptions = {
               yAxisLabel={''}
               chartConfig={{
                 backgroundColor: '#6170fc',
-                backgroundGradientFrom: '#7180fc',
-                backgroundGradientTo: '#5763cf',
+                backgroundGradientFrom: '#6170fc',
+                backgroundGradientTo: '#4753bf',
                 decimalPlaces: 2, // optional, defaults to 2dp
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 style: {
@@ -184,8 +184,8 @@ static navigationOptions = {
               yAxisLabel={''}
               chartConfig={{
                 backgroundColor: '#6170fc',
-                backgroundGradientFrom: '#7180fc',
-                backgroundGradientTo: '#5763cf',
+                backgroundGradientFrom: '#6170fc',
+                backgroundGradientTo: '#4753bf',
                 decimalPlaces: 2, // optional, defaults to 2dp
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 style: {
@@ -203,7 +203,7 @@ static navigationOptions = {
         }
         <View style={styles.content}>
           <SwitchSelector 
-            options={[{ label: 'tous', value: '0' },{ label: 'followers', value: '1' },{ label: 'followings', value: '2' }]} 
+            options={[{ label: 'followers', value: '1' },{ label: 'followings', value: '2' }]} 
             buttonColor='#6170fc'
             initial={0} 
             onPress={value => {this.mode = value; console.log("value "+value); this.forceUpdate();}} />
