@@ -7,7 +7,7 @@ import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
 import { api, setToken, clearAll } from '../api';
 import fetchTimeout from 'fetch-timeout';
-import { LinearGradient } from 'expo-linear-gradient';
+import JimeeButton from '../components/JimeeButton';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
@@ -125,15 +125,23 @@ export default class LoginScreen extends React.Component {
       <View style={styles.loginBackground}>
         <Image style={styles.welcomeText} source={require('../assets/images/jimee.jpg')} />
         {/*<Text style={styles.smallWelcomeText}>le p'tit pote qui te rend visible</Text>*/}
-        <TextInput
-            style={ styles.textBox }
-            placeholder="Identifiant"
-            autoCapitalize = 'none'
-            onChangeText={(text) => this.setState({text})}
-            defaultValue={this.savedLogin}
-            ref={this.logInput}
-        />
         <View style = { styles.textBoxBtnHolder }>
+          <View style={{paddingRight: 0}}>
+            <Text style={{color: '#aaa', textAlign: 'left'}}>Email</Text>
+          </View>
+          <TextInput
+              style={ styles.textBox }
+              placeholder="Identifiant"
+              autoCapitalize = 'none'
+              onChangeText={(text) => this.setState({text})}
+              defaultValue={this.savedLogin}
+              ref={this.logInput}
+          />
+        </View>
+        <View style = { styles.textBoxBtnHolder }>
+          <View style={{paddingRight: 0}}>
+            <Text style={{color: '#aaa', textAlign: 'left'}}>Password</Text>
+          </View>
           <TextInput
             style={ styles.textBox }
             placeholder="Mot de passe"
@@ -145,26 +153,19 @@ export default class LoginScreen extends React.Component {
             ref={this.passInput}
           />
           <View style={{paddingRight: 0}}>
-            <Text style={{color: '#3b3b3b', textAlign: 'right'}}>mot de passe oublié</Text>
+            <TouchableOpacity>
+              <Text style={{color: '#aaa', textAlign: 'right', fontStyle: 'italic'}}>mot de passe oublié</Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6, top: 9, }} onPress = { this.managePasswordVisibility }>
             <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
           </TouchableOpacity>
         </View>
-        { this.loading==0 &&
-        <TouchableOpacity ref={this.boost} activeOpacity = { 0.5 }  onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); } }>
-          <LinearGradient
-          style = { styles.loginButton }
-          colors={['#f58524', '#f92b7f']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          >
-            <Text style={{color: '#fff', fontSize: 18}}> Se connecter </Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        { this.loading==0 && 
+          <JimeeButton onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); }} title='Se connecter' />
         }
         { this.loading==1 && 
-        <Image style={{height: 35, width: 35}} source={require('../assets/images/load.gif')} />
+          <Image style={{height: 35, width: 35}} source={require('../assets/images/load.gif')} />
         }
         <TouchableOpacity onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
           <CheckBox 
@@ -191,6 +192,14 @@ const styles = StyleSheet.create({
     padding: '10%', 
     paddingBottom: '20%', 
   },
+  hint: {
+    textAlign: 'left',
+    color: '#3b3b3b',
+    marginLeft: 0,
+    left: 0,
+    paddingLeft: 0,
+    justifyContent: 'flex-end',
+  },
   welcomeImage: {
     width: 100,
     height: 80,
@@ -201,8 +210,6 @@ const styles = StyleSheet.create({
   welcomeText: {
     width: (Dimensions.get('window').width), // font qui s'adapte à l'écran
     height: (Dimensions.get('window').width/2.5),
-    fontWeight: 'bold',
-    marginTop: 3,
     resizeMode: 'cover',
   },
   smallWelcomeText: { 
