@@ -1,5 +1,6 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { createStackNavigator, createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
@@ -9,6 +10,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import StatsScreen from '../screens/StatsScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
+import JimeeButton from '../components/JimeeButton';
 
 var IconSize = 20;
 
@@ -42,6 +44,30 @@ LinksStack.navigationOptions = {
   ),
 };
 
+const ActivityStack = createStackNavigator({
+  Settings: SettingsScreen,
+});
+
+ActivityStack.navigationOptions = {
+  tabBarLabel: ' ',
+  tabBarIcon: ({ tintColor }) => (
+    <TouchableOpacity style={{width: '100%', justifyContent: 'center', alignItems: 'center'}} activeOpacity = { 0.8 }>
+      <LinearGradient
+      style = {{ borderRadius: 20, padding: 5, width: 50, justifyContent: 'center', alignItems: 'center' }}
+      colors={['#f58524', '#f92b7f']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      >
+        <Icon
+          size={25}
+          color='#fff'
+          name='md-add'
+        />
+      </LinearGradient>
+    </TouchableOpacity>
+  ),
+};
+
 const StatsStack = createStackNavigator({
   Settings: StatsScreen,
 });
@@ -62,7 +88,7 @@ const MissionsStack = createStackNavigator({
 });
 
 MissionsStack.navigationOptions = {
-  tabBarLabel: 'Missions',
+  tabBarLabel: 'Conseils',
   tabBarIcon: ({ tintColor }) => (
     <Icon
       size={IconSize}
@@ -72,48 +98,33 @@ MissionsStack.navigationOptions = {
   ),
 };
 
-const ActivityStack = createStackNavigator({
-  Settings: SettingsScreen,
-});
-
-ActivityStack.navigationOptions = {
-  tabBarLabel: 'Activité',
-  tabBarIcon: ({ tintColor }) => (
-    <Icon
-      size={IconSize}
-      color={tintColor}
-      name={'md-megaphone'}
-    />
-  ),
-};
-
 export default createMaterialTopTabNavigator({
   HomeStack,
   LinksStack,
+  ActivityStack,
   StatsStack,
-  MissionsStack,
-  ActivityStack
+  MissionsStack
 }, {
   initialRouteName: 'HomeStack',
   swipeEnabled: true,
   animationEnabled: true,
   tabBarPosition: 'bottom',
   tabBarOptions: {
-    pressColor: '#6170fc',
+    pressColor: '#f58524',
     showIcon: true,
-    activeTintColor: '#6170fc',
+    activeTintColor: '#f58524',
     inactiveTintColor: '#d1d8eb',
     style: {
       backgroundColor: 'white',
-      color: '#6170fc',
+      color: '#ccc',
     },
     labelStyle: {
       fontSize: 12,
       fontFamily: 'Roboto',
     },
     indicatorStyle: {
-      backgroundColor: '#6170fc',
-      color: '#6170fc',
+      backgroundColor: '#f58524',
+      color: '#f58524',
     }
   }
 });
