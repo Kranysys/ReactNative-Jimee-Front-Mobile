@@ -1,6 +1,6 @@
 /* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
-import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ExpoConfigView } from '@expo/samples';
 import { api } from '../api';
@@ -24,10 +24,10 @@ export default class SettingsScreen extends React.Component {
           </TouchableOpacity>
           <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Conseils</Text>
         </View>
-        <View style={{marginTop: 35, alignItems: 'center', }}>
-          <Text>Inspiration Posts</Text>
-          <Text>Améliorer mon profil</Text>
-          <Text>Notifications & Conseils</Text>
+        <View style={{marginTop: 35, }}>
+          <Text style={styles.titre}>Inspiration Posts</Text>
+          <Text style={styles.titre}>Améliorer mon profil</Text>
+          <Text style={styles.titre}>Notifications & Conseils</Text>
         </View>
       </ScrollView>
     );
@@ -48,4 +48,10 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center'
   },
+  titre: {
+    fontFamily: 'josefin',
+    fontSize: 17,
+    color: '#3e3f68',
+    paddingBottom: 20
+  }
 });

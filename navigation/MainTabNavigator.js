@@ -7,12 +7,13 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import TrickScreen from '../screens/TricksScreen';
 import StatsScreen from '../screens/StatsScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JimeeButton from '../components/JimeeButton';
 
-var IconSize = 20;
+var IconSize = 25;
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -45,7 +46,7 @@ LinksStack.navigationOptions = {
 };
 
 const ActivityStack = createStackNavigator({
-  Settings: SettingsScreen,
+  Settings: TrickScreen,
 });
 
 ActivityStack.navigationOptions = {
@@ -59,7 +60,7 @@ ActivityStack.navigationOptions = {
       end={{ x: 1, y: 0 }}
       >
         <Icon
-          size={25}
+          size={27}
           color='#fff'
           name='md-add'
         />
@@ -119,7 +120,7 @@ export default createMaterialTopTabNavigator({
       color: '#ccc',
     },
     labelStyle: {
-      fontSize: 12,
+      fontSize: 0,
       fontFamily: 'Roboto',
     },
     indicatorStyle: {
