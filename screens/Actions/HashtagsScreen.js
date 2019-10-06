@@ -30,7 +30,7 @@ export default class HashtagsScreen extends React.Component {
             shadowOffset: {  width: 0,  height: 4,  }, 
             }}>
             <Text style={{ position: 'absolute', left: 50, top: 20, color: '#aaa', fontSize: 20 }}> 1-30 </Text>
-            {<JimeeButton title='Générer Hashtags' style={{width: 200, position: 'absolute', right: 0, top: -18}} onPress={() => { this.loading=1; this.forceUpdate(); setTimeout(() =>  {this.loading=2},1500); }}/>}
+            {<JimeeButton title='Générer Hashtags' style={{width: 200, position: 'absolute', right: 0, top: -18}} onPress={() => { this.loading=1; this.forceUpdate(); setTimeout(() => {this.loading=2; this.forceUpdate();}, 1500); }}/>}
           </View>
 
           <Text style={{fontStyle: 'italic', color: '#bbb', fontSize: 14, marginTop: 15}}>Permet de générer un nombre aléatoire d'hashtags en relation avec ton profil type</Text>
@@ -38,6 +38,24 @@ export default class HashtagsScreen extends React.Component {
           { this.loading==1 && 
             <View style={{justifyContent: "center", alignItems: "center"}}>
               <Image style={{height: 90, width: 90, alignItems: 'center'}} source={require('../../assets/images/load2.gif')} />
+            </View>
+          }
+          { this.loading==2 && 
+            <View style={{ 
+              width: '100%',
+              borderRadius: 12, 
+              borderColor: '#aaa',
+              borderWidth: 1,
+              shadowRadius: 4, 
+              shadowColor: '#000', 
+              shadowOffset: {  width: 0,  height: 4,  }, 
+              marginTop: 10,
+              }}>
+              <Text style={styles.tag}>#portraitvision</Text>
+              <Text style={styles.tag}>#portraitvisioncentral</Text>
+              <Text style={styles.tag}>#michelphoto</Text>
+              <Text style={styles.tag}>#parisianlifestyle</Text>
+              <Text style={styles.tag}>#paris</Text>
             </View>
           }
         </View>
@@ -48,6 +66,15 @@ export default class HashtagsScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  tag: {
+    fontWeight: 'bold',
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 6, 
+    borderColor: '#ccc',
+    margin: 5,
+  },
   AndroidSafeArea: {
     flex: 1,
     backgroundColor: "white",
