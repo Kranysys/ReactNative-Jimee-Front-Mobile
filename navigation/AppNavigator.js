@@ -11,6 +11,7 @@ import AccountsScreen from '../screens/AccountsScreen';
 
 import HashtagsScreen from '../screens/Actions/HashtagsScreen';
 import BoostScreen from '../screens/Actions/BoostScreen';
+import AnalyseScreen from '../screens/Actions/AnalyseScreen';
 
 import SideMenu from '../components/sidemenu'
 
@@ -43,4 +44,5 @@ export default createAppContainer(createSwitchNavigator({
   Register: RegisterStack,
   HashtagsScreen: HashtagsScreen,
   BoostScreen: BoostScreen,
+  AnalyseScreen: AnalyseScreen,
 }));
