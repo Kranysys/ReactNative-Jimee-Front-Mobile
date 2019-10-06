@@ -33,7 +33,7 @@ export default class SettingsScreen extends React.Component {
             </View>
         
             <View style={{backgroundColor: '#e6a500', borderRadius: 15, height: 250, width: '48%'}}>
-              <TouchableOpacity onPress={ () => {}}>
+              <TouchableOpacity onPress={ () => { this.props.navigation.navigate('BoostScreen')}}>
                 <ImageBackground source={require('../assets/images/action2.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                 <View style={{padding: 10, borderRadius: 10}}>
                   <Text style={{color: '#fff', fontSize: 25}}>Boost</Text>

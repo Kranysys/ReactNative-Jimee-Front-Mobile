@@ -10,6 +10,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import AccountsScreen from '../screens/AccountsScreen';
 
 import HashtagsScreen from '../screens/Actions/HashtagsScreen';
+import BoostScreen from '../screens/Actions/BoostScreen';
 
 import SideMenu from '../components/sidemenu'
 
@@ -41,4 +42,5 @@ export default createAppContainer(createSwitchNavigator({
   App: drawernavtab,
   Register: RegisterStack,
   HashtagsScreen: HashtagsScreen,
+  BoostScreen: BoostScreen,
 }));

@@ -324,7 +324,7 @@ export default class HomeScreen extends React.Component {
             </View>
           </View>
 
-          <TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, paddingLeft: 20, paddingRight: 20}}>
+          {/*<TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, paddingLeft: 20, paddingRight: 20}}>
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#5948FF', width: '100%', height: 70, alignItems: 'center', justifyContent: 'center', }}>
               <View style={{left: 32, position: 'absolute', top: 5}}>
                 <Text style={{color: '#A599FF'}}>Booster mon compte <Ionicons name='md-information-circle' size={18} color='#FFF' style={{marginTop: 12, marginLeft: 3}} /></Text>
@@ -332,7 +332,7 @@ export default class HomeScreen extends React.Component {
               </View>
               <Ionicons name='md-heart' size={36} color='#302597' style={{position: 'absolute', right: 25, top: 15}} />
             </View>
-          </TouchableOpacity>
+        </TouchableOpacity>*/}
 
           {/*<View style={{zIndex: 1,}}>
             <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
