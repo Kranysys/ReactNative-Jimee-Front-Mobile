@@ -1,6 +1,6 @@
 /* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
-import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar, Image, ImageBackground } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar, Image, ImageBackground, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/HeaderAction';
 import JimeeButton from '../../components/JimeeButton';
@@ -9,7 +9,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default class AnalyseScreen extends React.Component {
   constructor(props){
     super(props);
-    this.heart = 'md-heart-empty';
   }
   static navigationOptions = {
     header: null,
@@ -20,20 +19,17 @@ export default class AnalyseScreen extends React.Component {
         <Header title="Analyse Profil" this={this}/>
 
         <View style={{padding: 15}}>
-          <TouchableOpacity style={{width: '100%'}} activeOpacity = { 0.8 } onPress={ () => { this.heart == 'md-heart'?this.heart = 'md-heart-empty':this.heart = 'md-heart'; this.forceUpdate(); }}>
-            <LinearGradient
-            style = {{ paddingTop: 12, paddingBottom: 12, borderRadius: 12 }}
-            colors={['#f58524', '#f92b7f']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            >
-              <Text style={{color: '#fff', fontSize: 14, marginLeft: 20}}> Booster ma publication </Text>
-              <Text style={{color: '#fff', fontSize: 32, marginLeft: 20}}> 1/1 </Text>
-              <Ionicons name={this.heart} size={54} style={{color: '#fff', position: 'absolute', right: 20, top: 10}}/>
-            </LinearGradient>
-          </TouchableOpacity>
 
-          <Text style={{fontStyle: 'italic', color: '#bbb', fontSize: 14, marginTop: 15}}>Booster ma publication est une action qui envoi des likes a tes followers. Cela aide fortement tes followers a venir liker ta publication.</Text>
+        <TextInput
+            style={{borderRadius: 5, fontSize: 22}}
+            placeholder="Recherche un profil"
+            autoCapitalize = 'none'
+            underlineColorAndroid = "transparent"
+            //onChangeText={(text) => this.setState({text})}
+            //ref={this.recherche}
+          />
+          <JimeeButton title="Rechercher" onPress={ () => {}} />
+
         </View>
 
       </ScrollView>

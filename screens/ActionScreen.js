@@ -48,7 +48,7 @@ export default class SettingsScreen extends React.Component {
           <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
 
             <View style={{backgroundColor: '#46b0f0', borderRadius: 15, height: 250, width: '48%'}}>
-              <TouchableOpacity onPress={ () => {}}>
+              <TouchableOpacity onPress={ () => { this.props.navigation.navigate('AnalyseScreen')}}>
                 <ImageBackground source={require('../assets/images/action1.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                   <View style={{padding: 10, borderRadius: 10}}>
                     <Text style={{color: '#fff', fontSize: 25}}>Analyse</Text>
