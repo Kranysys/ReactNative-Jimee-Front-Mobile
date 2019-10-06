@@ -21,15 +21,64 @@ export default class AnalyseScreen extends React.Component {
         <View style={{padding: 15}}>
 
         <TextInput
-            style={{borderRadius: 5, fontSize: 22}}
-            placeholder="Recherche un profil"
+            style={{borderRadius: 12, fontSize: 30, padding: 10, borderColor: '#ccc', borderWidth: 1, height: 70}}
+            placeholder="Rechercher un profil"
             autoCapitalize = 'none'
             underlineColorAndroid = "transparent"
             //onChangeText={(text) => this.setState({text})}
             //ref={this.recherche}
           />
-          <JimeeButton title="Rechercher" onPress={ () => {}} />
+          <JimeeButton title="Rechercher" style={{position: 'absolute', top: 0, right: 17, width: 140}} onPress={ () => {  this.loading=1; this.forceUpdate(); setTimeout(() => {this.loading=2; this.forceUpdate();}, 1500); } } />
 
+
+        { this.loading==1 && 
+          <View style={{justifyContent: "center", alignItems: "center"}}>
+            <Image style={{height: 90, width: 90, alignItems: 'center'}} source={require('../../assets/images/load2.gif')} />
+          </View>
+        }
+        { this.loading==2 && 
+          <View style={{ 
+            width: '100%',
+            borderRadius: 12, 
+            borderColor: '#aaa',
+            borderWidth: 1,
+            shadowRadius: 4, 
+            shadowColor: '#000', 
+            shadowOffset: {  width: 0,  height: 4,  }, 
+            marginTop: 10,
+            }}>
+            <View style={{marginLeft: 25, marginTop: 25}}>
+            <Image source={require('../../assets/images/Analysis1.png')} style={{borderRadius: 25}} />
+              <Text style={{color: '#777', fontSize: 16}}>Larry Lachance</Text>
+              <View style={{flex: 1, flexDirection: 'row', width: '50%', position: 'absolute', right: 10, top: 10}}>
+                <View style={{alignItems: 'center', padding: 10}}>
+                  <Text style={{fontSize: 28, fontWeight: 'bold'}}>4500</Text>
+                  <Text style={{fontSize: 12 }}>followers</Text>
+                </View>
+                <View style={{alignItems: 'center', padding: 10}}>
+                  <Text style={{fontSize: 28, fontWeight: 'bold'}}>627</Text>
+                  <Text style={{fontSize: 12 }}>followings</Text>
+                </View>
+              </View>
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <View style={{margin: 10, padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 15, alignItems: 'center'}}>
+                  <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10 }}>
+                    <Ionicons name="md-heart" style={{color: "#fff"}} size={30} />
+                  </View>
+                  <Text style={{fontSize: 28, fontWeight: 'bold'}}>230</Text>
+                  <Text style={{fontSize: 8}}>Likes reçus par posts</Text>
+                </View>
+                <View style={{margin: 10, padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 15, alignItems: 'center'}}>
+                  <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10 }}>
+                    <Ionicons name="md-chatboxes" style={{color: "#fff"}} size={30} />
+                  </View>
+                  <Text style={{fontSize: 28, fontWeight: 'bold'}}>22</Text>
+                  <Text style={{fontSize: 8}}>Commentaires reçus par posts</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        }
         </View>
 
       </ScrollView>
