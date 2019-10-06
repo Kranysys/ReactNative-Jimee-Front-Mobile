@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 export default class JimeeButton extends Component {
     render() {
         return(
-            <TouchableOpacity style={{width: '100%'}} activeOpacity = { 0.8 } onPress={this.props.onPress}>
+            <TouchableOpacity style={ this.props.style?this.props.style:{width: '100%'} } activeOpacity = { 0.8 } onPress={this.props.onPress}>
                 <LinearGradient
                 style = { styles.loginButton }
                 colors={['#f58524', '#f92b7f']}

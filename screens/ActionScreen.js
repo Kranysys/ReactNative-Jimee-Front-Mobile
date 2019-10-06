@@ -21,7 +21,7 @@ export default class SettingsScreen extends React.Component {
           <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
 
             <View style={{backgroundColor: '#b7143c', borderRadius: 15, height: 250, width: '48%'}}>
-              <TouchableOpacity onPress={{}}>
+              <TouchableOpacity onPress={ () => { this.props.navigation.navigate('HashtagsScreen')}}>
                 <ImageBackground source={require('../assets/images/action3.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                   <View style={{padding: 10, borderRadius: 10}}>
                     <Text style={{color: '#fff', fontSize: 25}}>Hashtags</Text>
@@ -33,7 +33,7 @@ export default class SettingsScreen extends React.Component {
             </View>
         
             <View style={{backgroundColor: '#e6a500', borderRadius: 15, height: 250, width: '48%'}}>
-              <TouchableOpacity onPress={{}}>
+              <TouchableOpacity onPress={ () => {}}>
                 <ImageBackground source={require('../assets/images/action2.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                 <View style={{padding: 10, borderRadius: 10}}>
                   <Text style={{color: '#fff', fontSize: 25}}>Boost</Text>
@@ -47,9 +47,9 @@ export default class SettingsScreen extends React.Component {
           </View>
           <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
 
-            <View style={{backgroundColor: '#b7143c', borderRadius: 15, height: 250, width: '48%'}}>
-              <TouchableOpacity onPress={{}}>
-                <ImageBackground source={require('../assets/images/action3.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
+            <View style={{backgroundColor: '#46b0f0', borderRadius: 15, height: 250, width: '48%'}}>
+              <TouchableOpacity onPress={ () => {}}>
+                <ImageBackground source={require('../assets/images/action1.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                   <View style={{padding: 10, borderRadius: 10}}>
                     <Text style={{color: '#fff', fontSize: 25}}>Analyse</Text>
                     <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>

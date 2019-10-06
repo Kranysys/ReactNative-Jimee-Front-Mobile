@@ -7,8 +7,9 @@ import MainTabNavigator from './MainTabNavigator';
 
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-
 import AccountsScreen from '../screens/AccountsScreen';
+
+import HashtagsScreen from '../screens/Actions/HashtagsScreen';
 
 import SideMenu from '../components/sidemenu'
 
@@ -39,4 +40,5 @@ export default createAppContainer(createSwitchNavigator({
   Accounts: drawernav,
   App: drawernavtab,
   Register: RegisterStack,
+  HashtagsScreen: HashtagsScreen,
 }));

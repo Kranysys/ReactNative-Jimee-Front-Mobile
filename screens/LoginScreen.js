@@ -153,7 +153,7 @@ export default class LoginScreen extends React.Component {
             ref={this.passInput}
           />
           <View style={{paddingRight: 0}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => { Alert.alert("Un mail de confirmation vous a été envoyé !") }}>
               <Text style={{color: '#aaa', textAlign: 'right', fontStyle: 'italic'}}>mot de passe oublié</Text>
             </TouchableOpacity>
           </View>

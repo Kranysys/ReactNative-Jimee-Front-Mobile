@@ -10,6 +10,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import TrickScreen from '../screens/TricksScreen';
 import ActionScreen from '../screens/ActionScreen';
 import StatsScreen from '../screens/StatsScreen';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JimeeButton from '../components/JimeeButton';
