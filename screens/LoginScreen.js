@@ -127,7 +127,7 @@ export default class LoginScreen extends React.Component {
         {/*<Text style={styles.smallWelcomeText}>le p'tit pote qui te rend visible</Text>*/}
         <View style = { styles.textBoxBtnHolder }>
           <View style={{paddingRight: 0}}>
-            <Text style={{color: '#aaa', textAlign: 'left'}}>Email</Text>
+            <Text style={{color: '#aaa', textAlign: 'left'}}>Identifiant</Text>
           </View>
           <TextInput
               style={ styles.textBox }
@@ -165,7 +165,7 @@ export default class LoginScreen extends React.Component {
           <JimeeButton onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); }} title='Se connecter' />
         }
         { this.loading==1 && 
-          <Image style={{height: 35, width: 35}} source={require('../assets/images/load.gif')} />
+          <Image style={{height: 90, width: 90}} source={require('../assets/images/load2.gif')} />
         }
         <TouchableOpacity onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
           <CheckBox 
@@ -174,10 +174,10 @@ export default class LoginScreen extends React.Component {
           onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}
           ref={this.rememberMe}/><Text style={{color: '#000', marginTop: 17, marginLeft: -14}}>Mémoriser les Identifiants</Text>
         </TouchableOpacity>
-        {/*<TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }> BETA
-          <Text style={styles.register}>Créer un compte Jimee</Text>
+        {<TouchableOpacity style={{position: 'absolute', bottom: 25, padding: 20}} activeOpacity = { 0.4 } onPress = { () => {this.props.navigation.navigate('Register');} }>
+          <Text style={{color: '#aaa'}}>Pas encore de compte ? S'inscrire</Text>
         </TouchableOpacity> 
-        */}
+        }
       </View>
     );
   }

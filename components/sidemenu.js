@@ -184,16 +184,7 @@ class SideMenu extends Component {
           </View>
           }
           <View style={{borderTopWidth: 1, borderTopColor: '#ccc', paddingLeft: 38, marginTop: 15}}>
-            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { /*ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT);*/ Linking.openURL('https://jimee.fr') } }>     
-              <Text style={styles.sectionHeadingStyle}>
-                Mon Abonnement
-              </Text>        
-              <Text style={styles.sectionHeadingStyle}>
-                Mes Réglages
-              </Text>      
-              <Text style={styles.sectionHeadingStyle}>
-                Chat
-              </Text>      
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { /*ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT);*/ Linking.openURL('https://jimee.fr') } }>      
               <Text style={styles.sectionHeadingStyle2}>
                 A Propos
               </Text>

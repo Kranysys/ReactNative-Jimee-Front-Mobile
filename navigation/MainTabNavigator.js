@@ -8,7 +8,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TrickScreen from '../screens/TricksScreen';
-import AddScreen from '../screens/AddScreen';
+import ActionScreen from '../screens/ActionScreen';
 import StatsScreen from '../screens/StatsScreen';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -47,7 +47,7 @@ LinksStack.navigationOptions = {
 };
 
 const ActivityStack = createStackNavigator({
-  Settings: AddScreen,
+  Settings: ActionScreen,
 });
 
 ActivityStack.navigationOptions = {

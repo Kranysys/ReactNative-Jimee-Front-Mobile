@@ -9,6 +9,7 @@ import { CheckBox, Button } from 'react-native-elements';
 //import { MonoText } from '../components/StyledText';
 import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, 
 setUserInsta, getInstaAccount, setConfigUserInsta } from '../api';
+import Header from '../components/Header';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -209,160 +210,6 @@ export default class HomeScreen extends React.Component {
         }); 
     });
   }
-  /*async _FetchInstaAccount() {
-    console.log("Fetching ActiveInstaAccount...")
-    try {
-      const value = await AsyncStorage.getItem('ActiveInstaAccount:'+getUserID());
-      if (value !== null) {
-        console.log("Récupération de ActiveInstaAccount : ");
-        console.log(value);
-        return value;
-      } else console.log("Pas de ActiveInstaAccount.");
-    } catch (error) {
-      console.log("Error fetching:"+error);
-    }
-  };
-  async _storeInstaAccount(key) {
-    console.log("Saving ActiveInstaAccount...")
-    try {
-      await AsyncStorage.setItem('ActiveInstaAccount:'+getUserID(),key+'');
-      this.showInstaAccount();
-      this.getInstaAccounts();
-    } catch (error) {
-      console.log("Error storing:"+error);
-    }
-  };
-  getInstaAccounts() {
-    var command = "instaAccounts?userID="+getUserID();
-    console.log("request -> GET "+api+command);
-    fetch(api+command,  {
-      method: 'GET',
-      headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+getToken(),
-      }
-    }).then((response) => response.json()).then((responseJson) => {
-      // On vide les variables
-      this.instaAccountsContent = []; this.instaAccountsContentID = []; this.state.valueArray = []; this.state.valueArray2 = [];
-      this.index2 = 0; this.index = 0;
-
-      this.InstaAccountcount = Object.keys(responseJson).length;
-      this.InstaAccountList = responseJson;
-
-      console.log("GET INSTACCOUNT SIZE "+this.InstaAccountcount);
-      //console.log(JSON.stringify(responseJson));
-      if(!this.InstaAccountcount){
-        console.log("NO INSTA ACCOUNT");
-      } 
-      else
-      {
-        this._FetchInstaAccount().then((val) => { // Compte actuel sauvegardé
-          console.log("InstaAccount fetched : "+val);
-          if(val){ // val -> active userInstaID
-            for(var i=0;i<(this.InstaAccountcount);i++) {
-              console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
-              if(this.InstaAccountList[i].instauser_id == val){
-                setUserInsta(this.InstaAccountList[i].instauser_id,this.InstaAccountList[i].user);
-              }
-              else {
-                this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
-              }
-            }    
-          } else { // 1er compte actif par défaut
-            for(var i=0;i<(this.InstaAccountcount);i++) {
-              console.log("ADD INSTA ACCOUNT "+i+" ["+this.InstaAccountList[i].user+"] id ["+this.InstaAccountList[i].instauser_id+"]");
-              if(i==0) setUserInsta(this.InstaAccountList[i].instauser_id,this.InstaAccountList[i].user);
-              if(i>=1){
-                this.addMoreInstaAccount(this.InstaAccountList[i].user, this.InstaAccountList[i].instauser_id);
-              } 
-            }     
-          }
-          if(this.InstaAccountcount>0 && this.logscount<=0) {
-            this.getLogs(); // Affichage des logs
-            this.forceUpdate(); // met à jour l'affichage des comptes
-          }
-        }); 
-      }
-    }).catch((error) =>{
-      console.log("ERROR "+command+" : "+error);
-    });
-  }
-  addInstaAccount() {
-    console.log("Adding instaAccount action...");
-    var command = "instaAccounts";
-    if(!this.logInput.current._lastNativeText || !this.passInput.current._lastNativeText) {
-      Alert.alert("Veuillez entrer votre login et mot de passe Instagram.");
-      return;
-    }
-    console.log("request -> POST "+api+command);
-    fetch(api+command,  {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+getToken(),
-      },
-      body: JSON.stringify({
-        instauser: this.logInput.current._lastNativeText,
-        instapass: this.passInput.current._lastNativeText,
-        userID: getUserID(),
-      })
-    }).then((response) => response.json()).then((responseJson) => {
-    }).catch((error) =>{
-      console.log("ERROR ADD INSTA ACCOUNT : "+error);
-    });
-    this.showInstaAccount();
-    this.getInstaAccounts();
-    this.forceUpdate();
-  }
-  delInstaAccount(userInstaID) {
-    console.log("Deleting instaAccount action...");
-    var command = "instaAccounts";
-    console.log("request -> DELETE "+api+command);
-    fetch(api+command,  {
-      method: 'DELETE',
-      headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+getToken(),
-      },
-      body: JSON.stringify({
-      userInstaID: userInstaID,
-      userID: getUserID(),
-      })
-    }).then((response) => response.json()).then((responseJson) => {
-    }).catch((error) =>{
-      console.log("ERROR ADD INSTA ACCOUNT : "+error);
-    });
-    this.showInstaAccount();
-    this.getInstaAccounts();
-    this.forceUpdate();
-  }
-  getUserInstaFromID(userInstaID){
-    for(var i = 0;i<=this.InstaAccountcount;i++){
-      console.log(i+":"+this.instaAccountsContentID[i]+" = "+userInstaID+" ?")
-      if( this.instaAccountsContentID[i] == userInstaID )
-      {
-        console.log("yes!");
-        return this.instaAccountsContent[i];
-      }
-    }
-  }
-  addMoreInstaAccount(userInsta, userInstaID) {
-    if(!userInsta || !userInstaID) return;
-    console.log("ADDMOREINSTAACCOUNT "+userInsta+"/"+userInstaID+" ("+this.index2+")")
-    this.instaAccountsContent[this.index2] = userInsta;
-    this.instaAccountsContentID[this.index2] = userInstaID;
-
-    let newlyAddedValue = { index: this.index2 }
-
-    this.setState({ valueArray2: [ ...this.state.valueArray2, newlyAddedValue ] }, () =>
-    {
-      this.index2 = this.index2 + 1;
-    })
-  }
-  showInstaAccount() { // show and hide instaAccounts
-    this.showOverlay = !this.showOverlay;
-    this.forceUpdate();
-  }*/
   static navigationOptions = {
     header: null,
   };
@@ -426,52 +273,7 @@ export default class HomeScreen extends React.Component {
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
-          {/* this.showOverlay==1 && // LISTE DES COMPTES INSTAGRAM
-            <TouchableWithoutFeedback onPress={ () => { this.addAccount=0; this.showInstaAccount(); }}>
-              <View style={{backgroundColor: '#000', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
-                { ( this.InstaAccountcount==0 || this.addAccount==1 ) && // PAS DE COMPTE, CREATION
-                  <View style={{backgroundColor: '#fff', borderRadius: 10, position: 'absolute', top: 250, right: 50, left: 50, zIndex: 10}}>
-                    <Text style={{fontSize: 17, padding: 3}}>Ajouter un compte Instagram existant</Text>
-                    <TextInput
-                      style={ styles.textBox }
-                      placeholder="Login du compte"
-                      ref={this.logInput}
-                    />
-                    <TextInput
-                      style={ styles.textBox }
-                      placeholder="Mot de passe"
-                      underlineColorAndroid = "transparent"
-                      secureTextEntry = { this.state.hidePassword }
-                      ref={this.passInput}
-                    />
-                    <View style={{position: 'relative', alignSelf: 'stretch',}}>
-                      <Button onPress={ () => {this.addInstaAccount();}} title="AJOUTER CE COMPTE"/>
-                    </View>
-                  </View>
-                }
-                { this.InstaAccountcount>0 && // PROPOSE CREATION COMPTE SUPPLEMENTAIRE et liste
-                  <View>
-                    {accountList}
-
-                    <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, position: 'absolute', top: (220+100*(this.InstaAccountcount-1)), width: '100%'}}>
-                      <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                        <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
-                          {<Ionicons name='md-add' size={46} color='#090' style={{}} />}
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                }
-              </View>
-            </TouchableWithoutFeedback>
-              */}
-        <View style={{marginBottom: 35}}>
-            <TouchableOpacity onPress={ () => { this.props.navigation.openDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
-              <Image source={require('../assets/images/menu.png')} />
-            </TouchableOpacity>
-          <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Accueil</Text>
-        </View>
-
+        <Header title="Accueil" this={this}/>
         { this.loading==1 && 
           <View style={{textAlign: 'center', alignItems: 'center'}}>
             <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
