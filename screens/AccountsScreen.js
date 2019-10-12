@@ -295,7 +295,7 @@ export default class HomeScreen extends React.Component {
             <View key = { key }>
               <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key],this.instaAccountsContent[key]); }} style={{zIndex: 4, left: 20, position: 'absolute', }}>
                 <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row', width: 50, height: 50}}>
-                  <View style={{borderRadius: 20, borderColor: '#ccc', backgroundColor: '#C1BAFC', width: 35, height: 35, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
+                  <View style={{borderRadius: 20, borderColor: '#ccc', backgroundColor: '#f68770', width: 35, height: 35, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
                     {<Ionicons name='md-trash' size={18} color='#fff' style={{}} />}
                   </View>
                 </View>
@@ -385,7 +385,7 @@ export default class HomeScreen extends React.Component {
                     { /* AJOUTER UN COMPTE */}
                     <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.forceUpdate(); }} style={{zIndex: 3, width: '100%', height: 90, marginBottom: 550}}>
                       <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                        <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#5643FF', width: 45, height: 45, alignItems: 'center', justifyContent: 'center', shadowRadius: 8, shadowColor: '#455b63', shadowOffset: {  width: 4,  height: 4,  }, shadowOpacity: 0.9, elevation: 1,}}>
+                        <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#f68770', width: 45, height: 45, alignItems: 'center', justifyContent: 'center', shadowRadius: 8, shadowColor: '#455b63', shadowOffset: {  width: 4,  height: 4,  }, shadowOpacity: 0.9, elevation: 1,}}>
                           {<Ionicons name='md-add' size={20} color='#fff' style={{}} />}
                         </View>
                       </View>

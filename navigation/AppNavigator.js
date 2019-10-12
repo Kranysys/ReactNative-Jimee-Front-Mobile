@@ -13,6 +13,8 @@ import HashtagsScreen from '../screens/Actions/HashtagsScreen';
 import BoostScreen from '../screens/Actions/BoostScreen';
 import AnalyseScreen from '../screens/Actions/AnalyseScreen';
 
+import EditScreen from '../screens/EditScreen';
+
 import SideMenu from '../components/sidemenu'
 
 console.disableYellowBox = true; // désactive les warnings (pas pro si ça arrive)
@@ -45,4 +47,5 @@ export default createAppContainer(createSwitchNavigator({
   HashtagsScreen: HashtagsScreen,
   BoostScreen: BoostScreen,
   AnalyseScreen: AnalyseScreen,
+  EditScreen: EditScreen,
 }));

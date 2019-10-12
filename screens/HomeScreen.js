@@ -2,7 +2,7 @@
 import React from 'react';
 import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, 
 TouchableWithoutFeedback, View, Alert, Animated, TextInput, ToastAndroid,
-AsyncStorage, Switch, StatusBar } from 'react-native';
+AsyncStorage, Switch, StatusBar, Dimensions } from 'react-native';
 //import { WebBrowser } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
@@ -10,6 +10,16 @@ import { CheckBox, Button } from 'react-native-elements';
 import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, 
 setUserInsta, getInstaAccount, setConfigUserInsta } from '../api';
 import Header from '../components/Header';
+import JimeeButton from '../components/JimeeButton';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from 'react-native-chart-kit'
+import SwitchSelector from 'react-native-switch-selector';
 
 export default class HomeScreen extends React.Component {
   constructor(props){
@@ -50,28 +60,79 @@ export default class HomeScreen extends React.Component {
     this.logscount = -1;
 
     this.loading = 1;
+
+    // Chart -----------
+    this.chartSize = 6;
+    this.data1 = [0,0,0,0,0,0];
+    this.data2 = [50,60,70,20,50,40];
+    this.chartData = "";
+    this.timeline = ['January', 'February', 'March', 'April', 'May', 'June'];
+    this.loading = 1;
+    this.maxSize = 6; 
+    this.mode = 1; // tous / flwings / flwers
+    this.getChart();
   }
-  /*getID() {
-    var command = "users?token="+getToken();
-    console.log("request -> GET "+api+command);
-    fetch(api+command,  {
-		  method: 'GET',
-		  headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+getToken(),
-      },
-		}).then((response) => response.json()).then((responseJson) => {
-      if(responseJson.user_id){
-        setUserID(responseJson.user_id);
-        // userID obtenu, les autres requêtes peuvent être effectués
-        this.request(); // obtension des informations instagram
-        this.getInstaAccounts(); // obtension du compte instagram
-      } 
-      else console.log("ERR!! No UserID found for token!!");
-    }).catch((error) =>{
-      console.log("ERROR "+command+" : "+error);
-    });
-  }*/
+  getChart() {
+    if(!this.chartData) // cache
+    {
+      command = "stats?userInstaID="+getUserInstaID();
+      console.log("request -> GET "+api+command);
+      fetch(api+command,  {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+getToken(),
+        },
+      }).then((response) => response.json()).then((responseJson) => {
+        // On vide
+        this.data1 = [];
+        this.data2 = [];
+        this.timeline = [];
+
+        console.log("stats: ")
+        console.log(responseJson)
+        this.chartData = responseJson;
+        console.log("taille: "+responseJson.length)
+        this.maxSize = responseJson.length;
+        if(responseJson.length >= 12) this.maxSize = 12;
+        for(var i=0;i<this.chartSize;i++){
+          console.log("stats "+i);
+          console.log(responseJson[i].n_followers);
+          this.data1.unshift(responseJson[i].n_followers);
+          console.log(responseJson[i].n_followings);
+          this.data2.unshift(responseJson[i].n_followings);
+          console.log(responseJson[i].log_date);
+          var log_date = responseJson[i].log_date.split("T")[0].split("-")[2]+"/"+responseJson[i].log_date.split("-")[1];
+          this.timeline.unshift(log_date);
+        }
+        this.loading=0;
+        this.forceUpdate();
+      }).catch((error) =>{
+        console.log("ERROR "+command+" : "+error);
+      });
+    }
+    else
+    {
+      console.log("taking cache:")
+      console.log(this.chartData)
+      // On vide
+      this.data1 = [];
+      this.data2 = [];
+      this.timeline = [];
+
+      for(var i=0;i<this.chartSize;i++)
+      {
+        console.log("---");
+        console.log(this.chartData[i]);
+        this.data1.unshift(this.chartData[i].n_followers);
+        this.data2.unshift(this.chartData[i].n_followings);
+        var log_date = this.chartData[i].log_date.split("T")[0].split("-")[2]+"/"+this.chartData[i].log_date.split("-")[1];
+        if(this.chartSize>9) log_date = this.chartData[i].log_date.split("T")[0].split("-")[2];
+        this.timeline.unshift(log_date);
+      }
+      this.forceUpdate();
+    }
+  }
   request() {
     /*var command = "info?userID="+getUserID();
     console.log("request -> GET "+api+command);
@@ -273,110 +334,192 @@ export default class HomeScreen extends React.Component {
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <Header title="Accueil" this={this}/>
-        { this.loading==1 && 
-          <View style={{textAlign: 'center', alignItems: 'center'}}>
-            <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
-          </View>
-        }
-        { this.loading==0 && 
-        <View>
-          <View style={{padding: 20}}>
-            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
-              <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
-                { accountIcon } 
-              </View>
-              <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#eee', width: '50%' }}>
-                <Text style={{fontWeight: 'bold', fontSize: 23, marginBottom: 3}} numberOfLines={1}>{getUserInsta()}</Text>
-                <Text style={{fontSize: 15, fontFamily: 'Roboto', color: '#bbb'}} numberOfLines={1}>@{getUserInsta()}</Text>
-              
-                <View style={{height: 60, width: '100%', flex: 1, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 10, marginTop: 10}}>
-                  <View style={{borderRightColor: '#eee', borderRightWidth: 1, width: '50%', height: '90%' }}>
-                    <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 18}} numberOfLines={1}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
-                    <View style={{bottom: 0, left: 12, padding: '2%'}}>
-                      <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
-                      <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 12, color: '#4ad991'}} numberOfLines={1}><Ionicons name='md-arrow-round-up' size={18} color='#4ad991' style={{}} /> 0</Text>
+          <Header title="Accueil" this={this}/>
+          { this.loading==1 && 
+            <View style={{textAlign: 'center', alignItems: 'center'}}>
+              <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+            </View>
+          }
+          { this.loading==0 && 
+          <View>
+            <View style={{padding: 20}}>
+              <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', padding: 10}}>
+                {/*
+                <View style={{left: 0, top: 0, padding: 25, position: 'absolute',}}>
+                  { accountIcon } 
+                </View>
+                <View style={{left: 165, right: 15, top: 15, borderColor: '#ccc', backgroundColor: '#fff', padding: 15, position: 'absolute', borderBottomColor: '#eee', width: '50%' }}>
+                  <Text style={{fontWeight: 'bold', fontSize: 23, marginBottom: 3}} numberOfLines={1}>{getUserInsta()}</Text>
+                  <Text style={{fontSize: 15, fontFamily: 'Roboto', color: '#bbb'}} numberOfLines={1}>@{getUserInsta()}</Text>
+                
+                  <View style={{height: 60, width: '100%', flex: 1, flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eee', paddingTop: 10, marginTop: 10}}>
+                    <View style={{borderRightColor: '#eee', borderRightWidth: 1, width: '50%', height: '90%' }}>
+                      <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 18}} numberOfLines={1}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
+                      <View style={{bottom: 0, left: 12, padding: '2%'}}>
+                        <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followers</Text>
+                        <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 12, color: '#4ad991'}} numberOfLines={1}><Ionicons name='md-arrow-round-up' size={18} color='#4ad991' style={{}} /> 0</Text>
+                      </View>
+                    </View>
+                    <View style={{ width: '50%', height: '90%' }}>
+                      <Text style={{fontWeight: '600', marginLeft: 13, fontFamily: 'Roboto', fontSize: 18}} numberOfLines={1}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
+                      <View style={{bottom: 0, left: 12, padding: '2%', flex: 1, flexDirection: 'column'}}>
+                        <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
+                        <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 12, color: '#4ad991'}} numberOfLines={1}><Ionicons name='md-arrow-round-up' size={18} color='#4ad991' style={{}} /> 0</Text>
+                      </View>
                     </View>
                   </View>
-                  <View style={{ width: '50%', height: '90%' }}>
-                    <Text style={{fontWeight: '600', marginLeft: 13, fontFamily: 'Roboto', fontSize: 18}} numberOfLines={1}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
-                    <View style={{bottom: 0, left: 12, padding: '2%', flex: 1, flexDirection: 'column'}}>
-                      <Text style={{fontSize: 11, color: '#bbb', fontFamily: 'Roboto'}}>followings</Text>
-                      <Text style={{fontWeight: '600', marginLeft: 12, fontFamily: 'Roboto', fontSize: 12, color: '#4ad991'}} numberOfLines={1}><Ionicons name='md-arrow-round-up' size={18} color='#4ad991' style={{}} /> 0</Text>
+                </View>
+
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: '45%', width: '85%', borderTopWidth: 1, borderTopColor: '#eee', }}>
+                  <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
+                  <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
+                  <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
+                  <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
+                </View>
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%', paddingTop: '5%', }}>
+                  <Text style={styles.getStartedText}>like</Text>
+                  <Text style={styles.getStartedText}>comments</Text>
+                  <Text style={styles.getStartedText}>follow</Text>
+                  <Text style={styles.getStartedText}>unfollow</Text>
+                </View>
+                <Text style={{position: 'absolute', bottom: 9, right: 9, fontSize: 10, color: '#aaa'}}>Config 1 ></Text>
+                </View>*/}
+                <View style={{backgroundColor: '#5ed2a0', width: 100, height: 100, borderRadius: 50, textAlign: 'center', alignItems: 'center'}}>
+                  <View style={{flexDirection: 'row', marginTop: 20}}>
+                    <Text style={{fontSize: 38, color: '#fff'}}>80</Text><Text style={{fontSize: 10, color: '#fff', marginTop: 20}}>%</Text>
+                  </View>
+                  <Text style={{fontSize: 12, color: '#fff'}}>super</Text>
+                </View>
+                <View style={{width: 100, height: 100, flexDirection: 'column', textAlign: 'center', alignItems: 'center', justifyContent: 'center',}}>
+                  <Text style={{fontWeight: '600', fontSize: 28}}>{getInstaAccount(getUserInstaID()).n_followers}</Text>
+                  <Text style={{fontSize: 12}}>followers</Text>
+                </View>
+                <View style={{width: 100, height: 100, flexDirection: 'column', textAlign: 'center', alignItems: 'center', justifyContent: 'center',}}>
+                  <Text style={{fontWeight: '600', fontSize: 28}}>{getInstaAccount(getUserInstaID()).n_followings}</Text>
+                  <Text style={{fontSize: 12}}>followings</Text>
+                </View>
+            </View>
+
+            <View style={{padding: 0}}>
+              <JimeeButton title='Editer Profil' onPress={ () => { this.props.navigation.navigate('EditScreen') } }/>
+
+              <Text style={styles.titre}>Statistiques</Text>
+
+              <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
+                { this.logscount==-1 &&
+                  <View>
+                    <Text>Récupération de l'historique des actions...</Text>
+                    <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+                  </View>
+                }
+                { this.logscount==0 &&
+                  <View style={{width: '90%', marginBottom: 30}}>
+                    <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
+                    <Text style={{fontWeight: 'bold'}}>Aucune action à afficher</Text>
+                  </View>
+                }
+                { this.logscount>0 &&
+                  <View style={{width: '90%', marginBottom: 30}}>
+                    <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
+                    <Text style={{fontWeight: 'bold'}}>Dernières actions</Text>
+                    <View style={{zIndex: 1}}>
+                      {rows}
                     </View>
                   </View>
-                </View>
+                }
               </View>
 
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1,marginTop: '45%', width: '85%', borderTopWidth: 1, borderTopColor: '#eee', }}>
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
-              </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%', paddingTop: '5%', }}>
-                <Text style={styles.getStartedText}>like</Text>
-                <Text style={styles.getStartedText}>comments</Text>
-                <Text style={styles.getStartedText}>follow</Text>
-                <Text style={styles.getStartedText}>unfollow</Text>
-              </View>
-              <Text style={{position: 'absolute', bottom: 9, right: 9, fontSize: 10, color: '#aaa'}}>Config 1 ></Text>
+              <View style={{
+                  marginVertical: 8,
+                  borderRadius: 16,
+                  borderColor: '#ccc',
+                  borderWidth: 1,
+                  padding: 10,
+                }}>
+                  <SwitchSelector 
+                  options={[{ label: 'followers', value: '1' },{ label: 'followings', value: '2' }]} 
+                  buttonColor='#f66445'
+                  initial={0} 
+                  onPress={value => {this.mode = value; console.log("value "+value); this.forceUpdate();}} />
+                  { this.mode==1 &&
+                  <BarChart
+                    data={{
+                      labels: this.timeline,
+                      datasets: [{
+                        data: this.data1
+                      }
+                    ]}}
+                    width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
+                    height={(Dimensions.get('window').height-Math.round(Dimensions.get('window').height*0.6))} // voir ici si erreur conversion float
+                    yAxisLabel={''}
+                    chartConfig={{
+                      backgroundColor: '#fff',
+                      backgroundGradientFrom: '#fff',
+                      backgroundGradientTo: '#fff',
+                      decimalPlaces: 2, // optional, defaults to 2dp
+                      color: (opacity = 1) => `#f66445`,
+                      labelColor: (opacity = 1) => `#f66445`,
+                      style: {
+                        borderRadius: 16
+                      }
+                    }}
+                />
+                }
+                { this.mode==2 &&
+                <BarChart
+                data={{
+                  labels: this.timeline,
+                  datasets: [{
+                    data: this.data2
+                  }
+                ]}}
+                width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
+                height={(Dimensions.get('window').height-Math.round(Dimensions.get('window').height*0.6))} // voir ici si erreur conversion float
+                yAxisLabel={''}
+                chartConfig={{
+                  backgroundColor: '#fff',
+                  backgroundGradientFrom: '#fff',
+                  backgroundGradientTo: '#fff',
+                  decimalPlaces: 2, // optional, defaults to 2dp
+                  color: (opacity = 1) => `#f66445`,
+                  labelColor: (opacity = 1) => `#f66445`,
+                  style: {
+                    borderRadius: 16
+                  }
+                }}
+                />
+                }
             </View>
-          </View>
 
-          {/*<TouchableOpacity activeOpacity = { 0.8 } style={{zIndex: 3, paddingLeft: 20, paddingRight: 20}}>
-            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#5948FF', width: '100%', height: 70, alignItems: 'center', justifyContent: 'center', }}>
-              <View style={{left: 32, position: 'absolute', top: 5}}>
-                <Text style={{color: '#A599FF'}}>Booster mon compte <Ionicons name='md-information-circle' size={18} color='#FFF' style={{marginTop: 12, marginLeft: 3}} /></Text>
-                <Text style={{fontSize: 32, color: '#fff'}}>0/0</Text>
-              </View>
-              <Ionicons name='md-heart' size={36} color='#302597' style={{position: 'absolute', right: 25, top: 15}} />
-            </View>
-        </TouchableOpacity>*/}
+            <Text style={styles.titre}>Posts récents populaires</Text>
 
-          {/*<View style={{zIndex: 1,}}>
-            <TouchableOpacity ref={this.valider} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#3b3', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateCheck(); } }>
-              <Ionicons name='md-checkmark' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> VALIDER </Text>
-            </TouchableOpacity>
-            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#BC3434', borderWidth: 1, borderColor: '#999', height: 40, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.addMoreLog(); } }>
-              <Ionicons name='md-jet' size={38} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}> BOOST </Text>
-            </TouchableOpacity>
-          </View>
-          */}
-
-          <View style={{padding: 20}}>
-            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
-              { this.logscount==-1 &&
-                <View>
-                  <Text>Récupération de l'historique des actions...</Text>
-                  <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
-                </View>
-              }
-              { this.logscount==0 &&
-                <View style={{width: '90%', marginBottom: 30}}>
-                  <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
-                  <Text style={{fontWeight: 'bold'}}>Aucune action à afficher</Text>
-                </View>
-              }
-              { this.logscount>0 &&
-                <View style={{width: '90%', marginBottom: 30}}>
-                  <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
-                  <Text style={{fontWeight: 'bold'}}>Dernières actions</Text>
-                  <View style={{zIndex: 1}}>
-                    {rows}
+            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+              <View style={{width: '32%'}}>
+                <Image source={require('../assets/images/album1.png')}/>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                  <Text>637</Text>
+                  <View style={{ backgroundColor: '#f00', borderRadius: 7, padding: 2 }}>
+                    <Ionicons name="md-heart" style={{color: "#fff"}} size={8} />
                   </View>
                 </View>
-              }
+              </View>
+            </View>
+
+            <Text style={styles.titre}>Badges</Text>
+
+            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
+              <Image source={require('../assets/images/badges.png')} />
+              <Image source={require('../assets/images/badges.png')} />
             </View>
           </View>
+        </View>
 
         </View>
         }
         </View>
         <View style={{height: 200}}></View>
-      </ScrollView>
+        </ScrollView>
+        
     );
   }
 }
@@ -491,5 +634,11 @@ const styles = StyleSheet.create({
   },
   instaActions: {
     fontSize: 16, 
+  },
+  titre: {
+    fontFamily: 'josefin',
+    fontSize: 17,
+    color: '#3e3f68',
+    padding: 20
   },
 });
