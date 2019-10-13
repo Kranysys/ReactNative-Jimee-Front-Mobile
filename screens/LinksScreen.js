@@ -15,7 +15,7 @@ export default class LinksScreen extends React.Component {
 
     this.commenttagscontent = [];
     this.liketagscontent = [];
-    this.state = { valueArray: [], valueArray2: [], minFollowers: 100, maxFollowers: 5000, minFollowings: 100, maxFollowings: 4000 };
+    this.state = { valueArray: [], valueArray2: [], valueArray3: [], minFollowers: 100, maxFollowers: 5000, minFollowings: 100, maxFollowings: 4000 };
     this.index = 0; this.index2 = 0;
     this.animatedValue = new Animated.Value(0);
     this.showOverlay = 0; // affichage ajout tag
@@ -37,6 +37,7 @@ export default class LinksScreen extends React.Component {
 
     this.getFollows(); // obtension des settings instagram
     this.logscount = -1;
+    this.logcontent = [];
     this.getLogs(); // Affichage des logs
   }
   getFollows() {
@@ -202,7 +203,7 @@ deleteTag(type,id,tag){
 getLogs() {
   if(!getToken()) return;
   this.logcontent = [];
-  this.state.valueArray = [];
+  this.state.valueArray3 = [];
   var command = "userlogs?userInstaID="+getUserInstaID();
   console.log("request -> GET "+api+command);
   fetch(api+command,  {
@@ -239,7 +240,7 @@ addMoreLog(contenu) {
 
   let newlyAddedValue = { index: this.index }
 
-  this.setState({ valueArray: [ ...this.state.valueArray, newlyAddedValue ] }, () =>
+  this.setState({ valueArray3: [ ...this.state.valueArray3, newlyAddedValue ] }, () =>
   {
       Animated.timing(
         this.animatedValue,
@@ -289,7 +290,7 @@ static navigationOptions = {
         inputRange: [ 0, 1 ],
         outputRange: [ -59, 0 ]
       });
-      let rows = this.state.valueArray.map(( item, key ) =>
+      let rows = this.state.valueArray3.map(( item, key ) =>
       {
           if(( key ) == this.index)
           {
@@ -439,7 +440,6 @@ static navigationOptions = {
           </View>
           <Text style={styles.titre}>Mes Tags</Text>
           <View style={styles.content}>
-            <Text>Tags Likes</Text>
             <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
               {likeTags}
               <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(0); } }><Ionicons name='md-add-circle' size={32} color='#666'/></TouchableOpacity>
@@ -452,7 +452,7 @@ static navigationOptions = {
           </View>
           <Text style={styles.titre}>Dernières Actions</Text>
 
-          <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
+          <View style={styles.content}>
             { this.logscount==-1 &&
               <View>
                 <Text>Récupération de l'historique des actions...</Text>
@@ -475,6 +475,7 @@ static navigationOptions = {
               </View>
             }
           </View>
+        <View style={{height: 200}}></View>
       </ScrollView>
     );
   }
