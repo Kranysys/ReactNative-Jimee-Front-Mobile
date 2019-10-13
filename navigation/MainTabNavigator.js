@@ -42,16 +42,16 @@ LinksStack.navigationOptions = {
     <Icon
       size={IconSize}
       color={tintColor}
-      name={'md-people'}
+      name={'md-cog'}
     />
   ),
 };
 
-const ActivityStack = createStackNavigator({
+const ActionStack = createStackNavigator({
   Settings: ActionScreen,
 });
 
-ActivityStack.navigationOptions = {
+ActionStack.navigationOptions = {
   tabBarLabel: ' ',
   tabBarIcon: ({ tintColor }) => (
     <TouchableOpacity style={{width: '100%', justifyContent: 'center', alignItems: 'center'}} activeOpacity = { 0.8 }>
@@ -81,7 +81,7 @@ StatsStack.navigationOptions = {
     <Icon
       size={IconSize}
       color={tintColor}
-      name={'ios-pie'}
+      name={'md-school'}
     /> 
   ),
 };
@@ -96,17 +96,17 @@ MissionsStack.navigationOptions = {
     <Icon
       size={IconSize}
       color={tintColor}
-      name={'md-flag'}
+      name={'md-paper'}
     />
   ),
 };
 
 export default createMaterialTopTabNavigator({
   HomeStack,
-  LinksStack,
-  ActivityStack,
   StatsStack,
-  MissionsStack
+  ActionStack,
+  MissionsStack,
+  LinksStack,
 }, {
   initialRouteName: 'HomeStack',
   swipeEnabled: true,

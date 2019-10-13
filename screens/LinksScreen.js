@@ -7,6 +7,7 @@ import { ExpoLinksView } from '@expo/samples';
 import { Ionicons } from '@expo/vector-icons';
 import { api, getToken, getUserInstaID, getConfigUserInsta } from '../api';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import Header from '../components/Header';
 
 export default class LinksScreen extends React.Component {
   constructor(props){
@@ -35,7 +36,8 @@ export default class LinksScreen extends React.Component {
     }
 
     this.getFollows(); // obtension des settings instagram
-    
+    this.logscount = -1;
+    this.getLogs(); // Affichage des logs
   }
   getFollows() {
     // On vide
@@ -197,6 +199,61 @@ deleteTag(type,id,tag){
     { cancelable: true }
   );
 }
+getLogs() {
+  if(!getToken()) return;
+  this.logcontent = [];
+  this.state.valueArray = [];
+  var command = "userlogs?userInstaID="+getUserInstaID();
+  console.log("request -> GET "+api+command);
+  fetch(api+command,  {
+    method: 'GET',
+    headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer '+getToken(),
+    }
+  }).then((response) => response.json()).then((responseJson) => {
+    this.logscount = Object.keys(responseJson).length;
+    //console.log("Nombre de logs : "+this.logscount);
+    //console.log(JSON.stringify(responseJson));
+    if(this.logscount > 0){
+      for(var i=0;i<10 && i < this.logscount;i++) {
+        if(responseJson[i].id>0){
+          //console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
+          this.addMoreLog("@"+responseJson[i].user+" : "+responseJson[i].type);
+        }
+      }
+    } else {
+      this.forceUpdate();
+      //ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
+    }
+    setTimeout(() => { 
+      this.getLogs();
+    }, 12000); // Logs toutes les 12s
+  }).catch((error) =>{
+    console.log("ERROR "+command+" : "+error);
+  });
+}
+addMoreLog(contenu) {
+  this.animatedValue.setValue(0);
+  this.logcontent[this.index] = contenu;
+
+  let newlyAddedValue = { index: this.index }
+
+  this.setState({ valueArray: [ ...this.state.valueArray, newlyAddedValue ] }, () =>
+  {
+      Animated.timing(
+        this.animatedValue,
+        {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true
+        }
+      ).start(() =>
+      {
+          this.index = this.index + 1;
+      }); 
+  });
+}
 addTag(type){
   this.tagcommand = "tagLikes";
   if(type==1) this.tagcommand = "tagComments";
@@ -232,6 +289,25 @@ static navigationOptions = {
         inputRange: [ 0, 1 ],
         outputRange: [ -59, 0 ]
       });
+      let rows = this.state.valueArray.map(( item, key ) =>
+      {
+          if(( key ) == this.index)
+          {
+              return(
+                  <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
+                      <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{}} /> { this.logcontent[item.index] }</Text>
+                  </Animated.View>
+              );
+          }
+          else
+          {
+              return(
+                  <View key = { key } style = { styles.viewHolder }>
+                      <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{borderWidth: 1, borderColor: '#A7A2FB', borderRadius: 5}} /> { this.logcontent[item.index] }</Text>
+                  </View>
+              );
+          }
+      });
       let likeTags = this.state.valueArray.map(( item, key ) =>
       {
           if(( key ) == this.index)
@@ -239,8 +315,8 @@ static navigationOptions = {
               return(
                   <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                     <View style={{position: 'relative'}}>
-                      <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>#{ this.liketagscontent[item.index] } </Text>
-                      <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
+                      <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#f58029', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>#{ this.liketagscontent[item.index] } </Text>
+                      <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={18} color='#666'/></TouchableOpacity>
                     </View>
                   </Animated.View>
               );
@@ -249,8 +325,8 @@ static navigationOptions = {
           {
               return(
                 <View key = { key } style={{position: 'relative'}}>
-                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>#{ this.liketagscontent[item.index] } </Text>
-                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
+                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#f58029', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>#{ this.liketagscontent[item.index] } </Text>
+                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => { this.deleteTag(0,item.index,this.liketagscontent[item.index]); } }><Ionicons name='md-close-circle' size={18} color='#666'/></TouchableOpacity>
                 </View>
               );
           }
@@ -262,8 +338,8 @@ static navigationOptions = {
               return(
                 <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
                 <View style={{position: 'relative'}}>
-                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#6D48F7', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>{ this.commenttagscontent[item.index2] } </Text>
-                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => {this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]);  } }><Ionicons name='md-close-circle' size={18} color='#fff'/></TouchableOpacity>
+                  <Text style ={{padding: 5, borderColor: '#000', backgroundColor: '#f58029', color: '#fff', borderRadius: 5, borderWidth: 1, margin: 5, paddingRight: 25}}>{ this.commenttagscontent[item.index2] } </Text>
+                  <TouchableOpacity style={{ position: 'absolute', right: 10, top: 10, alignItems: 'center'}} onPress={ () => {this.deleteTag(1,item.index2,this.commenttagscontent[item.index2]);  } }><Ionicons name='md-close-circle' size={18} color='#000'/></TouchableOpacity>
                 </View>
               </Animated.View>
               );
@@ -280,12 +356,7 @@ static navigationOptions = {
       });
     return (
       <ScrollView style={styles.AndroidSafeArea}>
-          <View style={{marginBottom: 55}}>
-              <TouchableOpacity onPress={ () => { this.props.navigation.openDrawer(); } } style={{width: 50, height: 50, position: 'absolute', top: 15, left: 20}}>
-                <Image source={require('../assets/images/menu.png')} />
-              </TouchableOpacity>
-            <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>Mes configs</Text>
-          </View>
+          <Header title='Algo' this={this} />
           { this.showOverlay==1 &&
             <TouchableWithoutFeedback onPress={ () => { this.showOverlay=0; this.forceUpdate(); }}>
               <View style={{backgroundColor: '#fff', opacity: 0.8, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 2}}>
@@ -303,41 +374,34 @@ static navigationOptions = {
               </View>
             </TouchableWithoutFeedback>
           }
+          <Text style={styles.titre}>Configuration</Text>
           <View style={styles.content}>
-            <View style={{borderBottomWidth: 1, borderBottomColor: '#ddd', marginBottom: 50}}>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between',padding: 10,zIndex:1, width: '100%', }}>
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} />
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
+              <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between',padding: 10,zIndex:1, width: '100%', }}>
+                <View style={{flexDirection: 'row', marginBottom: 5}}>
+                  <Switch thumbColor='#f58029' trackColor={{true:'#f58029', false: null}} onValueChange = { () => {this.likesChecked=!this.likesChecked; this.forceUpdate();}} value={this.likesChecked} /><Text style={{fontSize: 12, marginTop: 4}}>Activer le like ciblé</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                  <Switch thumbColor='#f58029' trackColor={{true:'#f58029', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} /><Text style={{fontSize: 12, marginTop: 4}}>Mode Sommeil (fortement recommandé^)</Text>
+                </View>
+                {/*<Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.commentsChecked=!this.commentsChecked; this.forceUpdate();}} value={this.commentsChecked} />
                 <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.followChecked=!this.followChecked;this.forceUpdate();}} value={this.followChecked} />
-                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />
+                <Switch thumbColor='#3800bf' trackColor={{true:'#8F8BFF', false: null}} onValueChange = { () => {this.unfollowChecked=!this.unfollowChecked;this.forceUpdate();}} value={this.unfollowChecked} />*/}
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', zIndex:1,width:'100%', paddingLeft: '12%', paddingRight: '12%', paddingBottom: '12%'}}>
-                <Text style={styles.getStartedText}>like</Text>
-                <Text style={styles.getStartedText}>comments</Text>
-                <Text style={styles.getStartedText}>follow</Text>
-                <Text style={styles.getStartedText}>unfollow</Text>
-              </View>
-            </View>
+          </View>
 
-            {/*<Text>Minimum followers</Text>
-            <Text style={{fontSize: 20}}>{this.minFollowers}</Text>
-            <Text>Maximum followers</Text>
-            <Text style={{fontSize: 20}}>{this.maxFollowers}</Text>
-            <Text>Minimum followings</Text>
-            <Text style={{fontSize: 20}}>{this.minFollowings}</Text>
-            <Text>Maximum followings</Text>
-            <Text style={{fontSize: 20}}>{this.maxFollowings}</Text>*/}
+          <Text style={styles.titre}>Restrictions</Text>
+          <View style={styles.content}>
 
-            <Text style={styles.titre}>Abonnées <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} />             <Text style={styles.titregauche}>{this.state.minFollowers} → {this.state.maxFollowers}</Text> </Text>
+            <Text style={styles.titre2}>Tranche Followers <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} />             <Text style={styles.titregauche}>{this.state.minFollowers} → {this.state.maxFollowers}</Text> </Text>
 
             { <MultiSlider
                         values={[
                           this.state.minFollowers,
                           this.state.maxFollowers,
                         ]}
-                        trackStyle={{backgroundColor:'#A599FF'}}
-                        selectedStyle={{backgroundColor:'#5544ff'}}
-                        markerStyle={{backgroundColor:'#5544ff'}}
+                        trackStyle={{backgroundColor:'#f49953'}}
+                        selectedStyle={{backgroundColor:'#f74663'}}
+                        markerStyle={{backgroundColor:'#f74663',height: 20, width: 20, borderRadius: 15}}
                         sliderLength={(Dimensions.get('window').width-(Dimensions.get('window').width*0.2))}
                         onValuesChange={ (data) => { this.state.minFollowers = data[0]; this.state.maxFollowers = data[1]; this.forceUpdate(); }}
                         onValuesChangeFinish={ (data) => { this.updateFollow(); } }
@@ -349,45 +413,67 @@ static navigationOptions = {
                         snapped
                       /> }
 
-            <Text style={styles.titre}>Abonnements <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} />             <Text style={styles.titregauche}>{this.state.minFollowings} → {this.state.maxFollowings}</Text> </Text>
+            <Text style={styles.titre2}>Tranche Followings <Ionicons name='md-information-circle' size={18} color='#A599FF' style={{marginTop: 12, marginLeft: 3}} />             <Text style={styles.titregauche}>{this.state.minFollowings} → {this.state.maxFollowings}</Text> </Text>
 
             { <MultiSlider
-                        values={[
-                          this.state.minFollowings,
-                          this.state.maxFollowings,
-                        ]}
-                        trackStyle={{backgroundColor:'#A599FF'}}
-                        selectedStyle={{backgroundColor:'#5544ff'}}
-                        markerStyle={{backgroundColor:'#5544ff'}}
-                        sliderLength={(Dimensions.get('window').width-(Dimensions.get('window').width*0.2))}
-                        onValuesChange={ (data) => { this.state.minFollowings = data[0]; this.state.maxFollowings = data[1]; this.forceUpdate(); }}
-                        onValuesChangeFinish={ (data) => { this.updateFollow(); } }
-                        min={0}
-                        max={10000}
-                        step={100}
-                        touchDimensions={{height: 150,width: 150,borderRadius: 15,slipDisplacement: 200}}
-                        allowOverlap
-                        snapped
-                      /> }
+                values={[
+                  this.state.minFollowings,
+                  this.state.maxFollowings,
+                ]}
+                trackStyle={{backgroundColor:'#f49953'}}
+                selectedStyle={{backgroundColor:'#f74663'}}
+                markerStyle={{backgroundColor:'#f74663',height: 20, width: 20, borderRadius: 15}}
+                sliderLength={(Dimensions.get('window').width-(Dimensions.get('window').width*0.2))}
+                onValuesChange={ (data) => { this.state.minFollowings = data[0]; this.state.maxFollowings = data[1]; this.forceUpdate(); }}
+                onValuesChangeFinish={ (data) => { this.updateFollow(); } }
+                min={0}
+                max={10000}
+                step={100}
+                touchDimensions={{height: 150,width: 150,borderRadius: 15,slipDisplacement: 200}}
+                allowOverlap
+                snapped
+              /> }
             { this.updating==1 &&
               <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')}/>
             }
-            {/* this.updating==0 &&
-            <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = {{ flexDirection: 'row', textAlign: 'center', justifyContent: 'center', alignItems: 'center', backgroundColor: '#A599FF', borderWidth: 1, borderColor: '#999', height: 35, borderRadius: 5, margin: 5, color: '#fff' }} onPress = { () => { this.updateFollow(); } }>
-              <Ionicons name='md-checkmark' size={32} color='#fff' style={{marginLeft: 10, marginRight: 10}} />
-              <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 18}}>OK</Text>
-            </TouchableOpacity>
-            */}
+          </View>
+          <Text style={styles.titre}>Mes Tags</Text>
+          <View style={styles.content}>
             <Text>Tags Likes</Text>
             <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
               {likeTags}
-              <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(0); } }><Ionicons name='md-add-circle' size={32} color='#6D48F7'/></TouchableOpacity>
+              <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(0); } }><Ionicons name='md-add-circle' size={32} color='#666'/></TouchableOpacity>
             </View>
-            <Text>Tags Comments</Text>
+            {/*<Text>Tags Comments</Text>
             <View style={{marginBottom: 5, padding: 10, flexDirection: 'row', flexWrap: 'wrap'}}>
               {commentTags}
               <TouchableOpacity style={{marginTop: 5, marginLeft: 5}} onPress={ () => { this.addTag(1); } }><Ionicons name='md-add-circle' size={32} color='#6D48F7'/></TouchableOpacity>
-            </View>
+            </View>*/}
+          </View>
+          <Text style={styles.titre}>Dernières Actions</Text>
+
+          <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
+            { this.logscount==-1 &&
+              <View>
+                <Text>Récupération de l'historique des actions...</Text>
+                <Image style={{height: 120, width: 120, alignItems: 'center'}} source={require('../assets/images/load2.gif')} />
+              </View>
+            }
+            { this.logscount==0 &&
+              <View style={{width: '90%', marginBottom: 30}}>
+                <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
+                <Text style={{fontWeight: 'bold'}}>Aucune action à afficher</Text>
+              </View>
+            }
+            { this.logscount>0 &&
+              <View style={{width: '90%', marginBottom: 30}}>
+                <Image style={{right: 5, top: 5, height: 50, width: 50, position: 'absolute'}} source={require('../assets/images/load2.gif')} />
+                <Text style={{fontWeight: 'bold'}}>Dernières actions</Text>
+                <View style={{zIndex: 1}}>
+                  {rows}
+                </View>
+              </View>
+            }
           </View>
       </ScrollView>
     );
@@ -396,7 +482,7 @@ static navigationOptions = {
 
 const styles = StyleSheet.create({
   content: {
-    marginBottom: 55,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 15,
@@ -411,8 +497,13 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   titre: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'josefin',
+    fontSize: 17,
+    color: '#3e3f68',
+    padding: 20
+  },
+  titre2: {
+    fontSize: 10,
   },
   titregauche: {
     fontSize: 14,

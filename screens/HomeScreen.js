@@ -10,6 +10,7 @@ import { CheckBox, Button } from 'react-native-elements';
 import { api, getToken, getUserID, setUserID, getUserInstaID, getUserInsta, 
 setUserInsta, getInstaAccount, setConfigUserInsta } from '../api';
 import Header from '../components/Header';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import JimeeButton from '../components/JimeeButton';
 import {
   LineChart,
@@ -28,7 +29,6 @@ export default class HomeScreen extends React.Component {
     // Obtension de l'ID de l'utilisateur + nettoyage token
     //this.getID();
 
-    this.request(); 
 
     this.likesChecked = false;
     this.commentsChecked = false;
@@ -57,9 +57,10 @@ export default class HomeScreen extends React.Component {
     this.valider = React.createRef();
     this.boost = React.createRef();
 
-    this.logscount = -1;
+    //this.logscount = -1;
 
     this.loading = 1;
+    this.request(); 
 
     // Chart -----------
     this.chartSize = 6;
@@ -69,7 +70,9 @@ export default class HomeScreen extends React.Component {
     this.timeline = ['January', 'February', 'March', 'April', 'May', 'June'];
     this.loading = 1;
     this.maxSize = 6; 
-    this.mode = 1; // tous / flwings / flwers
+    this.mode = 1; // flwings / flwers
+    this.modetype = 1; // linechart / barchart
+
     this.getChart();
   }
   getChart() {
@@ -178,7 +181,6 @@ export default class HomeScreen extends React.Component {
       if(responseJson[0].likes>0) this.likesChecked = true; else this.likesChecked = false;
       this.loading = 0;
       this.forceUpdate();
-      this.getLogs(); // Affichage des logs
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
     });
@@ -216,65 +218,11 @@ export default class HomeScreen extends React.Component {
       console.log("ERROR "+command+" : "+error);
     });
   }
-  getLogs() {
-    if(!getToken()) return;
-    this.logcontent = [];
-    this.state.valueArray = [];
-    var command = "userlogs?userInstaID="+getUserInstaID();
-    console.log("request -> GET "+api+command);
-    fetch(api+command,  {
-      method: 'GET',
-      headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+getToken(),
-      }
-    }).then((response) => response.json()).then((responseJson) => {
-      this.logscount = Object.keys(responseJson).length;
-      //console.log("Nombre de logs : "+this.logscount);
-      //console.log(JSON.stringify(responseJson));
-      if(this.logscount > 0){
-        for(var i=0;i<10 && i < this.logscount;i++) {
-          if(responseJson[i].id>0){
-            //console.log("ADD LOG "+responseJson[i].user+" : "+responseJson[i].type);
-            this.addMoreLog("@"+responseJson[i].user+" : "+responseJson[i].type);
-          }
-        }
-      } else {
-        this.forceUpdate();
-        //ToastAndroid.show("Aucun log à afficher.",ToastAndroid.SHORT);
-      }
-      setTimeout(() => { 
-        this.getLogs();
-      }, 12000); // Logs toutes les 12s
-    }).catch((error) =>{
-      console.log("ERROR "+command+" : "+error);
-    });
-  }
-  addMoreLog(contenu) {
-    this.animatedValue.setValue(0);
-    this.logcontent[this.index] = contenu;
-
-    let newlyAddedValue = { index: this.index }
-
-    this.setState({ valueArray: [ ...this.state.valueArray, newlyAddedValue ] }, () =>
-    {
-        Animated.timing(
-          this.animatedValue,
-          {
-              toValue: 1,
-              duration: 500,
-              useNativeDriver: true
-          }
-        ).start(() =>
-        {
-            this.index = this.index + 1;
-        }); 
-    });
-  }
   static navigationOptions = {
     header: null,
   };
   render() {
+    /*
     const animationValue = this.animatedValue.interpolate(
     {
       inputRange: [ 0, 1 ],
@@ -331,6 +279,7 @@ export default class HomeScreen extends React.Component {
                         shadowOpacity: 0.9, }}
                         source={{uri: getInstaAccount(getUserInstaID()).avatar}}
                       />;
+                      */
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -405,7 +354,47 @@ export default class HomeScreen extends React.Component {
 
               <Text style={styles.titre}>Statistiques</Text>
 
-              <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
+              <View style={{padding: 5, flexDirection: 'column' }}>
+                <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
+
+                  <View style={{backgroundColor: '#b7143c', borderRadius: 15, height: 250, width: '48%'}}>
+                        <View style={{padding: 10, borderRadius: 10}}>
+                          <Text style={{color: '#fff', fontSize: 25}}>Hashtags</Text>
+                          <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
+                          <Text style={{color: '#fff'}}>Génère des Hashtags personnalisés</Text>
+                        </View>
+                  </View>
+              
+                  <View style={{backgroundColor: '#e6a500', borderRadius: 15, height: 250, width: '48%'}}>
+                      <View style={{padding: 10, borderRadius: 10}}>
+                        <Text style={{color: '#fff', fontSize: 25}}>Boost</Text>
+                        <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
+                        <Text style={{color: '#fff'}}>Boost ta dernière publication</Text>
+                        </View>
+                  </View>
+                  
+                </View>
+                <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
+
+                  <View style={{backgroundColor: '#46b0f0', borderRadius: 15, height: 250, width: '48%'}}>
+                    <View style={{padding: 10, borderRadius: 10}}>
+                          <Text style={{color: '#fff', fontSize: 25}}>Analyse</Text>
+                          <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
+                          <Text style={{color: '#fff'}}>Analyse des influenceurs</Text>
+                        </View>
+                  </View>
+
+                  <View style={{backgroundColor: '#e6a500', borderRadius: 15, height: 250, width: '48%'}}>
+                      <View style={{padding: 10, borderRadius: 10}}>
+                        <Text style={{color: '#fff', fontSize: 25}}>Boost</Text>
+                        <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
+                        <Text style={{color: '#fff'}}>Boost ta dernière publication</Text>
+                        </View>
+                  </View>
+                </View>
+              </View>
+
+              {/*<View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', }}>
                 { this.logscount==-1 &&
                   <View>
                     <Text>Récupération de l'historique des actions...</Text>
@@ -428,6 +417,7 @@ export default class HomeScreen extends React.Component {
                   </View>
                 }
               </View>
+              */}
 
               <View style={{
                   marginVertical: 8,
@@ -441,12 +431,84 @@ export default class HomeScreen extends React.Component {
                   buttonColor='#f66445'
                   initial={0} 
                   onPress={value => {this.mode = value; console.log("value "+value); this.forceUpdate();}} />
+                  <MultiSlider
+                    values={[
+                      this.chartSize
+                    ]}
+                    trackStyle={{backgroundColor:'#f49953'}}
+                    selectedStyle={{backgroundColor:'#f74663'}}
+                    markerStyle={{backgroundColor:'#f74663',height: 20, width: 20, borderRadius: 15}}
+                    pressedMarkerStyle={{height: 40, width: 40}}
+                    sliderLength={(Dimensions.get('window').width-(Dimensions.get('window').width*0.2))}
+                    onValuesChange={ (data) => { this.chartSize = data[0]; this.forceUpdate(); this.getChart(); }}
+                    min={2}
+                    max={this.maxSize}
+                    step={1}
+                    touchDimensions={{height: 250,width: 250,borderRadius: 15,slipDisplacement: 200}}
+                    allowOverlap
+                    snapped
+                  />
                   { this.mode==1 &&
-                  <BarChart
+                    <View>
+                    { this.modetype==1 &&
+                    <BarChart
+                      data={{
+                        labels: this.timeline,
+                        datasets: [{
+                          data: this.data1
+                        }
+                      ]}}
+                      width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
+                      height={(Dimensions.get('window').height-Math.round(Dimensions.get('window').height*0.6))} // voir ici si erreur conversion float
+                      yAxisLabel={''}
+                      chartConfig={{
+                        backgroundColor: '#fff',
+                        backgroundGradientFrom: '#fff',
+                        backgroundGradientTo: '#fff',
+                        decimalPlaces: 2, // optional, defaults to 2dp
+                        color: (opacity = 1) => `#f66445`,
+                        labelColor: (opacity = 1) => `#f66445`,
+                        style: {
+                          borderRadius: 16
+                        }
+                      }}
+                    />
+                    }
+                    { this.modetype>=2 &&
+                      <LineChart
+                        data={{
+                          labels: this.timeline,
+                          datasets: [{
+                            data: this.data1
+                          }
+                        ]}}
+                        width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
+                        height={(Dimensions.get('window').height-Math.round(Dimensions.get('window').height*0.6))} // voir ici si erreur conversion float
+                        yAxisLabel={''}
+                        chartConfig={{
+                          backgroundColor: '#fff',
+                          backgroundGradientFrom: '#fff',
+                          backgroundGradientTo: '#fff',
+                          decimalPlaces: 2, // optional, defaults to 2dp
+                          color: (opacity = 1) => `#f66445`,
+                          labelColor: (opacity = 1) => `#f66445`,
+                          style: {
+                            borderRadius: 16
+                          }
+                        }}
+                        bezier={ this.modetype==3 ? true : false }
+                      />
+                    }
+                    </View>
+                }
+                { this.mode==2 &&
+                  <View>
+                  { this.modetype==1 &&
+                    <BarChart
                     data={{
                       labels: this.timeline,
                       datasets: [{
-                        data: this.data1
+                        data: this.data2
                       }
                     ]}}
                     width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
@@ -463,47 +525,73 @@ export default class HomeScreen extends React.Component {
                         borderRadius: 16
                       }
                     }}
-                />
-                }
-                { this.mode==2 &&
-                <BarChart
-                data={{
-                  labels: this.timeline,
-                  datasets: [{
-                    data: this.data2
+                    />
                   }
-                ]}}
-                width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
-                height={(Dimensions.get('window').height-Math.round(Dimensions.get('window').height*0.6))} // voir ici si erreur conversion float
-                yAxisLabel={''}
-                chartConfig={{
-                  backgroundColor: '#fff',
-                  backgroundGradientFrom: '#fff',
-                  backgroundGradientTo: '#fff',
-                  decimalPlaces: 2, // optional, defaults to 2dp
-                  color: (opacity = 1) => `#f66445`,
-                  labelColor: (opacity = 1) => `#f66445`,
-                  style: {
-                    borderRadius: 16
+                  { this.modetype>=2 &&
+                    <LineChart
+                    data={{
+                      labels: this.timeline,
+                      datasets: [{
+                        data: this.data2
+                      }
+                    ]}}
+                    width={(Dimensions.get('window').width-Math.round(Dimensions.get('window').width*0.15))} // voir ici si erreur conversion float
+                    height={(Dimensions.get('window').height-Math.round(Dimensions.get('window').height*0.6))} // voir ici si erreur conversion float
+                    yAxisLabel={''}
+                    chartConfig={{
+                      backgroundColor: '#fff',
+                      backgroundGradientFrom: '#fff',
+                      backgroundGradientTo: '#fff',
+                      decimalPlaces: 2, // optional, defaults to 2dp
+                      color: (opacity = 1) => `#f66445`,
+                      labelColor: (opacity = 1) => `#f66445`,
+                      style: {
+                        borderRadius: 16
+                      }
+                    }}
+                    bezier={ this.modetype==3 ? true : false }
+                    />
                   }
-                }}
-                />
+                  </View>
                 }
+              <SwitchSelector 
+                  options={[{ label: 'bar chart', value: '1' },{ label: 'line chart', value: '2' },{ label: 'line bezier chart', value: '3' }]} 
+                  buttonColor='#f66445'
+                  initial={0} 
+                  onPress={value => {this.modetype = value; this.forceUpdate();}} />
             </View>
 
             <Text style={styles.titre}>Posts récents populaires</Text>
 
-            <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-              <View style={{width: '32%'}}>
-                <Image source={require('../assets/images/album1.png')}/>
-                <View style={{flex: 1, flexDirection: 'row'}}>
-                  <Text>637</Text>
-                  <View style={{ backgroundColor: '#f00', borderRadius: 7, padding: 2 }}>
-                    <Ionicons name="md-heart" style={{color: "#fff"}} size={8} />
+            <ScrollView horizontal={true}>
+              <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', padding: 20, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', width: 140, marginRight: 10}}>
+                  <Image source={require('../assets/images/album1.png')}/>
+                  <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={{fontWeight: 'bold', fontSize: 18}}>637</Text>
+                    <View style={{ backgroundColor: '#f00', borderRadius: 10, padding: 4, marginLeft: 4 }}>
+                      <Ionicons name="md-heart" style={{color: "#fff"}} size={8} />
+                    </View>
                   </View>
-                </View>
               </View>
-            </View>
+              <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', padding: 20, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', width: 140, marginRight: 10}}>
+                  <Image source={require('../assets/images/album2.png')}/>
+                  <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={{fontWeight: 'bold', fontSize: 18}}>610</Text>
+                    <View style={{ backgroundColor: '#f00', borderRadius: 10, padding: 4, marginLeft: 4 }}>
+                      <Ionicons name="md-heart" style={{color: "#fff"}} size={8} />
+                    </View>
+                  </View>
+              </View>
+              <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', padding: 20, alignItems: 'center', justifyContent: 'center', flexDirection: 'column', width: 140, marginRight: 10}}>
+                  <Image source={require('../assets/images/album3.png')}/>
+                  <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={{fontWeight: 'bold', fontSize: 18}}>587</Text>
+                    <View style={{ backgroundColor: '#f00', borderRadius: 10, padding: 4, marginLeft: 4 }}>
+                      <Ionicons name="md-heart" style={{color: "#fff"}} size={8} />
+                    </View>
+                  </View>
+              </View>
+            </ScrollView>
 
             <Text style={styles.titre}>Badges</Text>
 
