@@ -2,18 +2,20 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar, Image, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { CheckBox, Button } from 'react-native-elements';
 import Header from '../components/HeaderAction';
 import SwitchSelector from 'react-native-switch-selector';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 
 export default class EditScreen extends React.Component {
   constructor(props){
     super(props);
+    this.saveChecked = [ true ];
 
   }
   static navigationOptions = {
     header: null,
   };
+
   render() {
     return(
       <ScrollView style={styles.AndroidSafeArea}>
@@ -21,34 +23,101 @@ export default class EditScreen extends React.Component {
         <View style={{marginTop: 0, }}>
           <Text style={styles.titre}>Ma Catégorie</Text>
 
-          <SwitchSelector 
-            options={[{ label: 'Photo', value: '1' },{ label: 'Fitness', value: '2' },{ label: 'Food', value: '3' },{ label: 'Friends', value: '4' },{ label: 'Party', value: '5' }]} 
-            buttonColor='#f66445'
-            initial={0} 
-            onPress={value => {this.mode = value; console.log("value "+value); this.forceUpdate();}} />
+          <View style={{padding: 20}}>
+            <SwitchSelector 
+              options={[{ label: 'Photo', value: '1' },{ label: 'Fitness', value: '2' },{ label: 'Food', value: '3' }]} 
+              buttonColor='#f66445'
+              initial={0} 
+              onPress={value => {this.mode = value; console.log("value "+value); this.forceUpdate();}} />
+          </View>
 
           <Text style={styles.titre}>Mes intérêts</Text>
 
-          <View style={styles.feed}>
-            <View style={{flexDirection: 'row', paddingBottom: 10}}>
-              <TouchableOpacity onPress={ () => { this.props.navigation.navigate('AnalyseScreen')}}>
-                <ImageBackground source={require('../assets/images/interet1.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
-                  <View style={{padding: 10, borderRadius: 10}}>
-                    <RadioForm
-                      //radio_props={this.state.types}
-                      initial={0}
-                      formHorizontal={false}
-                      labelHorizontal={true}
-                      buttonColor={'#f66445'}
-                      animation={true}
-                      onPress={(value) => {this.setState({value:value})}}
-                    />
-                    </View>
-                  </ImageBackground>
-                </TouchableOpacity>
+          <View style={{padding: 20}}>
+            <View style={{flexDirection: 'row', padding: 0}}>
+              <View style={{width: '45%', height: 130, marginRight: 20}}>
+                    <ImageBackground source={require('../assets/images/interet1.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[0]=!this.saveChecked[0];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                          <CheckBox 
+                          uncheckedColor='#f66445'
+                          checkedColor='#f66445' 
+                          checked={this.saveChecked[0]} 
+                          checkedIcon='dot-circle-o'
+                          uncheckedIcon='circle-o'
+                          size={20}
+                          onPress={ () => {this.saveChecked[0]=!this.saveChecked[0];this.forceUpdate();}}/>
+                        </TouchableOpacity>
+                    </ImageBackground>
+              </View>
+
+              <View style={{width: '45%', height: 130}}>
+                    <ImageBackground source={require('../assets/images/interet2.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[1]=!this.saveChecked[1];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                          <CheckBox 
+                          uncheckedColor='#f66445'
+                          checkedColor='#f66445' 
+                          checked={this.saveChecked[1]} 
+                          checkedIcon='dot-circle-o'
+                          uncheckedIcon='circle-o'
+                          size={20}
+                          onPress={ () => {this.saveChecked[1]=!this.saveChecked[1];this.forceUpdate();}}/>
+                        </TouchableOpacity>
+                    </ImageBackground>
               </View>
             </View>
+
+            <View style={{flexDirection: 'row', paddingTop: 10}}>
+              <View style={{width: '45%', height: 130, marginRight: 20}}>
+                    <ImageBackground source={require('../assets/images/interet3.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[2]=!this.saveChecked[2];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                          <CheckBox 
+                          uncheckedColor='#f66445'
+                          checkedColor='#f66445' 
+                          checked={this.saveChecked[2]} 
+                          checkedIcon='dot-circle-o'
+                          uncheckedIcon='circle-o'
+                          size={20}
+                          onPress={ () => {this.saveChecked[2]=!this.saveChecked[2];this.forceUpdate();}}/>
+                        </TouchableOpacity>
+                    </ImageBackground>
+              </View>
+
+              <View style={{width: '45%', height: 130}}>
+                    <ImageBackground source={require('../assets/images/interet4.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[3]=!this.saveChecked[3];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                          <CheckBox 
+                          uncheckedColor='#f66445'
+                          checkedColor='#f66445' 
+                          checked={this.saveChecked[3]} 
+                          checkedIcon='dot-circle-o'
+                          uncheckedIcon='circle-o'
+                          size={20}
+                          onPress={ () => {this.saveChecked[3]=!this.saveChecked[3];this.forceUpdate();}}/>
+                        </TouchableOpacity>
+                    </ImageBackground>
+              </View>
+            </View>
+
+            <View style={{flexDirection: 'row', paddingTop: 10}}>
+              <View style={{width: '45%', height: 130, marginRight: 20}}>
+                    <ImageBackground source={require('../assets/images/interet5.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[4]=!this.saveChecked[4];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                          <CheckBox 
+                          uncheckedColor='#f66445'
+                          checkedColor='#f66445' 
+                          checked={this.saveChecked[4]} 
+                          checkedIcon='dot-circle-o'
+                          uncheckedIcon='circle-o'
+                          size={20}
+                          onPress={ () => {this.saveChecked[4]=!this.saveChecked[4];this.forceUpdate();}}/>
+                        </TouchableOpacity>
+                    </ImageBackground>
+              </View>
+
+            </View>
+
           </View>
+        </View>
 
         <View style={{height: 200}}></View>
       </ScrollView>
@@ -87,6 +156,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 2,
     elevation: 1,
+    height: 200,
+    width: 200,
   },
   bloc: {
     width: 350,
