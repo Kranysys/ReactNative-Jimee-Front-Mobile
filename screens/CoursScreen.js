@@ -17,7 +17,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import SwitchSelector from 'react-native-switch-selector';
 import Header from '../components/Header';
 
-export default class StatsScreen extends React.Component {
+export default class CoursScreen extends React.Component {
   constructor(props){
     super(props);
 
@@ -31,6 +31,30 @@ static navigationOptions = {
         <Header title="Cours" this={this}/>
 
         <View style={{marginBottom: 55}}>
+          <ScrollView horizontal={true}>
+            <View style={{flexDirection: 'column', marginLeft: 25}}>
+              <Text style={{color: '#3e3f68', fontSize: 25}}>Récent</Text>
+              <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View>
+            </View>
+            <View style={{flexDirection: 'column', marginLeft: 25}}>
+              <Text style={{color: '#3e3f68', fontSize: 25}}>Photographie</Text>
+              {/*<View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View>*/}
+            </View>
+            <View style={{flexDirection: 'column', marginLeft: 25}}>
+              <Text style={{color: '#3e3f68', fontSize: 25}}>Algorithme</Text>
+              {/*<View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View>*/}
+            </View>
+          </ScrollView>
+
+        <View style={{padding: 20}}>
+          <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15}}>
+            <Image source={require('../assets/images/cours1bg.png')} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15}} />
+            <View style={{padding: 12}}>
+              <Text style={{fontSize: 16}}>L'algorithme instagram</Text>
+              <Text style={{fontSize: 9}}>Une brève histoire de l'algorithme</Text>
+            </View>
+          </View>
+        </View>
           
         </View>
       </ScrollView>

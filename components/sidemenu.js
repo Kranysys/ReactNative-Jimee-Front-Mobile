@@ -139,8 +139,8 @@ class SideMenu extends Component {
                 source={{uri: getInstaAccount(getUserInstaID()).avatar}}
               />
               <View style={{flex: 1, flexDirection: 'column', position: 'absolute', top: 20, left: 130, width: '45%' }}>
-                <Text style={{fontSize: 24, fontWeight: '200', fontFamily: 'Roboto', color: '#8C87FC', width: '100%'}} numberOfLines={1}>{getUserInsta()}</Text>
-                <Text style={{fontSize: 14, color: '#bbb', fontFamily: 'Roboto', color: '#8C87FC', width: '100%'}} numberOfLines={1}>@{getUserInsta()}</Text>
+                <Text style={{fontSize: 24, fontWeight: '200', fontFamily: 'Roboto', width: '100%'}} numberOfLines={1}>{getUserInsta()}</Text>
+                <Text style={{fontSize: 14, color: '#bbb', fontFamily: 'Roboto', width: '100%'}} numberOfLines={1}>@{getUserInsta()}</Text>
               </View>
             </View>
 
@@ -149,7 +149,7 @@ class SideMenu extends Component {
                 { /* AJOUTER UN COMPTE */ this.addAccount==0 && 
                 <TouchableOpacity activeOpacity = { 0.4 }  onPress={ () => { this.addAccount=1; this.setState({ addAccount: true }); }} style={{zIndex: 3, width: '100%', height: 60 }}>
                   <View style={{alignItems: 'center',  marginLeft: 25, flex:1, flexDirection:'row'}}>
-                    <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#5643FF', width: 45, height: 45, alignItems: 'center', justifyContent: 'center', shadowRadius: 8, shadowColor: '#455b63', shadowOffset: {  width: 4,  height: 4,  }, shadowOpacity: 0.9, elevation: 1,}}>
+                    <View style={{borderWidth: 1, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#f68770', width: 45, height: 45, alignItems: 'center', justifyContent: 'center', shadowRadius: 8, shadowColor: '#455b63', shadowOffset: {  width: 4,  height: 4,  }, shadowOpacity: 0.9, elevation: 1,}}>
                       {<Ionicons name='md-add' size={20} color='#fff' style={{}} />}
                     </View>
                     <Text style={{textAlign: 'center', marginTop: 0, fontWeight: '300', fontSize: 12, marginLeft: 10}}>ajouter un compte</Text>
@@ -184,20 +184,23 @@ class SideMenu extends Component {
           </View>
           }
           <View style={{borderTopWidth: 1, borderTopColor: '#ccc', paddingLeft: 38, marginTop: 15}}>
-            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { /*ToastAndroid.show('Fonction non disponible...', ToastAndroid.SHORT);*/ Linking.openURL('https://jimee.fr') } }>      
+            {/*
+            <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { Linking.openURL('https://jimee.fr') } }>      
               <Text style={styles.sectionHeadingStyle2}>
                 A Propos
               </Text>
             </TouchableOpacity>
+            */}
             <TouchableOpacity ref={this.valider} activeOpacity = { 0.6 }  onPress = { () => { this.props.navigation.navigate('Auth');} }>     
               <Text style={styles.sectionHeadingStyle2}>
                 Se Déconnecter
-              </Text> 
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
         <View style={styles.footerContainer}>
-          <Text>Jimee 1.0 BETA</Text>
+          <Image style={{width: '100%', height: 100}} source={require('../assets/images/jimee-white.png')} />
+          <Text>Jimee 2.0.8</Text>
         </View>
       </View>
     );

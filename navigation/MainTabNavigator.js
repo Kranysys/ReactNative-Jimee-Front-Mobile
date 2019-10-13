@@ -5,11 +5,11 @@ import { createStackNavigator, createBottomTabNavigator, createMaterialTopTabNav
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import AlgoScreen from '../screens/AlgoScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import TrickScreen from '../screens/TricksScreen';
 import ActionScreen from '../screens/ActionScreen';
-import StatsScreen from '../screens/StatsScreen';
+import CoursScreen from '../screens/CoursScreen';
 
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -33,11 +33,11 @@ HomeStack.navigationOptions = {
 };
 
 const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+  Links: AlgoScreen,
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Config',
+  tabBarLabel: 'Algo',
   tabBarIcon: ({ tintColor }) => (
     <Icon
       size={IconSize}
@@ -72,11 +72,11 @@ ActionStack.navigationOptions = {
 };
 
 const StatsStack = createStackNavigator({
-  Settings: StatsScreen,
+  Settings: CoursScreen,
 });
 
 StatsStack.navigationOptions = {
-  tabBarLabel: 'Stats',
+  tabBarLabel: 'Cours',
   tabBarIcon: ({ tintColor }) => (
     <Icon
       size={IconSize}

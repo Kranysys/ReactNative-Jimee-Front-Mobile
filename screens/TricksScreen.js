@@ -59,7 +59,7 @@ export default class SettingsScreen extends React.Component {
           </View>
 
         </View>
-        <View style={{height: 200}}></View>
+        <View style={{height: 100}}></View>
       </ScrollView>
     );
   }
