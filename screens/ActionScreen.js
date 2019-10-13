@@ -45,6 +45,7 @@ export default class SettingsScreen extends React.Component {
             </View>
             
           </View>
+
           <View style={{padding: 5, flexDirection: 'row', justifyContent: 'space-between' }}>
 
             <View style={{backgroundColor: '#46b0f0', borderRadius: 15, height: 250, width: '48%'}}>
@@ -56,6 +57,16 @@ export default class SettingsScreen extends React.Component {
                     <Text style={{color: '#fff'}}>Analyse des influenceurs</Text>
                   </View>
                 </ImageBackground>
+              </TouchableOpacity>
+            </View>
+
+            <View style={{backgroundColor: '#f0a146', borderRadius: 15, height: 250, width: '48%'}}>
+              <TouchableOpacity onPress={ () => { this.props.navigation.navigate('FakeScreen')}}>
+                  <View style={{padding: 10, borderRadius: 10}}>
+                    <Text style={{color: '#fff', fontSize: 25}}>Fake</Text>
+                    <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
+                    <Text style={{color: '#fff'}}>Analyse tes abonnées</Text>
+                  </View>
               </TouchableOpacity>
             </View>
 

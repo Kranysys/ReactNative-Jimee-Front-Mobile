@@ -367,10 +367,10 @@ export default class HomeScreen extends React.Component {
               
                   <View style={{flexDirection: 'column', borderRadius: 15, height: 125, width: '48%', alignItems: 'center', borderColor: '#ccc', borderWidth: 1, justifyContent: 'center'}}>
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
-                      <Ionicons name="md-heart" style={{color: "#fff"}} size={25} />
+                      <Ionicons name="md-chatboxes" style={{color: "#fff"}} size={25} />
                     </View>
-                    <Text style={{fontWeight: 'bold', fontSize: 36}}>350</Text>
-                    <Text style={{fontSize: 10}}>Likes reçus par Post</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 36}}>22</Text>
+                    <Text style={{fontSize: 10}}>Commentaires reçus par post</Text>
                   </View>
                   
                 </View>
@@ -378,18 +378,18 @@ export default class HomeScreen extends React.Component {
 
                   <View style={{flexDirection: 'column', borderRadius: 15, height: 125, width: '48%', alignItems: 'center', borderColor: '#ccc', borderWidth: 1, justifyContent: 'center'}}>
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
-                      <Ionicons name="md-heart" style={{color: "#fff"}} size={25} />
+                      <Ionicons name="md-stats" style={{color: "#fff"}} size={25} />
                     </View>
-                    <Text style={{fontWeight: 'bold', fontSize: 36}}>350</Text>
-                    <Text style={{fontSize: 10}}>Likes reçus par Post</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 36}}>7%</Text>
+                    <Text style={{fontSize: 10}}>Taux interaction par Post</Text>
                   </View>
 
                   <View style={{flexDirection: 'column', borderRadius: 15, height: 125, width: '48%', alignItems: 'center', borderColor: '#ccc', borderWidth: 1, justifyContent: 'center'}}>
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
-                      <Ionicons name="md-heart" style={{color: "#fff"}} size={25} />
+                      <Ionicons name="md-list-box" style={{color: "#fff"}} size={25} />
                     </View>
                     <Text style={{fontWeight: 'bold', fontSize: 36}}>350</Text>
-                    <Text style={{fontSize: 10}}>Likes reçus par Post</Text>
+                    <Text style={{fontSize: 10}}>Nombre de Posts</Text>
                   </View>
                 </View>
               </View>

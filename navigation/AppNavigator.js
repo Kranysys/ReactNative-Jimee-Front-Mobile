@@ -12,6 +12,7 @@ import AccountsScreen from '../screens/AccountsScreen';
 import HashtagsScreen from '../screens/Actions/HashtagsScreen';
 import BoostScreen from '../screens/Actions/BoostScreen';
 import AnalyseScreen from '../screens/Actions/AnalyseScreen';
+import FakeScreen from '../screens/Actions/FakeScreen';
 
 import EditScreen from '../screens/EditScreen';
 
@@ -48,4 +49,5 @@ export default createAppContainer(createSwitchNavigator({
   BoostScreen: BoostScreen,
   AnalyseScreen: AnalyseScreen,
   EditScreen: EditScreen,
+  FakeScreen: FakeScreen,
 }));
