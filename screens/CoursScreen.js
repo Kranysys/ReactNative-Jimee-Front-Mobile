@@ -20,6 +20,7 @@ import Header from '../components/Header';
 export default class CoursScreen extends React.Component {
   constructor(props){
     super(props);
+    this.state = {selectedTab: 1};
 
   }
 static navigationOptions = {
@@ -32,28 +33,49 @@ static navigationOptions = {
 
         <View style={{marginBottom: 55}}>
           <ScrollView horizontal={true}>
-            <View style={{flexDirection: 'column', marginLeft: 25}}>
-              <Text style={{color: '#3e3f68', fontSize: 25}}>Récent</Text>
-              <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View>
-            </View>
+            <TouchableOpacity onPress={ () => { this.setState({selectedTab: 1}); }}>
+              <View style={{flexDirection: 'column', marginLeft: 25}}>
+                <Text style={{color: '#3e3f68', fontSize: 25}}>Récent</Text>
+                { this.state.selectedTab == 1 && <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View> }
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ () => { this.setState({selectedTab: 2}); }}>
             <View style={{flexDirection: 'column', marginLeft: 25}}>
               <Text style={{color: '#3e3f68', fontSize: 25}}>Photographie</Text>
-              {/*<View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View>*/}
+              { this.state.selectedTab == 2 && <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View> }
             </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={ () => { this.setState({selectedTab: 3}); }}>
             <View style={{flexDirection: 'column', marginLeft: 25}}>
               <Text style={{color: '#3e3f68', fontSize: 25}}>Algorithme</Text>
-              {/*<View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View>*/}
+              { this.state.selectedTab == 3 && <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View> }
             </View>
+            </TouchableOpacity>
           </ScrollView>
 
         <View style={{padding: 20}}>
-          <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15}}>
-            <Image source={require('../assets/images/cours1bg.png')} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15}} />
+
+          { (this.state.selectedTab == 3 || this.state.selectedTab == 1) &&
+          <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, borderWidth: 1, borderColor: '#ccc', padding: 5}}>
+            <Image source={require('../assets/images/cours1bg.png')} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, width: '100%'}} />
             <View style={{padding: 12}}>
-              <Text style={{fontSize: 16}}>L'algorithme instagram</Text>
+              <Text style={{fontSize: 16, marginBottom: 5}}>L'algorithme instagram</Text>
               <Text style={{fontSize: 9}}>Une brève histoire de l'algorithme</Text>
             </View>
           </View>
+          }
+
+          
+          { (this.state.selectedTab == 2 || this.state.selectedTab == 1) &&
+          <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, borderWidth: 1, borderColor: '#ccc', padding: 5}}>
+            <Image source={require('../assets/images/cours1bg.png')} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, width: '100%'}} />
+            <View style={{padding: 12}}>
+              <Text style={{fontSize: 16, marginBottom: 5}}>La retouche sur instagram</Text>
+              <Text style={{fontSize: 9}}>Les bases à connaitre et les outils indispensable pour retoucher</Text>
+            </View>
+          </View>
+          }   
+
         </View>
           
         </View>

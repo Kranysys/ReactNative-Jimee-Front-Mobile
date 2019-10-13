@@ -12,13 +12,13 @@ export default class Header extends Component {
                 </TouchableOpacity>
                 <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 10, left: 85, fontFamily: 'Roboto'}}>{this.props.title}</Text>
                 
-                <TouchableOpacity onPress={ () => { this.props.this.props.navigation.navigate('Accounts'); } } >
+                {/*<TouchableOpacity onPress={ () => { this.props.this.props.navigation.navigate('Accounts'); } } >
                     <Image
                     style={{width: 50, height: 50, borderWidth: 1, borderRadius: 25, borderColor: '#ccc', position: 'absolute', top: 8, right: 10 }}
                     source={{uri: getInstaAccount(getUserInstaID()).avatar}}
                     />
                    <Image style={{width: 22, height: 22, position: 'absolute', top: 20, right: 3, borderWidth: 0, borderColor: '#fff', borderRadius: 20}} source={require('../assets/images/instaIcon.png')} />
-                </TouchableOpacity>
+                </TouchableOpacity>*/}
             </View>
         );
     }
