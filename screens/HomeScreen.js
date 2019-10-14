@@ -40,7 +40,7 @@ export default class HomeScreen extends React.Component {
     this.accountFollowing = 0;
     this.accountPictureId = 0;
 
-    this.state = { valueArray: [], valueArray2: [], hidePassword: true, showPassword: false };
+    this.state = { valueArray: [], valueArray2: [], Badges: [], hidePassword: true, showPassword: false };
     this.index = 0; this.index2 = 0;
     this.logcontent = [];
     this.instaAccountsContent = [];
@@ -74,11 +74,12 @@ export default class HomeScreen extends React.Component {
     this.modetype = 1; // linechart / barchart
 
     this.getChart();
+    this.getBadges();
   }
   getChart() {
     if(!this.chartData) // cache
     {
-      command = "stats?userInstaID="+getUserInstaID();
+      command = "statsGraphics?userID="+getUserInstaID();
       console.log("request -> GET "+api+command);
       fetch(api+command,  {
         method: 'GET',
@@ -92,8 +93,6 @@ export default class HomeScreen extends React.Component {
         this.data2 = [];
         this.timeline = [];
 
-        console.log("stats: ")
-        console.log(responseJson)
         this.chartData = responseJson;
         console.log("taille: "+responseJson.length)
         this.maxSize = responseJson.length;
@@ -136,8 +135,8 @@ export default class HomeScreen extends React.Component {
       this.forceUpdate();
     }
   }
-  request() {
-    /*var command = "info?userID="+getUserID();
+  getBadges() {
+    var command = "badges?userID="+getUserInstaID();
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
@@ -146,13 +145,15 @@ export default class HomeScreen extends React.Component {
       'Authorization': 'Bearer '+getToken(),
       },
 		}).then((response) => response.json()).then((responseJson) => {
-      if(responseJson.followers>0) this.accountFollowers = responseJson.followers; else this.accountFollowers = "-";
-      if(responseJson.posts>0) this.accountPosts = responseJson.posts; else this.accountPosts = "-";
-      if(responseJson.followings>0) this.accountFollowing = responseJson.followings; else this.accountFollowing = "-";
+      console.log("badges:")
+      console.log(responseJson)
+      this.setState({Badges: responseJson});
       this.forceUpdate();
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
-    });*/
+    });
+  }
+  request() {
 
     if(getInstaAccount(getUserInstaID()).n_followers>0) this.accountFollowers = getInstaAccount(getUserInstaID()).n_posts; else this.accountFollowers = "-";
     if(getInstaAccount(getUserInstaID()).n_posts>0) this.accountPosts = getInstaAccount(getUserInstaID()).n_posts; else this.accountPosts = "-";
@@ -218,68 +219,18 @@ export default class HomeScreen extends React.Component {
       console.log("ERROR "+command+" : "+error);
     });
   }
+  renderImage(imageUrl) {
+    return (
+      <View>
+        <Image source={{uri: imageUrl}} style={{margin: 15, padding: 15, width: 40, height: 40}}/>
+      </View>
+    );
+  }
   static navigationOptions = {
     header: null,
   };
   render() {
-    /*
-    const animationValue = this.animatedValue.interpolate(
-    {
-      inputRange: [ 0, 1 ],
-      outputRange: [ -59, 0 ]
-    });
-    let rows = this.state.valueArray.map(( item, key ) =>
-    {
-        if(( key ) == this.index)
-        {
-            return(
-                <Animated.View key = { key } style = {[ styles.viewHolder, { opacity: this.animatedValue, transform: [{ translateY: animationValue }] }]}>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{}} /> { this.logcontent[item.index] }</Text>
-                </Animated.View>
-            );
-        }
-        else
-        {
-            return(
-                <View key = { key } style = { styles.viewHolder }>
-                    <Text style ={{padding: 5, borderColor: '#000', borderRadius: 5, borderWidth: 0, margin: 5}}><Ionicons name='md-heart' size={15} color='#A7A2FB' style={{borderWidth: 1, borderColor: '#A7A2FB', borderRadius: 5}} /> { this.logcontent[item.index] }</Text>
-                </View>
-            );
-        }
-    });
-    let accountList = this.state.valueArray2.map(( item, key ) =>
-    { console.log("ACCOUNTLIST : "+this.instaAccountsContent[key]+" ["+key+"]");
-      if(this.instaAccountsContentID[key] && this.instaAccountsContent[key]){
-        return(
-          // Icone suppression du compte instagram
-            <View key = { key } style = { styles.viewHolder }>
-              <TouchableOpacity activeOpacity = { 0.7 }  onPress={ () => { this.delInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 4, position: 'absolute', left: 100, top: (220+key*100),}}>
-                <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 40, height: 40, marginTop: 17, alignItems: 'center', justifyContent: 'center'}}>
-                    {<Ionicons name='md-trash' size={24} color='#700' style={{}} />}
-                  </View>
-                </View>
-              </TouchableOpacity>
-          
-              <TouchableOpacity activeOpacity = { 0.8 }  onPress={ () => { this._storeInstaAccount(this.instaAccountsContentID[key]); }} style={{zIndex: 3, position: 'absolute', top: (220+key*100), width: '100%'}}>
-                <View style={{alignItems: 'center', justifyContent: 'center', flex:1, flexDirection:'row'}}>
-                  <View style={{borderWidth: 3, borderRadius: 50, borderColor: '#ccc', backgroundColor: '#eee', width: 75, height: 75, alignItems: 'center', justifyContent: 'center'}}>
-                    {<Text>{this.instaAccountsContent[key]}</Text>}
-                  </View>
-                </View>
-              </TouchableOpacity>
-            </View>
-        );
-      }
-    });
-    let accountIcon = <Image
-                        style={{width: 120, height: 120, borderWidth: 1, borderRadius: 10, borderColor: '#ccc', shadowRadius: 8, 
-                        shadowColor: '#455b63', 
-                        shadowOffset: {  width: 4,  height: 4,  }, 
-                        shadowOpacity: 0.9, }}
-                        source={{uri: getInstaAccount(getUserInstaID()).avatar}}
-                      />;
-                      */
+    let badges = this.state.Badges.map(img => this.renderImage(img));
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <View style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -604,8 +555,7 @@ export default class HomeScreen extends React.Component {
             <Text style={styles.titre}>Badges</Text>
 
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', width: '100%', alignItems: 'center', justifyContent: 'center', flexDirection: 'row'}}>
-              <Image source={require('../assets/images/badges.png')} />
-              <Image source={require('../assets/images/badges.png')} />
+              {badges}
             </View>
           </View>
         </View>
