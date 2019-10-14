@@ -24,7 +24,7 @@ export default class SettingsScreen extends React.Component {
               <TouchableOpacity onPress={ () => { this.props.navigation.navigate('HashtagsScreen')}}>
                 <ImageBackground source={require('../assets/images/action3.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                   <View style={{padding: 10, borderRadius: 10}}>
-                    <Text style={{color: '#fff', fontSize: 25}}>Hashtags</Text>
+                    <Text style={{color: '#fff', fontSize: 25, alignItems: 'center'}}>Hashtags</Text>
                     <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
                     <Text style={{color: '#fff'}}>Génère des Hashtags personnalisés</Text>
                   </View>
@@ -36,7 +36,7 @@ export default class SettingsScreen extends React.Component {
               <TouchableOpacity onPress={ () => { this.props.navigation.navigate('BoostScreen')}}>
                 <ImageBackground source={require('../assets/images/action2.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                 <View style={{padding: 10, borderRadius: 10}}>
-                  <Text style={{color: '#fff', fontSize: 25}}>Boost</Text>
+                  <Text style={{color: '#fff', fontSize: 25, alignItems: 'center'}}>Boost</Text>
                   <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
                   <Text style={{color: '#fff'}}>Boost ta dernière publication</Text>
                   </View>
@@ -52,7 +52,7 @@ export default class SettingsScreen extends React.Component {
               <TouchableOpacity onPress={ () => { this.props.navigation.navigate('AnalyseScreen')}}>
                 <ImageBackground source={require('../assets/images/action1.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                   <View style={{padding: 10, borderRadius: 10}}>
-                    <Text style={{color: '#fff', fontSize: 25}}>Analyse</Text>
+                    <Text style={{color: '#fff', fontSize: 25, alignItems: 'center'}}>Analyse</Text>
                     <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
                     <Text style={{color: '#fff'}}>Analyse des influenceurs</Text>
                   </View>
@@ -62,11 +62,13 @@ export default class SettingsScreen extends React.Component {
 
             <View style={{backgroundColor: '#f0a146', borderRadius: 15, height: 250, width: '48%'}}>
               <TouchableOpacity onPress={ () => { this.props.navigation.navigate('FakeScreen')}}>
+                <ImageBackground source={require('../assets/images/action4.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 15}}>
                   <View style={{padding: 10, borderRadius: 10}}>
-                    <Text style={{color: '#fff', fontSize: 25}}>Fake</Text>
+                    <Text style={{color: '#fff', fontSize: 25, alignItems: 'center'}}>Fake</Text>
                     <View style={{borderTopWidth:1, width: '100%', borderColor: '#fff', marginTop: 5, marginBottom: 5}}></View>
                     <Text style={{color: '#fff'}}>Analyse tes abonnées</Text>
                   </View>
+                </ImageBackground>
               </TouchableOpacity>
             </View>
 
