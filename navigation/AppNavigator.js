@@ -7,8 +7,16 @@ import MainTabNavigator from './MainTabNavigator';
 
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-
 import AccountsScreen from '../screens/AccountsScreen';
+
+import HashtagsScreen from '../screens/Actions/HashtagsScreen';
+import BoostScreen from '../screens/Actions/BoostScreen';
+import AnalyseScreen from '../screens/Actions/AnalyseScreen';
+import FakeScreen from '../screens/Actions/FakeScreen';
+
+import EditScreen from '../screens/EditScreen';
+
+import ViewArticleScreen from '../screens/ViewArticleScreen';
 
 import SideMenu from '../components/sidemenu'
 
@@ -39,4 +47,10 @@ export default createAppContainer(createSwitchNavigator({
   Accounts: drawernav,
   App: drawernavtab,
   Register: RegisterStack,
+  HashtagsScreen: HashtagsScreen,
+  BoostScreen: BoostScreen,
+  AnalyseScreen: AnalyseScreen,
+  EditScreen: EditScreen,
+  FakeScreen: FakeScreen,
+  ViewArticleScreen: ViewArticleScreen,
 }));

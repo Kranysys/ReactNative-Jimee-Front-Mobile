@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
 import { api, setToken, clearAll } from '../api';
+import fetchTimeout from 'fetch-timeout';
+import JimeeButton from '../components/JimeeButton';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
@@ -87,14 +89,14 @@ export default class LoginScreen extends React.Component {
       formBody.push(encodedKey + "=" + encodedValue);
     }
     formBody = formBody.join("&");
-    fetch(api+command, {
+    fetchTimeout(api+command, {
 		  method: 'POST',
 		  headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: formBody,
       timeout: 2000,
-    })
+    },3000,"Impossible de se connecter. Veuillez recommencer d'ici 30 secondes.")
     .then((response) => response.json())
     .then((responseJson) => {
       console.log("LOGIN INFO: "+responseJson.token_type+"/"+responseJson.access_token);
@@ -121,51 +123,62 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.loginBackground}>
-      <Text style={styles.welcomeText}>Jimee</Text>
-      <Text style={styles.smallWelcomeText}>le p'tit pote qui te rend visible</Text>
-      <TextInput
-          style={ styles.textBox }
-          placeholder="Identifiant"
-          autoCapitalize = 'none'
-          onChangeText={(text) => this.setState({text})}
-          defaultValue={this.savedLogin}
-          ref={this.logInput}
-      />
-      <View style = { styles.textBoxBtnHolder }>
-        <TextInput
-          style={ styles.textBox }
-          placeholder="Mot de passe"
-          autoCapitalize = 'none'
-          underlineColorAndroid = "transparent"
-          secureTextEntry = { this.state.hidePassword }
-          onChangeText={(text) => this.setState({text})}
-          defaultValue={this.savedPass}
-          ref={this.passInput}
-        />
-        <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6, top: 9, }} onPress = { this.managePasswordVisibility }>
-          <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
+        <Image style={styles.welcomeText} source={require('../assets/images/jimee.jpg')} />
+        {/*<Text style={styles.smallWelcomeText}>le p'tit pote qui te rend visible</Text>*/}
+        <View style = { styles.textBoxBtnHolder }>
+          <View style={{paddingRight: 0}}>
+            <Text style={{color: '#aaa', textAlign: 'left'}}>Identifiant</Text>
+          </View>
+          <TextInput
+              style={ styles.textBox }
+              placeholder="Identifiant"
+              autoCapitalize = 'none'
+              onChangeText={(text) => this.setState({text})}
+              defaultValue={this.savedLogin}
+              ref={this.logInput}
+          />
+        </View>
+        <View style = { styles.textBoxBtnHolder }>
+          <View style={{paddingRight: 0}}>
+            <Text style={{color: '#aaa', textAlign: 'left'}}>Password</Text>
+          </View>
+          <TextInput
+            style={ styles.textBox }
+            placeholder="Mot de passe"
+            autoCapitalize = 'none'
+            underlineColorAndroid = "transparent"
+            secureTextEntry = { this.state.hidePassword }
+            onChangeText={(text) => this.setState({text})}
+            defaultValue={this.savedPass}
+            ref={this.passInput}
+          />
+          <View style={{paddingRight: 0}}>
+            <TouchableOpacity onPress={() => { Alert.alert("Un mail de confirmation vous a été envoyé !") }}>
+              <Text style={{color: '#aaa', textAlign: 'right', fontStyle: 'italic'}}>mot de passe oublié</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity activeOpacity = { 0.8 } style = {{ width: 35, position: 'absolute', height: 35, right: 15, paddingBottom: 6, top: 9, }} onPress = { this.managePasswordVisibility }>
+            <Image source = { ( this.state.hidePassword ) ? require("../assets/images/hide.png") : require('../assets/images/view.png') } style = { styles.btnImage } />
+          </TouchableOpacity>
+        </View>
+        { this.loading==0 && 
+          <JimeeButton onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); }} title='Se connecter' />
+        }
+        { this.loading==1 && 
+          <Image style={{height: 90, width: 90}} source={require('../assets/images/load2.gif')} />
+        }
+        <TouchableOpacity onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+          <CheckBox 
+          checkedColor='#000' 
+          checked={this.saveChecked} 
+          onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}
+          ref={this.rememberMe}/><Text style={{color: '#000', marginTop: 17, marginLeft: -14}}>Mémoriser les Identifiants</Text>
         </TouchableOpacity>
+        {<TouchableOpacity style={{position: 'absolute', bottom: 25, padding: 20}} activeOpacity = { 0.4 } onPress = { () => {this.props.navigation.navigate('Register');} }>
+          <Text style={{color: '#aaa'}}>Pas encore de compte ? S'inscrire</Text>
+        </TouchableOpacity> 
+        }
       </View>
-      { this.loading==0 &&
-      <TouchableOpacity ref={this.boost} activeOpacity = { 0.5 } style = { styles.loginButton }  onPress = { () => { this.loading=1; this.forceUpdate(); this.login(); } }>
-        <Text style={{color: '#fff', fontSize: 18}}> Se connecter </Text>
-      </TouchableOpacity>
-      }
-      { this.loading==1 && 
-      <Image style={{height: 35, width: 35}} source={require('../assets/images/load.gif')} />
-      }
-      <TouchableOpacity onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
-        <CheckBox 
-        checkedColor='#fff' 
-        checked={this.saveChecked} 
-        onPress={ () => {this.saveChecked=!this.saveChecked;this.forceUpdate();}}
-        ref={this.rememberMe}/><Text style={{color: '#fff', marginTop: 17, marginLeft: -14}}>Mémoriser les Identifiants</Text>
-      </TouchableOpacity>
-      {/*<TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Register');} }> BETA
-        <Text style={styles.register}>Créer un compte Jimee</Text>
-      </TouchableOpacity> 
-      */}
-    </View>
     );
   }
 }
@@ -175,9 +188,17 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: "center", 
     alignItems: "center", 
+    textAlignVertical: 'center',
     padding: '10%', 
     paddingBottom: '20%', 
-    backgroundColor: '#3400B1',
+  },
+  hint: {
+    textAlign: 'left',
+    color: '#3b3b3b',
+    marginLeft: 0,
+    left: 0,
+    paddingLeft: 0,
+    justifyContent: 'flex-end',
   },
   welcomeImage: {
     width: 100,
@@ -187,16 +208,9 @@ const styles = StyleSheet.create({
     marginLeft: -10,
   },
   welcomeText: {
-    fontSize: (Dimensions.get('window').width / 3), // font qui s'adapte à l'écran
-    fontFamily: 'Roboto',
-    //resizeMode: 'contain',
-    letterSpacing: -9,
-    //borderWidth: 1,
-    borderColor: '#f00',
-    fontWeight: 'bold',
-    marginTop: 3,
-    //marginLeft: -10,
-    color: '#fff'
+    width: (Dimensions.get('window').width), // font qui s'adapte à l'écran
+    height: (Dimensions.get('window').width/2.5),
+    resizeMode: 'cover',
   },
   smallWelcomeText: { 
     textAlign: 'center', 
@@ -287,26 +301,25 @@ const styles = StyleSheet.create({
     height: 45,
     paddingRight: 45,
     paddingLeft: 8,
-    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
     paddingVertical: 0,
     backgroundColor: '#fff',
-    borderColor: '#fff',
-    borderRadius: 35,
-    color: '#3800bf',
     paddingLeft: 25, 
     marginBottom: 21,
   },
   loginButton: {
     borderColor: '#fff', 
-    borderRadius: 35, 
+    borderRadius: 12, 
     backgroundColor: '#3800bf', 
     borderWidth: 1, 
-    height: 45, 
+    height: 64, 
     textAlign: 'center', 
     justifyContent: 'center', 
-    alignItems: 'center', 
     alignSelf: 'stretch',
+    marginTop: 18,
     marginBottom: 18,
+    paddingLeft: 15,
   },
   picker: {
     marginLeft: 20,

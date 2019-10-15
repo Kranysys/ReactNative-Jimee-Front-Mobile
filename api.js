@@ -1,11 +1,14 @@
 /* Nicolas BAPTISTA - V1.0 */
-    export const api = "http://62.210.72.103:8001/"; // URL DE L'API
+    //export const api = "http://62.210.72.103:8001/"; // URL DE L'API
+    export const api = "http://apinode.eu-west-3.elasticbeanstalk.com/"; // URL DE L'API
     let bearerToken = ""; // TOKEN POUR OAUTH2
     let userID = ""; // UserID Connecté actuellement
     let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
     let userInsta = ""; // Compte instagramm sélectionné de l'utilisateur connecté
+    var accountSetting, accountSetting2; // Paramètre du compte
     var InstaAccountList; // Liste des comptes Instagram en cache
     var ConfigUserInsta; // Liste des configurations (like,follow,unfollow,comment) en cache
+    var actualArticle; // cache dernier article lu
 
     // SETTER
     
@@ -115,4 +118,15 @@
 
     export function getConfigUserInsta() {
         return ConfigUserInsta;
+    }
+
+    export function setSettings(json) { accountSetting = json; }
+    export function setSettings2(json) { accountSetting2 = json; }
+    export function getSettings() { return accountSetting; }
+    export function getSettings2() { return accountSetting2; }
+    export function getArticle() {
+        return actualArticle;
+    }
+    export function setArticle(json) {
+        actualArticle = json;
     }

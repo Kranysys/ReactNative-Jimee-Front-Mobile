@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button, registerCustomIconType } from 'react-native-elements';
 import { MonoText } from '../components/StyledText';
 import { api } from '../api';
+import JimeeButton from '../components/JimeeButton';
 
 export default class LoginScreen extends React.Component {
   constructor(props){
@@ -75,15 +76,22 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
     <View style={styles.loginBackground}>
-      <Text style={styles.welcomeText}>Jimee</Text>
-      <Text style={styles.smallWelcomeText}>mon Coach social</Text>
-      <TextInput
-          style={ styles.textBox }
-          placeholder="Identifiant"
-          onChangeText={(text) => this.setState({text})}
-          ref={this.logInput}
-      />
+      <Image style={styles.welcomeText} source={require('../assets/images/jimee.jpg')} />
       <View style = { styles.textBoxBtnHolder }>
+        <View style={{paddingRight: 0}}>
+          <Text style={{color: '#aaa', textAlign: 'left'}}>Identifiant</Text>
+        </View>
+        <TextInput
+            style={ styles.textBox }
+            placeholder="Identifiant"
+            onChangeText={(text) => this.setState({text})}
+            ref={this.logInput}
+        />
+      </View>
+      <View style = { styles.textBoxBtnHolder }>
+        <View style={{paddingRight: 0}}>
+          <Text style={{color: '#aaa', textAlign: 'left'}}>Password</Text>
+        </View>
         <TextInput
           style={ styles.textBox }
           placeholder="Mot de passe"
@@ -99,10 +107,8 @@ export default class LoginScreen extends React.Component {
       {/*<View style={{position: 'relative', alignSelf: 'stretch',}}>
         <Button onPress={() => {this.register(); this.props.navigation.navigate('Auth');}} title="INSCRIPTION"/>
       </View>*/}
-      <TouchableOpacity ref={this.boost} activeOpacity = { 0.8 } style = { styles.loginButton }  onPress = { () => { this.register(); } }>
-        <Text style={{color: '#fff', fontSize: 18}}> S'inscire </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{position: 'absolute', bottom: 25}} activeOpacity = { 0.8 } onPress = { () => {this.props.navigation.navigate('Auth');} }>
+      <JimeeButton  onPress = { () => { this.register(); } } title="S'inscrire" />
+      <TouchableOpacity style={{position: 'absolute', bottom: 25, padding: 20}} activeOpacity = { 0.4 } onPress = { () => {this.props.navigation.navigate('Auth');} }>
         <Text style={styles.login}>Se connecter à un compte Jimee</Text>
       </TouchableOpacity>
     </View>
@@ -115,21 +121,14 @@ const styles = StyleSheet.create({
     flex: 1, 
     justifyContent: "center", 
     alignItems: "center", 
+    textAlignVertical: 'center',
     padding: '10%', 
     paddingBottom: '20%', 
-    backgroundColor: '#3400B1',
   },
   welcomeText: {
-    fontSize: (Dimensions.get('window').width / 3),
-    fontFamily: 'Roboto',
-    //resizeMode: 'contain',
-    letterSpacing: -9,
-    //borderWidth: 1,
-    borderColor: '#f00',
-    fontWeight: 'bold',
-    marginTop: 3,
-    //marginLeft: -10,
-    color: '#fff'
+    width: (Dimensions.get('window').width), // font qui s'adapte à l'écran
+    height: (Dimensions.get('window').width/2.5),
+    resizeMode: 'cover',
   },
   smallWelcomeText: { 
     textAlign: 'center', 
@@ -288,7 +287,9 @@ const styles = StyleSheet.create({
   {
     position: 'relative',
     alignSelf: 'stretch',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderBottomColor: '#000',
+    borderBottomWidth: 1,
   },
   container: {
     paddingTop: 60,
@@ -321,9 +322,6 @@ const styles = StyleSheet.create({
   },
   login:
   {
-    color: '#66c', 
-    fontSize: 18, 
-    fontWeight: 'bold',
-    color: '#fff',
+    color: '#aaa', 
   },
 });
