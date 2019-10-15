@@ -12,11 +12,11 @@ export default class Header extends Component {
                     <Ionicons name='md-arrow-back' size={24}/>
                 </TouchableOpacity>
                 <Text style={{fontSize: 30, fontWeight: '700', position: 'absolute', top: 7, left: 85, fontFamily: 'Roboto'}}>{this.props.title}</Text>
-                <Image
+                {/*<Image
                 style={{width: 50, height: 50, borderWidth: 1, borderRadius: 25, borderColor: '#ccc', position: 'absolute', top: 8, right: 10 }}
                 source={{uri: getInstaAccount(getUserInstaID()).avatar}}
                 />
-                <Image style={{width: 22, height: 22, position: 'absolute', top: 20, right: 3, borderWidth: 0, borderColor: '#fff', borderRadius: 20}} source={require('../assets/images/instaIcon.png')} />
+                <Image style={{width: 22, height: 22, position: 'absolute', top: 20, right: 3, borderWidth: 0, borderColor: '#fff', borderRadius: 20}} source={require('../assets/images/instaIcon.png')} />*/}
             </View>
         );
     }

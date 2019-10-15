@@ -44,9 +44,14 @@ export default class ViewArticleScreen extends React.Component {
       <ScrollView style={styles.AndroidSafeArea}>
         <Header title={navigation.getParam('titre', 'Cours')} this={this}/>
         <View style={{marginTop: 20,  }}>
-          <WebView source={{html: this.response.article}} style={{height: 600, width: '100%', marginTop: 0}} />
+          <WebView source={{html: this.response.article}} style={{height: 600, width: '80%', marginLeft: 20}} />
         </View>
-        <Text>Date de publication: {this.response.date_ajout}</Text>
+        <View style={{position: 'absolute', bottom: 5, left: 4}}>
+        <Text>_______________________________________________</Text>
+        <Text style={{fontSize: 13}}>Date de publication: {this.response.date_ajout}</Text>
+        <Text style={{fontSize: 13}}>Catégorie: {this.response.categorie}</Text>
+        <Text style={{fontSize: 13}}>Description: {this.response.description}</Text>
+        </View>
 
         <View style={{height: 60}}></View>
       </ScrollView>
