@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, View , Text, Animated, Alert, TouchableOpacity,
 TouchableWithoutFeedback, TextInput, Button, Platform, StatusBar, Image, Slider,
 Dimensions, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { api, getToken, getUserInstaID } from '../api';
+import { api, getToken, getUserInstaID, setArticle } from '../api';
 import {
   LineChart,
   BarChart,
@@ -44,7 +44,7 @@ export default class CoursScreen extends React.Component {
   }
   renderCours(item) {
     return(
-      <TouchableOpacity onPress={ () => { this.props.navigation.navigate('ViewArticleScreen', {id: item.id_cours}) } }>
+      <TouchableOpacity onPress={ () => { setArticle(item.id_cours); this.props.navigation.navigate('ViewArticleScreen', {id: item.id_cours, titre: item.titre}) } }>
         <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, borderWidth: 1, borderColor: '#ccc', padding: 5}}>
           <Image source={{uri: item.image}} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, width: '100%', height: 250}} />
           <View style={{padding: 12}}>

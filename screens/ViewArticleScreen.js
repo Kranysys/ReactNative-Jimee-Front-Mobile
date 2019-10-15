@@ -1,19 +1,22 @@
 /* Nicolas BAPTISTA - V1.0 */
 import React from 'react';
-import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar, Image, ImageBackground } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, StatusBar, Image, ImageBackground, WebView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import Header from '../components/HeaderAction';
 import SwitchSelector from 'react-native-switch-selector';
+import { getToken, api, getArticle } from '../api';
 
 export default class ViewArticleScreen extends React.Component {
   constructor(props){
     super(props);
-    this.state = {cours: []};
+    this.state = {cours: []}
+    this.response = "<p>loading</p>";
 
+    this.getCours(getArticle());
   }
-  getCours() {
-    var command = "cours";
+  getCours(id) {
+    var command = "cours?idCours="+id;
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
@@ -23,8 +26,8 @@ export default class ViewArticleScreen extends React.Component {
       },
 		}).then((response) => response.json()).then((responseJson) => {
       console.log("cours:")
-      console.log(responseJson.cours)
-      this.setState({cours: responseJson.cours});
+      console.log(responseJson)
+      this.response = responseJson[0];
       this.forceUpdate();
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
@@ -36,16 +39,16 @@ export default class ViewArticleScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
+    
     return(
       <ScrollView style={styles.AndroidSafeArea}>
-        <Header title="Editer" this={this}/>
-        <View style={{marginTop: 0, }}>
-          <Text style={styles.titre}>{navigation.getParam('id', 9)}</Text>
-
-
+        <Header title={navigation.getParam('titre', 'Cours')} this={this}/>
+        <View style={{marginTop: 20,  }}>
+          <WebView source={{html: this.response.article}} style={{height: 600, width: '100%', marginTop: 0}} />
         </View>
+        <Text>Date de publication: {this.response.date_ajout}</Text>
 
-        <View style={{height: 200}}></View>
+        <View style={{height: 60}}></View>
       </ScrollView>
     );
   }

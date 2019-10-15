@@ -13,7 +13,7 @@ export default class HashtagsScreen extends React.Component {
 
   }
   getHash() {
-    var command = "generateHashtags?userID="+getUserInstaID()+"&nb=25";
+    var command = "generateHashtags?userID=153&nb=25";
     console.log("request -> GET "+api+command);
     fetch(api+command,  {
 		  method: 'GET',
@@ -25,6 +25,7 @@ export default class HashtagsScreen extends React.Component {
       console.log("hash:")
       console.log(responseJson)
       this.setState({hash: responseJson});
+      this.loading=2; 
       this.forceUpdate();
     }).catch((error) =>{
       console.log("ERROR "+command+" : "+error);
@@ -56,7 +57,7 @@ export default class HashtagsScreen extends React.Component {
             shadowOffset: {  width: 0,  height: 4,  }, 
             }}>
             <Text style={{ position: 'absolute', left: 50, top: 20, color: '#aaa', fontSize: 20 }}> 1-30 </Text>
-            {<JimeeButton title='Générer Hashtags' style={{width: 200, position: 'absolute', right: 0, top: -18}} onPress={() => { this.loading=1; this.forceUpdate(); this.getHash(); this.forceUpdate(); }} />}
+            {<JimeeButton title='Générer Hashtags' style={{width: 200, position: 'absolute', right: 0, top: -18}} onPress={() => { this.loading=1; this.forceUpdate(); this.getHash(); }} />}
           </View>
 
           <Text style={{fontStyle: 'italic', color: '#bbb', fontSize: 14, marginTop: 15}}>Permet de générer un nombre aléatoire d'hashtags en relation avec ton profil type</Text>
@@ -82,6 +83,7 @@ export default class HashtagsScreen extends React.Component {
           }
         </View>
 
+        <View style={{height: 100}}></View>
       </ScrollView>
     );
   }
