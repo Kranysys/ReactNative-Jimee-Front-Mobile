@@ -5,6 +5,7 @@
     let userID = ""; // UserID Connecté actuellement
     let userInstaID = ""; // ID Compte instagram sélectionné de l'utilisateur connecté
     let userInsta = ""; // Compte instagramm sélectionné de l'utilisateur connecté
+    var accountSetting, accountSetting2; // Paramètre du compte
     var InstaAccountList; // Liste des comptes Instagram en cache
     var ConfigUserInsta; // Liste des configurations (like,follow,unfollow,comment) en cache
 
@@ -117,3 +118,8 @@
     export function getConfigUserInsta() {
         return ConfigUserInsta;
     }
+
+    export function setSettings(json) { accountSetting = json; }
+    export function setSettings2(json) { accountSetting2 = json; }
+    export function getSettings() { return accountSetting; }
+    export function getSettings2() { return accountSetting2; }

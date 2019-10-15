@@ -5,11 +5,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { CheckBox, Button } from 'react-native-elements';
 import Header from '../components/HeaderAction';
 import SwitchSelector from 'react-native-switch-selector';
+import { getSettings, getSettings2, setSettings, setSettings2 } from '../api';
 
 export default class EditScreen extends React.Component {
   constructor(props){
     super(props);
     this.saveChecked = [ true ];
+    console.log("getsettings: "+getSettings());
+    this.initial = 0;
+    if( getSettings() ) this.initial = (getSettings()-1);
+    if(getSettings2()) this.saveChecked = getSettings2();
 
   }
   static navigationOptions = {
@@ -27,8 +32,8 @@ export default class EditScreen extends React.Component {
             <SwitchSelector 
               options={[{ label: 'Photo', value: '1' },{ label: 'Fitness', value: '2' },{ label: 'Food', value: '3' }]} 
               buttonColor='#f66445'
-              initial={0} 
-              onPress={value => {this.mode = value; console.log("value "+value); this.forceUpdate();}} />
+              initial={this.initial} 
+              onPress={value => {this.mode = value; setSettings(value); console.log("value "+value); this.forceUpdate();}} />
           </View>
 
           <Text style={styles.titre}>Mes intérêts</Text>
@@ -37,7 +42,7 @@ export default class EditScreen extends React.Component {
             <View style={{flexDirection: 'row', padding: 0}}>
               <View style={{width: '45%', height: 130, marginRight: 20}}>
                     <ImageBackground source={require('../assets/images/interet1.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
-                        <TouchableOpacity onPress={ () => {this.saveChecked[0]=!this.saveChecked[0];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[0]=!this.saveChecked[0];setSettings2(this.saveChecked);this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
                           <CheckBox 
                           uncheckedColor='#f66445'
                           checkedColor='#f66445' 
@@ -45,14 +50,14 @@ export default class EditScreen extends React.Component {
                           checkedIcon='dot-circle-o'
                           uncheckedIcon='circle-o'
                           size={20}
-                          onPress={ () => {this.saveChecked[0]=!this.saveChecked[0];this.forceUpdate();}}/>
+                          onPress={ () => {this.saveChecked[0]=!this.saveChecked[0]; setSettings2(this.saveChecked); this.forceUpdate();}}/>
                         </TouchableOpacity>
                     </ImageBackground>
               </View>
 
               <View style={{width: '45%', height: 130}}>
                     <ImageBackground source={require('../assets/images/interet2.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
-                        <TouchableOpacity onPress={ () => {this.saveChecked[1]=!this.saveChecked[1];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[1]=!this.saveChecked[1];setSettings2(this.saveChecked);this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
                           <CheckBox 
                           uncheckedColor='#f66445'
                           checkedColor='#f66445' 
@@ -60,7 +65,7 @@ export default class EditScreen extends React.Component {
                           checkedIcon='dot-circle-o'
                           uncheckedIcon='circle-o'
                           size={20}
-                          onPress={ () => {this.saveChecked[1]=!this.saveChecked[1];this.forceUpdate();}}/>
+                          onPress={ () => {this.saveChecked[1]=!this.saveChecked[1];setSettings2(this.saveChecked);this.forceUpdate();}}/>
                         </TouchableOpacity>
                     </ImageBackground>
               </View>
@@ -69,7 +74,7 @@ export default class EditScreen extends React.Component {
             <View style={{flexDirection: 'row', paddingTop: 10}}>
               <View style={{width: '45%', height: 130, marginRight: 20}}>
                     <ImageBackground source={require('../assets/images/interet3.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
-                        <TouchableOpacity onPress={ () => {this.saveChecked[2]=!this.saveChecked[2];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[2]=!this.saveChecked[2];setSettings2(this.saveChecked);this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
                           <CheckBox 
                           uncheckedColor='#f66445'
                           checkedColor='#f66445' 
@@ -77,14 +82,14 @@ export default class EditScreen extends React.Component {
                           checkedIcon='dot-circle-o'
                           uncheckedIcon='circle-o'
                           size={20}
-                          onPress={ () => {this.saveChecked[2]=!this.saveChecked[2];this.forceUpdate();}}/>
+                          onPress={ () => {this.saveChecked[2]=!this.saveChecked[2];setSettings2(this.saveChecked);this.forceUpdate();}}/>
                         </TouchableOpacity>
                     </ImageBackground>
               </View>
 
               <View style={{width: '45%', height: 130}}>
                     <ImageBackground source={require('../assets/images/interet4.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
-                        <TouchableOpacity onPress={ () => {this.saveChecked[3]=!this.saveChecked[3];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[3]=!this.saveChecked[3];setSettings2(this.saveChecked);this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
                           <CheckBox 
                           uncheckedColor='#f66445'
                           checkedColor='#f66445' 
@@ -92,7 +97,7 @@ export default class EditScreen extends React.Component {
                           checkedIcon='dot-circle-o'
                           uncheckedIcon='circle-o'
                           size={20}
-                          onPress={ () => {this.saveChecked[3]=!this.saveChecked[3];this.forceUpdate();}}/>
+                          onPress={ () => {this.saveChecked[3]=!this.saveChecked[3];setSettings2(this.saveChecked);this.forceUpdate();}}/>
                         </TouchableOpacity>
                     </ImageBackground>
               </View>
@@ -101,7 +106,7 @@ export default class EditScreen extends React.Component {
             <View style={{flexDirection: 'row', paddingTop: 10}}>
               <View style={{width: '45%', height: 130, marginRight: 20}}>
                     <ImageBackground source={require('../assets/images/interet5.png')} style={{width: '100%', height: '100%', opacity: 0.8}} imageStyle={{ borderRadius: 5}}>
-                        <TouchableOpacity onPress={ () => {this.saveChecked[4]=!this.saveChecked[4];this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={ () => {this.saveChecked[4]=!this.saveChecked[4];setSettings2(this.saveChecked);this.forceUpdate();}} style={{flex: 1, flexDirection: 'row'}}>
                           <CheckBox 
                           uncheckedColor='#f66445'
                           checkedColor='#f66445' 
@@ -109,7 +114,7 @@ export default class EditScreen extends React.Component {
                           checkedIcon='dot-circle-o'
                           uncheckedIcon='circle-o'
                           size={20}
-                          onPress={ () => {this.saveChecked[4]=!this.saveChecked[4];this.forceUpdate();}}/>
+                          onPress={ () => {this.saveChecked[4]=!this.saveChecked[4];setSettings2(this.saveChecked);this.forceUpdate();}}/>
                         </TouchableOpacity>
                     </ImageBackground>
               </View>

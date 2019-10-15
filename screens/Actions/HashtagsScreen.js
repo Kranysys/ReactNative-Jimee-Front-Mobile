@@ -4,16 +4,42 @@ import { ScrollView, StyleSheet, View, Text, Alert, TouchableOpacity, Platform, 
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../components/HeaderAction';
 import JimeeButton from '../../components/JimeeButton';
+import { getUserInstaID, api, getToken } from '../../api';
 
 export default class HashtagsScreen extends React.Component {
   constructor(props){
     super(props);
+    this.state = {hash: []};
 
+  }
+  getHash() {
+    var command = "generateHashtags?userID="+getUserInstaID()+"&nb=25";
+    console.log("request -> GET "+api+command);
+    fetch(api+command,  {
+		  method: 'GET',
+		  headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
+      },
+		}).then((response) => response.json()).then((responseJson) => {
+      console.log("hash:")
+      console.log(responseJson)
+      this.setState({hash: responseJson});
+      this.forceUpdate();
+    }).catch((error) =>{
+      console.log("ERROR "+command+" : "+error);
+    });
+  }
+  renderHash(item){
+    return(
+      <Text style={styles.tag}>#{item}</Text>
+    );
   }
   static navigationOptions = {
     header: null,
   };
   render() {
+    let hashes = this.state.hash.map(item => this.renderHash(item));
     return(
       <ScrollView style={styles.AndroidSafeArea}>
         <Header title="Hashtags" this={this}/>
@@ -30,7 +56,7 @@ export default class HashtagsScreen extends React.Component {
             shadowOffset: {  width: 0,  height: 4,  }, 
             }}>
             <Text style={{ position: 'absolute', left: 50, top: 20, color: '#aaa', fontSize: 20 }}> 1-30 </Text>
-            {<JimeeButton title='Générer Hashtags' style={{width: 200, position: 'absolute', right: 0, top: -18}} onPress={() => { this.loading=1; this.forceUpdate(); setTimeout(() => {this.loading=2; this.forceUpdate();}, 1500); }}/>}
+            {<JimeeButton title='Générer Hashtags' style={{width: 200, position: 'absolute', right: 0, top: -18}} onPress={() => { this.loading=1; this.forceUpdate(); this.getHash(); this.forceUpdate(); }} />}
           </View>
 
           <Text style={{fontStyle: 'italic', color: '#bbb', fontSize: 14, marginTop: 15}}>Permet de générer un nombre aléatoire d'hashtags en relation avec ton profil type</Text>
@@ -51,11 +77,7 @@ export default class HashtagsScreen extends React.Component {
               shadowOffset: {  width: 0,  height: 4,  }, 
               marginTop: 10,
               }}>
-              <Text style={styles.tag}>#portraitvision</Text>
-              <Text style={styles.tag}>#portraitvisioncentral</Text>
-              <Text style={styles.tag}>#michelphoto</Text>
-              <Text style={styles.tag}>#parisianlifestyle</Text>
-              <Text style={styles.tag}>#paris</Text>
+              {hashes}
             </View>
           }
         </View>

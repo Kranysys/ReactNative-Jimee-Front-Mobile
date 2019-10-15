@@ -16,6 +16,8 @@ import FakeScreen from '../screens/Actions/FakeScreen';
 
 import EditScreen from '../screens/EditScreen';
 
+import ViewArticleScreen from '../screens/ViewArticleScreen';
+
 import SideMenu from '../components/sidemenu'
 
 console.disableYellowBox = true; // désactive les warnings (pas pro si ça arrive)
@@ -50,4 +52,5 @@ export default createAppContainer(createSwitchNavigator({
   AnalyseScreen: AnalyseScreen,
   EditScreen: EditScreen,
   FakeScreen: FakeScreen,
+  ViewArticleScreen: ViewArticleScreen,
 }));

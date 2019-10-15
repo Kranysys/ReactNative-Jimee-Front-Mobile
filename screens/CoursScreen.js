@@ -20,13 +20,46 @@ import Header from '../components/Header';
 export default class CoursScreen extends React.Component {
   constructor(props){
     super(props);
-    this.state = {selectedTab: 1};
+    this.state = {selectedTab: 1, cours: []};
 
+    this.getCours();
+  }
+  getCours() {
+    var command = "cours";
+    console.log("request -> GET "+api+command);
+    fetch(api+command,  {
+		  method: 'GET',
+		  headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer '+getToken(),
+      },
+		}).then((response) => response.json()).then((responseJson) => {
+      console.log("cours:")
+      console.log(responseJson.cours)
+      this.setState({cours: responseJson.cours});
+      this.forceUpdate();
+    }).catch((error) =>{
+      console.log("ERROR "+command+" : "+error);
+    });
+  }
+  renderCours(item) {
+    return(
+      <TouchableOpacity onPress={ () => { this.props.navigation.navigate('ViewArticleScreen', {id: item.id_cours}) } }>
+        <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, borderWidth: 1, borderColor: '#ccc', padding: 5}}>
+          <Image source={{uri: item.image}} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, width: '100%', height: 250}} />
+          <View style={{padding: 12}}>
+            <Text style={{fontSize: 16, marginBottom: 5}}>{item.titre}</Text>
+            <Text style={{fontSize: 9}}>{item.description}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
   }
 static navigationOptions = {
   header: null,
 };
   render() {
+    let courses = this.state.cours.map(item => this.renderCours(item));
     return (
       <ScrollView style={styles.AndroidSafeArea}>
         <Header title="Cours" this={this}/>
@@ -41,43 +74,23 @@ static navigationOptions = {
             </TouchableOpacity>
             <TouchableOpacity onPress={ () => { this.setState({selectedTab: 2}); }}>
             <View style={{flexDirection: 'column', marginLeft: 25}}>
-              <Text style={{color: '#3e3f68', fontSize: 25}}>Photographie</Text>
+              <Text style={{color: '#3e3f68', fontSize: 25}}>Instagram</Text>
               { this.state.selectedTab == 2 && <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View> }
             </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={ () => { this.setState({selectedTab: 3}); }}>
+            {/*<TouchableOpacity onPress={ () => { this.setState({selectedTab: 3}); }}>
             <View style={{flexDirection: 'column', marginLeft: 25}}>
               <Text style={{color: '#3e3f68', fontSize: 25}}>Algorithme</Text>
               { this.state.selectedTab == 3 && <View style={{borderTopColor: '#e67e22', borderTopWidth: 5}}></View> }
             </View>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
           </ScrollView>
 
-        <View style={{padding: 20}}>
+          <View style={{padding: 20}}>
 
-          { (this.state.selectedTab == 3 || this.state.selectedTab == 1) &&
-          <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, borderWidth: 1, borderColor: '#ccc', padding: 5}}>
-            <Image source={require('../assets/images/cours1bg.png')} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, width: '100%'}} />
-            <View style={{padding: 12}}>
-              <Text style={{fontSize: 16, marginBottom: 5}}>L'algorithme instagram</Text>
-              <Text style={{fontSize: 9}}>Une brève histoire de l'algorithme</Text>
-            </View>
+            {courses} 
+
           </View>
-          }
-
-          
-          { (this.state.selectedTab == 2 || this.state.selectedTab == 1) &&
-          <View style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, borderWidth: 1, borderColor: '#ccc', padding: 5}}>
-            <Image source={require('../assets/images/cours1bg.png')} style={{borderTopLeftRadius: 15, borderTopRightRadius: 15, width: '100%'}} />
-            <View style={{padding: 12}}>
-              <Text style={{fontSize: 16, marginBottom: 5}}>La retouche sur instagram</Text>
-              <Text style={{fontSize: 9}}>Les bases à connaitre et les outils indispensable pour retoucher</Text>
-            </View>
-          </View>
-          }   
-
-        </View>
-          
         </View>
       </ScrollView>
     );
