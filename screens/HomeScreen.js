@@ -40,7 +40,7 @@ export default class HomeScreen extends React.Component {
     this.accountFollowing = 0;
     this.accountPictureId = 0;
 
-    this.state = { valueArray: [], valueArray2: [], Badges: [], hidePassword: true, showPassword: false };
+    this.state = { valueArray: [], valueArray2: [], Badges: [], Stats: [], hidePassword: true, showPassword: false };
     this.index = 0; this.index2 = 0;
     this.logcontent = [];
     this.instaAccountsContent = [];
@@ -73,8 +73,27 @@ export default class HomeScreen extends React.Component {
     this.mode = 1; // flwings / flwers
     this.modetype = 1; // linechart / barchart
 
+    this.getStats();
     this.getChart();
     this.getBadges();
+  }
+  getStats() {
+    command = "stats?userID="+getUserInstaID();
+      console.log("request -> GET "+api+command);
+      fetch(api+command,  {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+getToken(),
+        },
+      }).then((response) => response.json()).then((responseJson) => {
+        console.log("badges:")
+        console.log(responseJson)
+        this.setState({Stats: responseJson});
+        this.forceUpdate();
+        }).catch((error) =>{
+        console.log("ERROR "+command+" : "+error);
+      });
   }
   getChart() {
     if(!this.chartData) // cache
@@ -286,7 +305,7 @@ export default class HomeScreen extends React.Component {
                 </View>*/}
                 <View style={{backgroundColor: '#5ed2a0', width: 100, height: 100, borderRadius: 50, textAlign: 'center', alignItems: 'center'}}>
                   <View style={{flexDirection: 'row', marginTop: 20}}>
-                    <Text style={{fontSize: 38, color: '#fff'}}>80</Text><Text style={{fontSize: 10, color: '#fff', marginTop: 20}}>%</Text>
+                    <Text style={{fontSize: 38, color: '#fff'}}>{this.state.Stats.score?this.state.Stats.score:'100'}</Text><Text style={{fontSize: 10, color: '#fff', marginTop: 20}}>%</Text>
                   </View>
                   <Text style={{fontSize: 12, color: '#fff'}}>super</Text>
                 </View>
@@ -312,7 +331,7 @@ export default class HomeScreen extends React.Component {
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
                       <Ionicons name="md-heart" style={{color: "#fff"}} size={25} />
                     </View>
-                    <Text style={{fontWeight: 'bold', fontSize: 36}}>350</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 36}}>{this.state.Stats.moyLikes?this.state.Stats.moyLikes:'0'}</Text>
                     <Text style={{fontSize: 10}}>Likes reçus par Post</Text>
                   </View>
               
@@ -320,7 +339,7 @@ export default class HomeScreen extends React.Component {
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
                       <Ionicons name="md-chatboxes" style={{color: "#fff"}} size={25} />
                     </View>
-                    <Text style={{fontWeight: 'bold', fontSize: 36}}>22</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 36}}>{this.state.Stats.moyComments?this.state.Stats.moyComments:'0'}</Text>
                     <Text style={{fontSize: 10}}>Commentaires reçus par post</Text>
                   </View>
                   
@@ -331,7 +350,7 @@ export default class HomeScreen extends React.Component {
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
                       <Ionicons name="md-stats" style={{color: "#fff"}} size={25} />
                     </View>
-                    <Text style={{fontWeight: 'bold', fontSize: 36}}>7%</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 36}}>{this.state.Stats.interaction?this.state.Stats.interaction:'100'}%</Text>
                     <Text style={{fontSize: 10}}>Taux interaction par Post</Text>
                   </View>
 
@@ -339,7 +358,7 @@ export default class HomeScreen extends React.Component {
                     <View style={{ backgroundColor: '#f00', borderRadius: 25, padding: 10, paddingBottom: 7 }}>
                       <Ionicons name="md-list-box" style={{color: "#fff"}} size={25} />
                     </View>
-                    <Text style={{fontWeight: 'bold', fontSize: 36}}>350</Text>
+                    <Text style={{fontWeight: 'bold', fontSize: 36}}>{this.state.Stats.nbPosts?this.state.Stats.nbPosts:'0'}</Text>
                     <Text style={{fontSize: 10}}>Nombre de Posts</Text>
                   </View>
                 </View>
@@ -516,7 +535,7 @@ export default class HomeScreen extends React.Component {
 
             <View style={{borderWidth: 1, borderRadius: 10, borderColor: '#ccc', backgroundColor: '#fff', padding: 20, marginRight: 10}}>
               <Text>
-               Sur instagram, les profils similaires au votre  ont 200 likes par post et gagnent en moyenne 400 followers en 6 mois.
+               Sur instagram, les profils similaires au votre  ont {this.state.Stats.ml_like?this.state.Stats.ml_like:'0'} likes par post et gagnent en moyenne {this.state.Stats.ml_follower?this.state.Stats.ml_follower:'0'} followers en 6 mois.
               </Text>
             </View>
 
