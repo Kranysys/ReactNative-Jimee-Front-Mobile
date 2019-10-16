@@ -15,5 +15,8 @@
 - S'assurer que les drivers ADB soient présent sur la machine (avec Android Studio ou la commande adb)
 - A la racine du répertoire, executer la commande `expo start`
 - Une fois Expo lancé, sur l'interface web (automatiquement affiché) l'application peut être lancé
-ou
 - Appuyez sur la touche `A` en ligne de commande pour lancer sur android
+
+### Informations complémentaires
+
+Version de Expo SDK: 33
