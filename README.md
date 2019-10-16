@@ -1,8 +1,12 @@
 # Jimee Application Mobile (iOS & Android)
 
-## Installation de l'application sur un téléphone
+<p align="center">
+  <img src="assets/images/jimee.jpg" height="200">
+</p>
 
-- Installation l'application `Expo` sur le téléphone
+## Lancer l'application sur un téléphone Android/iOS
+
+- Installer l'application `Expo` sur le téléphone
 - Se rendre sur `https://expo.io/@toortoor/Jimee` depuis le smartphone et cliquer sur *Open Project on Expo*
 
 ## Compilation du projet
@@ -12,4 +16,4 @@
 - A la racine du répertoire, executer la commande `expo start`
 - Une fois Expo lancé, sur l'interface web (automatiquement affiché) l'application peut être lancé
 ou
-- Appuyez sur la touche A en ligne de commande pour lancer sur android
+- Appuyez sur la touche `A` en ligne de commande pour lancer sur android
